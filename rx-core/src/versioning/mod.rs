@@ -182,9 +182,10 @@ fn parse_git_describe(describe: &str, config: &VersioningConfig) -> Result<GitVe
 /// Extract version from tag using pattern
 fn extract_version_from_tag(tag: &str, pattern: &str) -> Result<String> {
     // Convert pattern like "v{version}" to regex
+    // First escape dots in the pattern, then replace {version} placeholder
     let regex_pattern = pattern
-        .replace("{version}", r"(?P<version>.+)")
-        .replace(".", r"\.");
+        .replace(".", r"\.")
+        .replace("{version}", r"(?P<version>.+)");
 
     let re = regex::Regex::new(&format!("^{}$", regex_pattern))
         .map_err(|e| Error::Version(format!("Invalid pattern: {}", e)))?;

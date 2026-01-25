@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand, ExportCommand, InitCommand, LockCommand, PluginCommand, PolylithCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
+use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand, ExportCommand, ImportCommand, InitCommand, LockCommand, PluginCommand, PolylithCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
 
 #[derive(Parser)]
 #[command(
@@ -84,6 +84,9 @@ pub enum Commands {
 
     /// Manage WebAssembly plugins
     Plugin(PluginCommand),
+
+    /// Import from other package managers (Poetry, etc.)
+    Import(ImportCommand),
 }
 
 impl Cli {
@@ -110,6 +113,7 @@ impl Cli {
             Commands::Polylith(cmd) => cmd.run().await,
             Commands::Docker(cmd) => cmd.run().await,
             Commands::Plugin(cmd) => cmd.run().await,
+            Commands::Import(cmd) => cmd.run().await,
         }
     }
 }

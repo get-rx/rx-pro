@@ -1,14 +1,15 @@
-//! PyPI HTTP client
+//! PyPI HTTP client with private registry support
 
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use reqwest::Client;
+use reqwest::{Client, RequestBuilder};
 use tokio::sync::RwLock;
 use tracing::{debug, instrument};
 
 use super::types::PackageMetadata;
 use crate::pep::Version;
+use crate::registry::{RegistryConfig, ResolvedCredentials};
 use crate::{Error, Result};
 
 /// Default PyPI index URL
@@ -19,8 +20,10 @@ pub const DEFAULT_INDEX_URL: &str = "https://pypi.org/pypi";
 pub struct PyPIClient {
     /// HTTP client
     client: Client,
-    /// Base URL for the index
+    /// Base URL for the index (JSON API)
     base_url: String,
+    /// Resolved credentials for authentication
+    credentials: Option<ResolvedCredentials>,
     /// Cache for package metadata
     cache: Arc<RwLock<HashMap<String, PackageMetadata>>>,
 }
@@ -41,7 +44,53 @@ impl PyPIClient {
         Self {
             client,
             base_url: base_url.into(),
+            credentials: None,
             cache: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+
+    /// Create a client from a registry configuration
+    pub fn from_registry(config: &RegistryConfig) -> Result<Self> {
+        let client = Client::builder()
+            .user_agent(concat!("t-rex/", env!("CARGO_PKG_VERSION")))
+            .build()
+            .expect("failed to build HTTP client");
+
+        let credentials = if config.has_auth() {
+            Some(config.resolve_credentials()?)
+        } else {
+            None
+        };
+
+        Ok(Self {
+            client,
+            base_url: config.api_url(),
+            credentials,
+            cache: Arc::new(RwLock::new(HashMap::new())),
+        })
+    }
+
+    /// Set credentials for authentication
+    pub fn with_credentials(mut self, credentials: ResolvedCredentials) -> Self {
+        self.credentials = Some(credentials);
+        self
+    }
+
+    /// Apply authentication to a request
+    fn apply_auth(&self, request: RequestBuilder) -> RequestBuilder {
+        match &self.credentials {
+            Some(creds) => {
+                if let Some(ref token) = creds.token {
+                    // Bearer token authentication
+                    request.bearer_auth(token)
+                } else if let (Some(ref username), Some(ref password)) = (&creds.username, &creds.password) {
+                    // Basic authentication
+                    request.basic_auth(username, Some(password))
+                } else {
+                    request
+                }
+            }
+            None => request,
         }
     }
 
@@ -67,7 +116,8 @@ impl PyPIClient {
         debug!("fetching metadata for {}", normalized);
 
         let url = format!("{}/{}/json", self.base_url, normalized);
-        let response = self.client.get(&url).send().await?;
+        let request = self.apply_auth(self.client.get(&url));
+        let response = request.send().await?;
 
         if response.status() == reqwest::StatusCode::NOT_FOUND {
             return Err(Error::PackageNotFound {
@@ -98,7 +148,8 @@ impl PyPIClient {
         debug!("fetching metadata for {}=={}", normalized, version);
 
         let url = format!("{}/{}/{}/json", self.base_url, normalized, version);
-        let response = self.client.get(&url).send().await?;
+        let request = self.apply_auth(self.client.get(&url));
+        let response = request.send().await?;
 
         if response.status() == reqwest::StatusCode::NOT_FOUND {
             return Err(Error::VersionNotFound {

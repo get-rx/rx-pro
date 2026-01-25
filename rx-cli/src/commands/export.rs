@@ -161,6 +161,8 @@ mod tests {
                 url: Some("https://example.com/requests-2.28.0.whl".to_string()),
                 hash: Some("sha256:abc123def456".to_string()),
                 dependencies: vec![],
+                markers: None,
+                files: vec![],
             },
         );
         packages.insert(
@@ -170,10 +172,13 @@ mod tests {
                 url: Some("https://example.com/urllib3-1.26.0.whl".to_string()),
                 hash: Some("sha256:xyz789".to_string()),
                 dependencies: vec![],
+                markers: None,
+                files: vec![],
             },
         );
         Lockfile {
             version: "1".to_string(),
+            metadata: None,
             packages,
         }
     }

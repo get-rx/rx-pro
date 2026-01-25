@@ -158,12 +158,12 @@ impl Resolver {
             let version_str = version.to_string();
 
             // Find the best file for this version
-            let files = metadata
+            let release_files = metadata
                 .releases
                 .get(&version_str)
                 .cloned()
                 .unwrap_or_default();
-            let file = Self::select_best_file(&files);
+            let file = Self::select_best_file(&release_files);
 
             let (url, hash) = match file {
                 Some(f) => {
@@ -179,11 +179,20 @@ impl Resolver {
                 }
             };
 
+            // Extract dependencies from metadata
+            let dependencies = Self::extract_dependencies(&metadata, &version_str);
+
+            // Build platform-specific files list
+            let platform_files = Self::build_platform_files(&release_files);
+
             packages.push(ResolvedPackage {
                 name: package.name.clone(),
                 version: version_str,
                 url,
                 hash,
+                dependencies,
+                markers: None, // TODO: Extract from requires_dist
+                files: platform_files,
             });
         }
 
@@ -192,6 +201,98 @@ impl Resolver {
 
         info!("resolved {} packages", packages.len());
         Ok(Resolution { packages })
+    }
+
+    /// Extract dependency names from package metadata
+    fn extract_dependencies(metadata: &crate::index::PackageMetadata, _version: &str) -> Vec<String> {
+        // Get requires_dist from package info
+        if let Some(requires_dist) = &metadata.info.requires_dist {
+            return requires_dist
+                .iter()
+                .filter_map(|req| {
+                    // Parse the requirement to get the package name
+                    // Format: "package-name (>=1.0)" or "package-name; extra == 'dev'"
+                    let name = req
+                        .split(|c: char| c == ' ' || c == ';' || c == '[' || c == '(')
+                        .next()
+                        .unwrap_or(req)
+                        .trim();
+                    if name.is_empty() {
+                        None
+                    } else {
+                        Some(Package::new(name).name)
+                    }
+                })
+                .collect();
+        }
+        Vec::new()
+    }
+
+    /// Build platform-specific file entries
+    fn build_platform_files(files: &[FileInfo]) -> Vec<ResolvedFile> {
+        files
+            .iter()
+            .filter(|f| !f.yanked && f.is_wheel())
+            .filter_map(|f| {
+                let hash = f
+                    .best_hash()
+                    .map(|(algo, h)| format!("{}:{}", algo, h))
+                    .unwrap_or_default();
+
+                if hash.is_empty() {
+                    return None;
+                }
+
+                let tags = f.parse_wheel_tags();
+                let (markers, python, tag_str) = match &tags {
+                    Some(t) => {
+                        let markers = Self::tags_to_markers(t);
+                        let python = if t.python.contains("py3") {
+                            Some(">=3.0".to_string())
+                        } else if t.python.contains("py2") {
+                            Some("<3.0".to_string())
+                        } else {
+                            None
+                        };
+                        let tag_str = format!("{}-{}-{}", t.python, t.abi, t.platform);
+                        (markers, python, Some(tag_str))
+                    }
+                    None => (None, None, None),
+                };
+
+                Some(ResolvedFile {
+                    url: f.url.clone(),
+                    hash,
+                    markers,
+                    python,
+                    tags: tag_str,
+                })
+            })
+            .collect()
+    }
+
+    /// Convert wheel tags to platform markers
+    fn tags_to_markers(tags: &crate::index::WheelTags) -> Option<String> {
+        if tags.is_universal() {
+            return None; // Universal wheel, no markers needed
+        }
+
+        let mut markers = Vec::new();
+
+        // Platform markers
+        if tags.platform.contains("win") {
+            markers.push("sys_platform == 'win32'".to_string());
+        } else if tags.platform.contains("macosx") || tags.platform.contains("darwin") {
+            markers.push("sys_platform == 'darwin'".to_string());
+        } else if tags.platform.contains("linux") {
+            markers.push("sys_platform == 'linux'".to_string());
+        }
+
+        if markers.is_empty() {
+            None
+        } else {
+            Some(markers.join(" and "))
+        }
     }
 
     /// Select the best file from available files
@@ -279,10 +380,31 @@ pub struct ResolvedPackage {
     pub name: String,
     /// Resolved version
     pub version: String,
-    /// Download URL
+    /// Download URL (default/universal)
     pub url: String,
     /// Hash (format: "algorithm:hash")
     pub hash: String,
+    /// Direct dependencies (normalized names)
+    pub dependencies: Vec<String>,
+    /// Platform markers (PEP 508)
+    pub markers: Option<String>,
+    /// Platform-specific files
+    pub files: Vec<ResolvedFile>,
+}
+
+/// A resolved file with platform info
+#[derive(Debug, Clone)]
+pub struct ResolvedFile {
+    /// Download URL
+    pub url: String,
+    /// Hash
+    pub hash: String,
+    /// Platform markers
+    pub markers: Option<String>,
+    /// Python version constraint
+    pub python: Option<String>,
+    /// Wheel tags
+    pub tags: Option<String>,
 }
 
 impl ResolvedPackage {
@@ -304,6 +426,9 @@ mod tests {
                 version: "2.28.0".to_string(),
                 url: "".to_string(),
                 hash: "sha256:abc".to_string(),
+                dependencies: vec![],
+                markers: None,
+                files: vec![],
             }],
         };
 
@@ -319,6 +444,9 @@ mod tests {
             version: "1.0.0".to_string(),
             url: "".to_string(),
             hash: "sha256:abc123".to_string(),
+            dependencies: vec![],
+            markers: None,
+            files: vec![],
         };
 
         let (algo, hash) = pkg.parse_hash().unwrap();
