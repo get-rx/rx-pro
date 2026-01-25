@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RunCommand, SyncCommand, UpdateCommand, VersionCommand};
+use crate::commands::{AddCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RunCommand, ShellCommand, SyncCommand, UpdateCommand, VersionCommand};
 
 #[derive(Parser)]
 #[command(
@@ -37,6 +37,9 @@ pub enum Commands {
     /// Run a command in the project's virtual environment
     Run(RunCommand),
 
+    /// Spawn an interactive shell with venv activated
+    Shell(ShellCommand),
+
     /// Update dependencies to latest versions within constraints
     Update(UpdateCommand),
 
@@ -70,6 +73,7 @@ impl Cli {
             Commands::Lock(cmd) => cmd.run().await,
             Commands::Sync(cmd) => cmd.run().await,
             Commands::Run(cmd) => cmd.run().await,
+            Commands::Shell(cmd) => cmd.run().await,
             Commands::Update(cmd) => cmd.run().await,
             Commands::Build(cmd) => cmd.run().await,
             Commands::Bundle(cmd) => cmd.run().await,
