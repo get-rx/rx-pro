@@ -5,12 +5,20 @@ use std::process::{Command, Stdio};
 
 use anyhow::{bail, Context, Result};
 use clap::Args;
+use tracing::debug;
+
+use rx_core::pep::PyProject;
+use rx_core::{load_dotenv, DotenvConfig};
 
 #[derive(Args)]
 pub struct RunCommand {
     /// Project directory (defaults to current directory)
     #[arg(long, default_value = ".")]
     pub project: PathBuf,
+
+    /// Don't load .env file
+    #[arg(long)]
+    pub no_dotenv: bool,
 
     /// Command to run (e.g., python, pytest, mypy)
     #[arg(required = true, trailing_var_arg = true, allow_hyphen_values = true)]
@@ -46,6 +54,22 @@ impl RunCommand {
             );
         }
 
+        // Load dotenv configuration
+        let dotenv_config = if self.no_dotenv {
+            DotenvConfig {
+                enabled: false,
+                ..Default::default()
+            }
+        } else {
+            self.load_dotenv_config(&project_dir)
+        };
+
+        // Load environment variables from .env
+        let dotenv_vars = load_dotenv(&project_dir, &dotenv_config).unwrap_or_default();
+        if !dotenv_vars.is_empty() {
+            debug!("Loaded {} variables from .env", dotenv_vars.len());
+        }
+
         // Build the command
         let (program, args) = match self.command.split_first() {
             Some((prog, args)) => (prog, args),
@@ -76,16 +100,26 @@ impl RunCommand {
             current_path
         );
 
-        // Execute the command
-        let status = Command::new(&program_path)
-            .args(args)
+        // Build command with environment
+        let mut cmd = Command::new(&program_path);
+        cmd.args(args)
             .current_dir(&project_dir)
             .env("PATH", &new_path)
             .env("VIRTUAL_ENV", &venv_path)
-            .env_remove("PYTHONHOME") // Can interfere with venv
+            .env_remove("PYTHONHOME")
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
+            .stderr(Stdio::inherit());
+
+        // Add dotenv variables (don't override existing env vars unless configured)
+        for (key, value) in &dotenv_vars {
+            if dotenv_config.override_env || std::env::var(key).is_err() {
+                cmd.env(key, value);
+            }
+        }
+
+        // Execute the command
+        let status = cmd
             .status()
             .with_context(|| format!("Failed to execute '{}'", program))?;
 
@@ -95,5 +129,21 @@ impl RunCommand {
         }
 
         Ok(())
+    }
+
+    fn load_dotenv_config(&self, project_dir: &PathBuf) -> DotenvConfig {
+        // Try to load from pyproject.toml [tool.rx.dotenv]
+        if let Ok(pyproject) = PyProject::load(project_dir) {
+            if let Some(rx_config) = pyproject.tool.get("rx") {
+                if let Some(dotenv_table) = rx_config.get("dotenv") {
+                    if let Some(table) = dotenv_table.as_table() {
+                        return DotenvConfig::from_toml(table);
+                    }
+                }
+            }
+        }
+
+        // Default configuration
+        DotenvConfig::new()
     }
 }
