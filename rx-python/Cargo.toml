@@ -1,0 +1,21 @@
+[package]
+name = "trex"
+version = "0.1.0"
+edition = "2021"
+authors = ["Shawn Therrien <shawn@example.com>"]
+license = "MIT OR Apache-2.0"
+description = "Python bindings for T-Rex package manager"
+repository = "https://github.com/stherrien/t-rex"
+readme = "README.md"
+
+[lib]
+name = "trex"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.20", features = ["extension-module"] }
+rx-core = { path = "../rx-core" }
+tokio = { version = "1", features = ["rt-multi-thread"] }
+
+[build-dependencies]
+pyo3-build-config = "0.20"

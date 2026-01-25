@@ -239,7 +239,7 @@ TOML format with:
   - [x] Handle relative path deps in monorepos
   - [x] Support editable and copy installation modes
   - [x] Auto-install during `rx sync` and `rx workspace sync`
-  - [ ] Include local code when building wheels (future enhancement)
+  - [x] Include local code when building wheels (non-editable deps bundled into wheel)
 - [x] **Affected Detection** ✅
   - [x] `rx affected` command to list affected workspace members
   - [x] `rx run --affected` to run commands on changed packages only
