@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AuditCommand, BuildCommand, InitCommand, LockCommand, RunCommand, SyncCommand};
+use crate::commands::{AddCommand, AuditCommand, BuildCommand, InitCommand, LockCommand, RunCommand, SyncCommand, UpdateCommand};
 
 #[derive(Parser)]
 #[command(
@@ -37,6 +37,9 @@ pub enum Commands {
     /// Run a command in the project's virtual environment
     Run(RunCommand),
 
+    /// Update dependencies to latest versions within constraints
+    Update(UpdateCommand),
+
     /// Build the project (wheel and sdist)
     Build(BuildCommand),
 
@@ -52,6 +55,7 @@ impl Cli {
             Commands::Lock(cmd) => cmd.run().await,
             Commands::Sync(cmd) => cmd.run().await,
             Commands::Run(cmd) => cmd.run().await,
+            Commands::Update(cmd) => cmd.run().await,
             Commands::Build(cmd) => cmd.run().await,
             Commands::Audit(cmd) => cmd.run().await,
         }
