@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand};
+use crate::commands::{AddCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand};
 
 #[derive(Parser)]
 #[command(
@@ -27,6 +27,9 @@ pub enum Commands {
 
     /// Add dependencies to the project
     Add(AddCommand),
+
+    /// Remove dependencies from the project
+    Remove(RemoveCommand),
 
     /// Generate/update the lockfile without installing
     Lock(LockCommand),
@@ -73,6 +76,7 @@ impl Cli {
         match self.command {
             Commands::Init(cmd) => cmd.run().await,
             Commands::Add(cmd) => cmd.run().await,
+            Commands::Remove(cmd) => cmd.run().await,
             Commands::Lock(cmd) => cmd.run().await,
             Commands::Sync(cmd) => cmd.run().await,
             Commands::Run(cmd) => cmd.run().await,

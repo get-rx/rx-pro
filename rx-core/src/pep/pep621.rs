@@ -262,6 +262,76 @@ impl PyProject {
             .map(|v| v.as_slice())
             .unwrap_or(&[])
     }
+
+    /// Remove dependencies by name
+    pub fn remove_dependencies(&mut self, names: &[String]) -> Result<()> {
+        if let Some(ref mut project) = self.project {
+            let names_normalized: Vec<String> = names
+                .iter()
+                .map(|n| n.to_lowercase().replace('_', "-"))
+                .collect();
+
+            project.dependencies.retain(|d| {
+                let dep_name = d
+                    .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+                    .next()
+                    .unwrap_or(d)
+                    .to_lowercase()
+                    .replace('_', "-");
+                !names_normalized.contains(&dep_name)
+            });
+        }
+        Ok(())
+    }
+
+    /// Remove dev dependencies by name
+    pub fn remove_dev_dependencies(&mut self, names: &[String]) -> Result<()> {
+        if let Some(ref mut project) = self.project {
+            if let Some(dev_deps) = project.optional_dependencies.get_mut("dev") {
+                let names_normalized: Vec<String> = names
+                    .iter()
+                    .map(|n| n.to_lowercase().replace('_', "-"))
+                    .collect();
+
+                dev_deps.retain(|d| {
+                    let dep_name = d
+                        .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+                        .next()
+                        .unwrap_or(d)
+                        .to_lowercase()
+                        .replace('_', "-");
+                    !names_normalized.contains(&dep_name)
+                });
+
+                // Remove empty dev group
+                if dev_deps.is_empty() {
+                    project.optional_dependencies.remove("dev");
+                }
+            }
+        }
+        Ok(())
+    }
+
+    /// Get all dependencies (main + dev) as parsed Requirements
+    pub fn all_dependencies(&self) -> Vec<crate::pep::Requirement> {
+        let mut reqs = Vec::new();
+
+        // Main dependencies
+        for dep in self.dependencies() {
+            if let Ok(req) = crate::pep::Requirement::parse(dep) {
+                reqs.push(req);
+            }
+        }
+
+        // Dev dependencies
+        for dep in self.dev_dependencies() {
+            if let Ok(req) = crate::pep::Requirement::parse(dep) {
+                reqs.push(req);
+            }
+        }
+
+        reqs
+    }
 }
 
 #[cfg(test)]
