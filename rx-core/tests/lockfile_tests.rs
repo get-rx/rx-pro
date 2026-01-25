@@ -1,7 +1,7 @@
 //! Integration tests for the lockfile module
 
-use tempfile::TempDir;
 use rx_core::Lockfile;
+use tempfile::TempDir;
 
 #[test]
 fn test_new_lockfile() {

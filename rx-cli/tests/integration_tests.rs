@@ -60,7 +60,12 @@ fn test_init_with_name_flag() {
     let project_dir = temp.path().join("dir");
 
     let output = run_rx(
-        &["init", project_dir.to_str().unwrap(), "--name", "custom-name"],
+        &[
+            "init",
+            project_dir.to_str().unwrap(),
+            "--name",
+            "custom-name",
+        ],
         temp.path(),
     );
     assert_success(&output, "rx init --name");
@@ -74,13 +79,18 @@ fn test_init_existing_pyproject_fails() {
     let temp = TempDir::new().unwrap();
 
     // Create an existing pyproject.toml
-    fs::write(temp.path().join("pyproject.toml"), "[project]\nname = \"existing\"\n").unwrap();
+    fs::write(
+        temp.path().join("pyproject.toml"),
+        "[project]\nname = \"existing\"\n",
+    )
+    .unwrap();
 
     let output = run_rx(&["init"], temp.path());
     assert!(!output.status.success());
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(
-        stderr.contains("already exists") || String::from_utf8_lossy(&output.stdout).contains("already exists"),
+        stderr.contains("already exists")
+            || String::from_utf8_lossy(&output.stdout).contains("already exists"),
         "Expected 'already exists' error, got: {}",
         stderr
     );
@@ -100,7 +110,10 @@ fn test_add_dependency() {
 
     // Verify pyproject.toml was updated
     let content = fs::read_to_string(temp.path().join("pyproject.toml")).unwrap();
-    assert!(content.contains("requests"), "pyproject.toml should contain 'requests'");
+    assert!(
+        content.contains("requests"),
+        "pyproject.toml should contain 'requests'"
+    );
 }
 
 #[test]
@@ -164,7 +177,10 @@ fn test_lock_generates_lockfile() {
     let lockfile = temp.path().join("rx.lock");
     assert!(lockfile.exists());
     let content = fs::read_to_string(&lockfile).unwrap();
-    assert!(content.len() > 10, "Lockfile should have meaningful content");
+    assert!(
+        content.len() > 10,
+        "Lockfile should have meaningful content"
+    );
 }
 
 #[test]

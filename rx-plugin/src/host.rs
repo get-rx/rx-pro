@@ -93,8 +93,9 @@ impl PluginHost {
 
     /// Ensure plugin directory exists
     pub fn ensure_plugin_dir(&self) -> PluginResult<()> {
-        std::fs::create_dir_all(&self.plugin_dir)
-            .map_err(|e| PluginError::LoadError(format!("Failed to create plugin directory: {}", e)))
+        std::fs::create_dir_all(&self.plugin_dir).map_err(|e| {
+            PluginError::LoadError(format!("Failed to create plugin directory: {}", e))
+        })
     }
 
     /// Load a plugin from a Wasm file
@@ -161,10 +162,12 @@ impl PluginHost {
         // First, try to load manifest from adjacent .toml file
         let manifest_path = wasm_path.with_extension("toml");
         if manifest_path.exists() {
-            let content = std::fs::read_to_string(&manifest_path)
-                .map_err(|e| PluginError::InvalidManifest(format!("Failed to read manifest: {}", e)))?;
-            return PluginManifest::from_toml(&content)
-                .map_err(|e| PluginError::InvalidManifest(format!("Invalid manifest TOML: {}", e)));
+            let content = std::fs::read_to_string(&manifest_path).map_err(|e| {
+                PluginError::InvalidManifest(format!("Failed to read manifest: {}", e))
+            })?;
+            return PluginManifest::from_toml(&content).map_err(|e| {
+                PluginError::InvalidManifest(format!("Invalid manifest TOML: {}", e))
+            });
         }
 
         // TODO: Extract from Wasm custom section "rx_manifest"
@@ -199,9 +202,7 @@ impl PluginHost {
 
         // Configure allowed hosts for network access
         if permissions.network && !permissions.allowed_hosts.is_empty() {
-            manifest = manifest.with_allowed_hosts(
-                permissions.allowed_hosts.iter().cloned(),
-            );
+            manifest = manifest.with_allowed_hosts(permissions.allowed_hosts.iter().cloned());
         }
 
         // Note: File system access is handled by host functions, not Extism directly
@@ -217,14 +218,14 @@ impl PluginHost {
         }
 
         let mut count = 0;
-        for entry in std::fs::read_dir(dir)
-            .map_err(|e| PluginError::LoadError(format!("Failed to read plugin directory: {}", e)))?
-        {
+        for entry in std::fs::read_dir(dir).map_err(|e| {
+            PluginError::LoadError(format!("Failed to read plugin directory: {}", e))
+        })? {
             let entry = entry
                 .map_err(|e| PluginError::LoadError(format!("Failed to read entry: {}", e)))?;
             let path = entry.path();
 
-            if path.extension().map_or(false, |ext| ext == "wasm") {
+            if path.extension().is_some_and(|ext| ext == "wasm") {
                 let name = path
                     .file_stem()
                     .and_then(|s| s.to_str())
@@ -243,7 +244,10 @@ impl PluginHost {
     }
 
     /// Load plugins from pyproject.toml configuration
-    pub fn load_from_config(&mut self, configs: &HashMap<String, PluginConfig>) -> PluginResult<usize> {
+    pub fn load_from_config(
+        &mut self,
+        configs: &HashMap<String, PluginConfig>,
+    ) -> PluginResult<usize> {
         let mut count = 0;
 
         for (name, config) in configs {
@@ -252,19 +256,20 @@ impl PluginHost {
                 continue;
             }
 
-            let path = if config.source.starts_with("http://") || config.source.starts_with("https://") {
-                // Download from URL
-                match self.download_plugin(name, &config.source) {
-                    Ok(p) => p,
-                    Err(e) => {
-                        tracing::warn!("Failed to download plugin '{}': {}", name, e);
-                        continue;
+            let path =
+                if config.source.starts_with("http://") || config.source.starts_with("https://") {
+                    // Download from URL
+                    match self.download_plugin(name, &config.source) {
+                        Ok(p) => p,
+                        Err(e) => {
+                            tracing::warn!("Failed to download plugin '{}': {}", name, e);
+                            continue;
+                        }
                     }
-                }
-            } else {
-                // Local path
-                PathBuf::from(&config.source)
-            };
+                } else {
+                    // Local path
+                    PathBuf::from(&config.source)
+                };
 
             match self.load_with_config(name, &path, Some(config.clone())) {
                 Ok(_) => count += 1,
@@ -294,7 +299,8 @@ impl PluginHost {
             )));
         }
 
-        let bytes = response.bytes()
+        let bytes = response
+            .bytes()
             .map_err(|e| PluginError::LoadError(format!("Failed to read response: {}", e)))?;
 
         std::fs::write(&dest_path, &bytes)

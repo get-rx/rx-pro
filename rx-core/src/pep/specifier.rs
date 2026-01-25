@@ -394,7 +394,6 @@ mod tests {
 
     #[test]
     fn test_to_pubgrub_range_ge() {
-        
         let spec = VersionSpecifier::parse(">=1.0").unwrap();
         let range = spec.to_range();
         assert!(range.contains(&Version::parse("1.0").unwrap()));
@@ -404,7 +403,6 @@ mod tests {
 
     #[test]
     fn test_to_pubgrub_range_lt() {
-        
         let spec = VersionSpecifier::parse("<2.0").unwrap();
         let range = spec.to_range();
         assert!(range.contains(&Version::parse("1.0").unwrap()));
@@ -413,7 +411,6 @@ mod tests {
 
     #[test]
     fn test_to_pubgrub_range_combined() {
-        
         let specs = VersionSpecifiers::parse(">=1.0,<2.0").unwrap();
         let range = specs.to_pubgrub_range();
         assert!(range.contains(&Version::parse("1.0").unwrap()));

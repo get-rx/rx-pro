@@ -35,10 +35,7 @@ impl VersionReq {
         }
 
         // Split by || for OR combinations
-        let ranges: Result<Vec<_>, _> = text
-            .split("||")
-            .map(|s| Range::parse(s.trim()))
-            .collect();
+        let ranges: Result<Vec<_>, _> = text.split("||").map(|s| Range::parse(s.trim())).collect();
 
         Ok(Self { ranges: ranges? })
     }
@@ -123,8 +120,7 @@ impl Range {
             .filter(|s| !s.is_empty())
             .collect();
 
-        let comparators: Result<Vec<_>, _> =
-            parts.iter().map(|s| Comparator::parse(s)).collect();
+        let comparators: Result<Vec<_>, _> = parts.iter().map(|s| Comparator::parse(s)).collect();
 
         Ok(Self {
             comparators: comparators?,
@@ -417,9 +413,7 @@ impl Comparator {
             version.major == 0 && version.minor == self.minor.unwrap_or(0)
         } else {
             // ^0.0.3 => <0.0.4
-            version.major == 0
-                && version.minor == 0
-                && version.patch == self.patch.unwrap_or(0)
+            version.major == 0 && version.minor == 0 && version.patch == self.patch.unwrap_or(0)
         }
     }
 
@@ -608,7 +602,10 @@ mod tests {
     #[test]
     fn test_display() {
         assert_eq!(VersionReq::parse("^1.2.3").unwrap().to_string(), "^1.2.3");
-        assert_eq!(VersionReq::parse(">=1.0.0 <2.0.0").unwrap().to_string(), ">=1.0.0 <2.0.0");
+        assert_eq!(
+            VersionReq::parse(">=1.0.0 <2.0.0").unwrap().to_string(),
+            ">=1.0.0 <2.0.0"
+        );
         assert_eq!(VersionReq::parse("*").unwrap().to_string(), "*");
     }
 }

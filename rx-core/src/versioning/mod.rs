@@ -124,7 +124,13 @@ pub fn get_git_info(project_dir: &Path, config: &VersioningConfig) -> Result<Git
 
     // Get the most recent tag matching our pattern
     let describe_output = Command::new("git")
-        .args(["describe", "--tags", "--long", "--match", &pattern_to_glob(&config.pattern)])
+        .args([
+            "describe",
+            "--tags",
+            "--long",
+            "--match",
+            &pattern_to_glob(&config.pattern),
+        ])
         .current_dir(project_dir)
         .output()
         .map_err(|e| Error::Version(format!("Failed to run git describe: {}", e)))?;
@@ -289,7 +295,10 @@ pub fn bump_version(version: &str, part: &str) -> Result<String> {
     let parts: Vec<&str> = version.split('.').collect();
 
     if parts.len() < 3 {
-        return Err(Error::Version(format!("Invalid version format: {}", version)));
+        return Err(Error::Version(format!(
+            "Invalid version format: {}",
+            version
+        )));
     }
 
     let major: u32 = parts[0]
@@ -299,7 +308,10 @@ pub fn bump_version(version: &str, part: &str) -> Result<String> {
         .parse()
         .map_err(|_| Error::Version("Invalid minor version".to_string()))?;
     // Handle versions like "1.2.3-alpha" or "1.2.3.dev1"
-    let patch_str = parts[2].split(|c: char| !c.is_ascii_digit()).next().unwrap_or("0");
+    let patch_str = parts[2]
+        .split(|c: char| !c.is_ascii_digit())
+        .next()
+        .unwrap_or("0");
     let patch: u32 = patch_str
         .parse()
         .map_err(|_| Error::Version("Invalid patch version".to_string()))?;
@@ -316,7 +328,8 @@ pub fn bump_version(version: &str, part: &str) -> Result<String> {
                     let (prefix, num_str) = version.split_at(idx);
                     if let Some(first_digit) = num_str.chars().next() {
                         if first_digit.is_ascii_digit() {
-                            let num: u32 = num_str.split(|c: char| !c.is_ascii_digit())
+                            let num: u32 = num_str
+                                .split(|c: char| !c.is_ascii_digit())
                                 .next()
                                 .unwrap_or("0")
                                 .parse()

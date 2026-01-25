@@ -192,9 +192,7 @@ impl PyProject {
 
     /// Get project version
     pub fn version(&self) -> Option<&str> {
-        self.project
-            .as_ref()
-            .and_then(|p| p.version.as_deref())
+        self.project.as_ref().and_then(|p| p.version.as_deref())
     }
 
     /// Get dependencies
@@ -209,14 +207,16 @@ impl PyProject {
     pub fn add_dependency(&mut self, dep: String) {
         if let Some(ref mut project) = self.project {
             // Check if dependency already exists (by name)
-            let dep_name = dep.split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+            let dep_name = dep
+                .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
                 .next()
                 .unwrap_or(&dep)
                 .to_lowercase();
 
             // Remove existing dependency with same name
             project.dependencies.retain(|d| {
-                let existing_name = d.split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+                let existing_name = d
+                    .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
                     .next()
                     .unwrap_or(d)
                     .to_lowercase();
@@ -236,13 +236,15 @@ impl PyProject {
                 .entry("dev".to_string())
                 .or_insert_with(Vec::new);
 
-            let dep_name = dep.split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+            let dep_name = dep
+                .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
                 .next()
                 .unwrap_or(&dep)
                 .to_lowercase();
 
             dev_deps.retain(|d| {
-                let existing_name = d.split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+                let existing_name = d
+                    .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
                     .next()
                     .unwrap_or(d)
                     .to_lowercase();

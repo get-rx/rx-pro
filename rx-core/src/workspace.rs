@@ -127,9 +127,9 @@ description = "Workspace root - not a package"
         };
 
         // Parse and update
-        let mut doc: toml_edit::DocumentMut = content.parse().map_err(|e| {
-            Error::Config(format!("Failed to parse pyproject.toml: {}", e))
-        })?;
+        let mut doc: toml_edit::DocumentMut = content
+            .parse()
+            .map_err(|e| Error::Config(format!("Failed to parse pyproject.toml: {}", e)))?;
 
         // Ensure [tool.rx.workspace] exists
         if !doc.contains_key("tool") {
@@ -220,9 +220,9 @@ description = "Workspace root - not a package"
         let pyproject_path = self.root.join("pyproject.toml");
         let content = std::fs::read_to_string(&pyproject_path).map_err(Error::Io)?;
 
-        let mut doc: toml_edit::DocumentMut = content.parse().map_err(|e| {
-            Error::Config(format!("Failed to parse pyproject.toml: {}", e))
-        })?;
+        let mut doc: toml_edit::DocumentMut = content
+            .parse()
+            .map_err(|e| Error::Config(format!("Failed to parse pyproject.toml: {}", e)))?;
 
         // Update members array
         let members_array: toml_edit::Array = self
@@ -231,8 +231,7 @@ description = "Workspace root - not a package"
             .map(|s| toml_edit::Value::from(s.as_str()))
             .collect();
 
-        doc["tool"]["rx"]["workspace"]["members"] =
-            toml_edit::Item::Value(members_array.into());
+        doc["tool"]["rx"]["workspace"]["members"] = toml_edit::Item::Value(members_array.into());
         doc["tool"]["rx"]["workspace"]["shared-venv"] =
             toml_edit::Item::Value(self.shared_venv.into());
 

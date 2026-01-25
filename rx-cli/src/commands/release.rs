@@ -202,10 +202,26 @@ fn prompt_bump_type(current: &str) -> Result<String> {
     println!("Current version: {}", current);
     println!();
     println!("Select version bump:");
-    println!("  1. patch  ({} → {})", current, bump_version(current, "patch").unwrap_or_default());
-    println!("  2. minor  ({} → {})", current, bump_version(current, "minor").unwrap_or_default());
-    println!("  3. major  ({} → {})", current, bump_version(current, "major").unwrap_or_default());
-    println!("  4. pre    ({} → {})", current, bump_version(current, "pre").unwrap_or_default());
+    println!(
+        "  1. patch  ({} → {})",
+        current,
+        bump_version(current, "patch").unwrap_or_default()
+    );
+    println!(
+        "  2. minor  ({} → {})",
+        current,
+        bump_version(current, "minor").unwrap_or_default()
+    );
+    println!(
+        "  3. major  ({} → {})",
+        current,
+        bump_version(current, "major").unwrap_or_default()
+    );
+    println!(
+        "  4. pre    ({} → {})",
+        current,
+        bump_version(current, "pre").unwrap_or_default()
+    );
     println!("  5. custom (enter version)");
     println!();
     print!("Choice [1-5]: ");
@@ -263,15 +279,17 @@ fn parse_conventional_commit(message: &str) -> Option<ConventionalCommit> {
     // or:     type!: description
     // or:     type(scope): description
     // or:     type: description
-    let re = regex::Regex::new(
-        r"^(?P<type>\w+)(?:\((?P<scope>[^)]+)\))?(?P<breaking>!)?: (?P<desc>.+)"
-    ).ok()?;
+    let re =
+        regex::Regex::new(r"^(?P<type>\w+)(?:\((?P<scope>[^)]+)\))?(?P<breaking>!)?: (?P<desc>.+)")
+            .ok()?;
 
     let caps = re.captures(message.lines().next()?)?;
 
     Some(ConventionalCommit {
         commit_type: caps.name("type")?.as_str().to_string(),
-        scope: caps.name("scope").map(|m: regex::Match| m.as_str().to_string()),
+        scope: caps
+            .name("scope")
+            .map(|m: regex::Match| m.as_str().to_string()),
         description: caps.name("desc")?.as_str().to_string(),
         breaking: caps.name("breaking").is_some() || message.contains("BREAKING CHANGE:"),
     })
@@ -292,12 +310,10 @@ fn generate_changelog(
         .output();
 
     let commits: Vec<String> = match output {
-        Ok(out) if out.status.success() => {
-            String::from_utf8_lossy(&out.stdout)
-                .lines()
-                .map(|s| s.to_string())
-                .collect()
-        }
+        Ok(out) if out.status.success() => String::from_utf8_lossy(&out.stdout)
+            .lines()
+            .map(|s| s.to_string())
+            .collect(),
         _ => {
             // No previous tag, get recent commits
             let out = Command::new("git")
@@ -383,27 +399,21 @@ fn generate_changelog(
 
 fn chrono_date() -> String {
     // Simple date without chrono dependency
-    let output = Command::new("date")
-        .args(["+%Y-%m-%d"])
-        .output()
-        .ok();
+    let output = Command::new("date").args(["+%Y-%m-%d"]).output().ok();
 
     output
         .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
         .unwrap_or_else(|| "YYYY-MM-DD".to_string())
 }
 
-fn update_changelog(
-    project_dir: &std::path::Path,
-    _version: &str,
-    entry: &str,
-) -> Result<()> {
+fn update_changelog(project_dir: &std::path::Path, _version: &str, entry: &str) -> Result<()> {
     let changelog_path = project_dir.join("CHANGELOG.md");
 
     let existing = if changelog_path.exists() {
         std::fs::read_to_string(&changelog_path)?
     } else {
-        "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\n".to_string()
+        "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\n"
+            .to_string()
     };
 
     // Insert new entry after the header

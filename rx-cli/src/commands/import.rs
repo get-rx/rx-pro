@@ -21,9 +21,9 @@ use anyhow::{bail, Context, Result};
 use clap::{Args, Subcommand};
 use serde::Deserialize;
 
+use rx_core::lockfile::LockedPackage;
 use rx_core::pep::PyProject;
 use rx_core::Lockfile;
-use rx_core::lockfile::LockedPackage;
 
 #[derive(Args)]
 pub struct ImportCommand {
@@ -81,9 +81,7 @@ impl PoetryImportCommand {
         let doc: toml::Value = toml::from_str(&content)?;
 
         // Check if this is a Poetry project
-        let poetry_section = doc
-            .get("tool")
-            .and_then(|t| t.get("poetry"));
+        let poetry_section = doc.get("tool").and_then(|t| t.get("poetry"));
 
         if poetry_section.is_none() {
             bail!("No [tool.poetry] section found. Is this a Poetry project?");
@@ -110,7 +108,7 @@ impl PoetryImportCommand {
         let python_requires = poetry
             .get("python")
             .and_then(|v| v.as_str())
-            .map(|v| convert_poetry_python_constraint(v))
+            .map(convert_poetry_python_constraint)
             .unwrap_or_else(|| ">=3.8".to_string());
 
         println!("Project: {} v{}", name, version);
@@ -254,10 +252,7 @@ fn convert_poetry_constraint(value: &toml::Value) -> String {
             if let Some(version) = t.get("version").and_then(|v| v.as_str()) {
                 let base = convert_poetry_version_string(version);
                 if let Some(extras) = t.get("extras").and_then(|v| v.as_array()) {
-                    let extras_str: Vec<_> = extras
-                        .iter()
-                        .filter_map(|e| e.as_str())
-                        .collect();
+                    let extras_str: Vec<_> = extras.iter().filter_map(|e| e.as_str()).collect();
                     if !extras_str.is_empty() {
                         return format!("[{}]{}", extras_str.join(","), base);
                     }
@@ -279,9 +274,8 @@ fn convert_poetry_version_string(version: &str) -> String {
         return String::new(); // Any version
     }
 
-    if v.starts_with('^') {
+    if let Some(ver) = v.strip_prefix('^') {
         // Caret requirement: ^1.2.3 means >=1.2.3 <2.0.0
-        let ver = &v[1..];
         let parts: Vec<&str> = ver.split('.').collect();
         match parts.as_slice() {
             [major, ..] if *major != "0" => {
@@ -294,9 +288,8 @@ fn convert_poetry_version_string(version: &str) -> String {
             }
             _ => format!(">={}", ver),
         }
-    } else if v.starts_with('~') {
+    } else if let Some(ver) = v.strip_prefix('~') {
         // Tilde requirement: ~1.2.3 means >=1.2.3 <1.3.0
-        let ver = &v[1..];
         let parts: Vec<&str> = ver.split('.').collect();
         if parts.len() >= 2 {
             let major = parts[0];
@@ -311,7 +304,11 @@ fn convert_poetry_version_string(version: &str) -> String {
             .map(|p| convert_poetry_version_string(p.trim()))
             .collect::<Vec<_>>()
             .join(" || ")
-    } else if !v.starts_with('>') && !v.starts_with('<') && !v.starts_with('=') && !v.starts_with('!') {
+    } else if !v.starts_with('>')
+        && !v.starts_with('<')
+        && !v.starts_with('=')
+        && !v.starts_with('!')
+    {
         // Plain version: 1.2.3 means ==1.2.3
         format!("=={}", v)
     } else {
@@ -359,14 +356,15 @@ fn import_poetry_lock(path: &PathBuf) -> Result<Lockfile> {
         hash: String,
     }
 
-    let poetry_lock: PoetryLock = toml::from_str(&content)
-        .context("Failed to parse poetry.lock")?;
+    let poetry_lock: PoetryLock =
+        toml::from_str(&content).context("Failed to parse poetry.lock")?;
 
     let mut lockfile = Lockfile::new();
 
     for pkg in poetry_lock.package {
         // Extract dependencies
-        let dependencies: Vec<String> = pkg.dependencies
+        let dependencies: Vec<String> = pkg
+            .dependencies
             .keys()
             .map(|k| k.to_lowercase().replace('_', "-"))
             .collect();

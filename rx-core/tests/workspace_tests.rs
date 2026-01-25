@@ -1,8 +1,8 @@
 //! Integration tests for workspace functionality
 
+use rx_core::Workspace;
 use std::fs;
 use tempfile::TempDir;
-use rx_core::Workspace;
 
 #[test]
 fn test_workspace_init() {
@@ -104,7 +104,8 @@ version = "0.1.0"
             name
         );
         fs::write(
-            temp.path().join(format!("packages/{}/pyproject.toml", name)),
+            temp.path()
+                .join(format!("packages/{}/pyproject.toml", name)),
             pyproject,
         )
         .unwrap();

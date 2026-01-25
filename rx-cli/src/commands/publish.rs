@@ -223,19 +223,20 @@ fn find_distributions(dist_dir: &PathBuf, name: &str, version: &str) -> Result<V
     let normalized_name = name.replace('-', "_");
     let mut distributions = Vec::new();
 
-    for entry in std::fs::read_dir(dist_dir).map_err(|e| anyhow::anyhow!("Failed to read dist directory: {}", e))? {
+    for entry in std::fs::read_dir(dist_dir)
+        .map_err(|e| anyhow::anyhow!("Failed to read dist directory: {}", e))?
+    {
         let entry = entry?;
         let path = entry.path();
         let filename = path.file_name().unwrap().to_string_lossy().to_string();
 
         // Match wheel: {name}-{version}-*.whl
         // Match sdist: {name}-{version}.tar.gz
-        if filename.starts_with(&format!("{}-{}", normalized_name, version))
-            || filename.starts_with(&format!("{}-{}", name, version))
+        if (filename.starts_with(&format!("{}-{}", normalized_name, version))
+            || filename.starts_with(&format!("{}-{}", name, version)))
+            && (filename.ends_with(".whl") || filename.ends_with(".tar.gz"))
         {
-            if filename.ends_with(".whl") || filename.ends_with(".tar.gz") {
-                distributions.push(path);
-            }
+            distributions.push(path);
         }
     }
 

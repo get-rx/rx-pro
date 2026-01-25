@@ -86,7 +86,10 @@ impl AuditCommand {
         let auditor = Auditor::with_config(config);
 
         // Run audit
-        println!("Auditing {} packages for vulnerabilities...", lockfile.len());
+        println!(
+            "Auditing {} packages for vulnerabilities...",
+            lockfile.len()
+        );
         let report = auditor.audit_lockfile(&lockfile).await?;
 
         // Display results
@@ -150,7 +153,10 @@ impl AuditCommand {
                     println!();
                     println!("Failed to fix:");
                     for fix in &fix_result.failed_fixes {
-                        println!("  {} -> {}: {}", fix.package, fix.target_version, fix.reason);
+                        println!(
+                            "  {} -> {}: {}",
+                            fix.package, fix.target_version, fix.reason
+                        );
                     }
                 }
             }
@@ -402,7 +408,11 @@ fn load_audit_config(project_dir: &Path) -> Vec<IgnoredVulnerability> {
                 .and_then(|v| v.as_str())
                 .map(String::from);
 
-            ignores.push(IgnoredVulnerability { id, reason, expires });
+            ignores.push(IgnoredVulnerability {
+                id,
+                reason,
+                expires,
+            });
         }
     }
 

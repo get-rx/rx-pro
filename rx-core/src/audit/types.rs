@@ -6,8 +6,10 @@ use std::fmt;
 /// Severity level of a vulnerability
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "UPPERCASE")]
+#[derive(Default)]
 pub enum Severity {
     /// Unknown severity
+    #[default]
     Unknown,
     /// Low severity
     Low,
@@ -52,12 +54,6 @@ impl fmt::Display for Severity {
             Severity::Low => write!(f, "LOW"),
             Severity::Unknown => write!(f, "UNKNOWN"),
         }
-    }
-}
-
-impl Default for Severity {
-    fn default() -> Self {
-        Severity::Unknown
     }
 }
 
@@ -110,7 +106,10 @@ impl Vulnerability {
         if self.id.starts_with("CVE-") {
             return Some(&self.id);
         }
-        self.aliases.iter().find(|a| a.starts_with("CVE-")).map(|s| s.as_str())
+        self.aliases
+            .iter()
+            .find(|a| a.starts_with("CVE-"))
+            .map(|s| s.as_str())
     }
 
     /// Check if this vulnerability has a known fix
@@ -212,7 +211,12 @@ impl AuditReport {
     pub fn fixable_vulnerabilities(&self) -> Vec<(&str, &Vulnerability)> {
         self.packages
             .iter()
-            .flat_map(|p| p.vulnerabilities.iter().filter(|v| v.has_fix()).map(|v| (p.name.as_str(), v)))
+            .flat_map(|p| {
+                p.vulnerabilities
+                    .iter()
+                    .filter(|v| v.has_fix())
+                    .map(|v| (p.name.as_str(), v))
+            })
             .collect()
     }
 }

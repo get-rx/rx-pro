@@ -292,9 +292,7 @@ impl DockerfileGenerator {
         lines.push(String::new());
 
         // Install using rx if available, otherwise pip
-        lines.push(
-            "RUN pip install --no-cache-dir --upgrade pip && \\".to_string(),
-        );
+        lines.push("RUN pip install --no-cache-dir --upgrade pip && \\".to_string());
         lines.push(
             "    if [ -f rx.lock ]; then pip install --no-cache-dir -r <(python -c \"import tomllib; f=open('rx.lock','rb'); d=tomllib.load(f); print('\\\\n'.join(f\\\"{p}=={d['packages'][p]['version']}\\\" for p in d['packages']))\") 2>/dev/null || pip install .; else pip install .; fi"
                 .to_string(),
@@ -335,7 +333,9 @@ impl DockerfileGenerator {
 
         // Install runtime apt packages only
         if !self.config.apt_packages.is_empty() {
-            let runtime_pkgs: Vec<_> = self.config.apt_packages
+            let runtime_pkgs: Vec<_> = self
+                .config
+                .apt_packages
                 .iter()
                 .filter(|p| !["build-essential", "gcc", "g++", "make"].contains(&p.as_str()))
                 .collect();
@@ -653,9 +653,9 @@ pub fn build_image(
     cmd.arg(project_dir);
     cmd.current_dir(project_dir);
 
-    let status = cmd.status().map_err(|e| {
-        Error::Config(format!("Failed to run docker build: {}", e))
-    })?;
+    let status = cmd
+        .status()
+        .map_err(|e| Error::Config(format!("Failed to run docker build: {}", e)))?;
 
     if !status.success() {
         return Err(Error::Config("Docker build failed".to_string()));

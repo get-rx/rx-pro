@@ -6,7 +6,7 @@ use anyhow::{bail, Context, Result};
 use clap::{Args, Subcommand};
 
 use rx_core::pep::PyProject;
-use rx_core::versioning::{VersioningConfig, get_git_version, bump_version};
+use rx_core::versioning::{bump_version, get_git_version, VersioningConfig};
 
 #[derive(Args)]
 pub struct VersionCommand {
@@ -139,8 +139,8 @@ fn bump_project_version(
         .version()
         .context("No version in pyproject.toml to bump")?;
 
-    let new_version = bump_version(current, part)
-        .with_context(|| format!("Failed to bump {} version", part))?;
+    let new_version =
+        bump_version(current, part).with_context(|| format!("Failed to bump {} version", part))?;
 
     if dry_run {
         println!("Would bump {} → {}", current, new_version);

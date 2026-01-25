@@ -128,7 +128,11 @@ fn get_changed_files(repo_root: &Path, config: &AffectedConfig) -> Result<Vec<Pa
 
     // Get committed changes between base and head
     let diff_output = Command::new("git")
-        .args(["diff", "--name-only", &format!("{}...{}", base, config.head)])
+        .args([
+            "diff",
+            "--name-only",
+            &format!("{}...{}", base, config.head),
+        ])
         .current_dir(repo_root)
         .output()
         .map_err(|e| Error::Config(format!("Failed to run git diff: {}", e)))?;
@@ -280,7 +284,8 @@ pub fn build_dependency_graph(workspace: &Workspace) -> Result<HashMap<PathBuf, 
         if let Ok(pyproject) = PyProject::load(member) {
             // Check regular dependencies
             for dep in pyproject.dependencies() {
-                let dep_name = dep.split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+                let dep_name = dep
+                    .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
                     .next()
                     .unwrap_or("")
                     .to_lowercase();
@@ -294,7 +299,8 @@ pub fn build_dependency_graph(workspace: &Workspace) -> Result<HashMap<PathBuf, 
 
             // Check dev dependencies
             for dep in pyproject.dev_dependencies() {
-                let dep_name = dep.split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+                let dep_name = dep
+                    .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
                     .next()
                     .unwrap_or("")
                     .to_lowercase();
@@ -403,8 +409,14 @@ mod tests {
         // A depends on B
         // B depends on C
         // D has no dependencies
-        graph.insert(PathBuf::from("/workspace/a"), vec![PathBuf::from("/workspace/b")]);
-        graph.insert(PathBuf::from("/workspace/b"), vec![PathBuf::from("/workspace/c")]);
+        graph.insert(
+            PathBuf::from("/workspace/a"),
+            vec![PathBuf::from("/workspace/b")],
+        );
+        graph.insert(
+            PathBuf::from("/workspace/b"),
+            vec![PathBuf::from("/workspace/c")],
+        );
         graph.insert(PathBuf::from("/workspace/c"), vec![]);
         graph.insert(PathBuf::from("/workspace/d"), vec![]);
 

@@ -28,13 +28,12 @@ impl LockCommand {
         };
 
         // Load pyproject.toml
-        let pyproject = PyProject::load(&project_dir)
-            .with_context(|| {
-                format!(
-                    "No pyproject.toml found in {:?}. Run 'rx init' first.",
-                    project_dir
-                )
-            })?;
+        let pyproject = PyProject::load(&project_dir).with_context(|| {
+            format!(
+                "No pyproject.toml found in {:?}. Run 'rx init' first.",
+                project_dir
+            )
+        })?;
 
         info!("Locking dependencies for {:?}", pyproject.name());
 
@@ -58,7 +57,8 @@ impl LockCommand {
             println!("No dependencies to lock.");
             // Still create an empty lockfile
             let lockfile = Lockfile::new();
-            lockfile.save(&project_dir.join("rx.lock"))
+            lockfile
+                .save(&project_dir.join("rx.lock"))
                 .with_context(|| "Failed to write rx.lock")?;
             println!("✓ Created empty rx.lock");
             return Ok(());
@@ -81,7 +81,8 @@ impl LockCommand {
 
         // Create lockfile
         let lockfile = Lockfile::from_resolution(&resolution);
-        lockfile.save(&project_dir.join("rx.lock"))
+        lockfile
+            .save(&project_dir.join("rx.lock"))
             .with_context(|| "Failed to write rx.lock")?;
 
         println!();

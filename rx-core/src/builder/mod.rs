@@ -49,7 +49,10 @@ impl Builder {
     /// Build a wheel (PEP 427)
     pub fn build_wheel(&self, output_dir: &Path) -> Result<BuildResult> {
         let pyproject = PyProject::load(&self.project_root)?;
-        let project = pyproject.project.as_ref().ok_or(Error::MissingProjectMetadata)?;
+        let project = pyproject
+            .project
+            .as_ref()
+            .ok_or(Error::MissingProjectMetadata)?;
 
         let name = &project.name;
         let version = project.version.as_ref().ok_or(Error::MissingVersion)?;
@@ -67,8 +70,8 @@ impl Builder {
         // Create the wheel zip
         let file = std::fs::File::create(&wheel_path).map_err(Error::Io)?;
         let mut zip = ZipWriter::new(file);
-        let options = SimpleFileOptions::default()
-            .compression_method(zip::CompressionMethod::Deflated);
+        let options =
+            SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
 
         // Track files for RECORD
         let mut records: Vec<(String, String, u64)> = Vec::new();
@@ -106,12 +109,19 @@ impl Builder {
                 // Only include non-editable dependencies
                 if !dep.editable {
                     if let Ok(local_pkg_dir) = find_local_package_dir(&dep, &self.project_root) {
-                        let local_pkg_name = local_pkg_dir.file_name()
+                        let local_pkg_name = local_pkg_dir
+                            .file_name()
                             .unwrap_or_default()
                             .to_string_lossy()
                             .to_string();
                         tracing::info!("Including local dependency '{}' in wheel", dep_name);
-                        add_directory_to_zip(&mut zip, &local_pkg_dir, &local_pkg_name, options, &mut records)?;
+                        add_directory_to_zip(
+                            &mut zip,
+                            &local_pkg_dir,
+                            &local_pkg_name,
+                            options,
+                            &mut records,
+                        )?;
                     }
                 }
             }
@@ -123,25 +133,49 @@ impl Builder {
         // METADATA (PEP 566)
         let metadata = generate_metadata(&pyproject)?;
         let metadata_path = format!("{}/METADATA", dist_info);
-        add_file_to_zip(&mut zip, &metadata_path, metadata.as_bytes(), options, &mut records)?;
+        add_file_to_zip(
+            &mut zip,
+            &metadata_path,
+            metadata.as_bytes(),
+            options,
+            &mut records,
+        )?;
 
         // WHEEL file
         let wheel_content = generate_wheel_file();
         let wheel_file_path = format!("{}/WHEEL", dist_info);
-        add_file_to_zip(&mut zip, &wheel_file_path, wheel_content.as_bytes(), options, &mut records)?;
+        add_file_to_zip(
+            &mut zip,
+            &wheel_file_path,
+            wheel_content.as_bytes(),
+            options,
+            &mut records,
+        )?;
 
         // entry_points.txt (if scripts defined)
         if !project.scripts.is_empty() || !project.gui_scripts.is_empty() {
             let entry_points = generate_entry_points(project);
             let ep_path = format!("{}/entry_points.txt", dist_info);
-            add_file_to_zip(&mut zip, &ep_path, entry_points.as_bytes(), options, &mut records)?;
+            add_file_to_zip(
+                &mut zip,
+                &ep_path,
+                entry_points.as_bytes(),
+                options,
+                &mut records,
+            )?;
         }
 
         // top_level.txt
         if let Some(ref pkg_dir) = package_dir {
             let top_level = pkg_dir.file_name().unwrap().to_string_lossy().to_string();
             let tl_path = format!("{}/top_level.txt", dist_info);
-            add_file_to_zip(&mut zip, &tl_path, format!("{}\n", top_level).as_bytes(), options, &mut records)?;
+            add_file_to_zip(
+                &mut zip,
+                &tl_path,
+                format!("{}\n", top_level).as_bytes(),
+                options,
+                &mut records,
+            )?;
         }
 
         // RECORD (must be last, contains all file hashes)
@@ -153,8 +187,10 @@ impl Builder {
         // RECORD itself has no hash
         record_content.push_str(&format!("{},,\n", record_path));
 
-        zip.start_file(&record_path, options).map_err(|e| Error::Zip(e.to_string()))?;
-        zip.write_all(record_content.as_bytes()).map_err(Error::Io)?;
+        zip.start_file(&record_path, options)
+            .map_err(|e| Error::Zip(e.to_string()))?;
+        zip.write_all(record_content.as_bytes())
+            .map_err(Error::Io)?;
 
         zip.finish().map_err(|e| Error::Zip(e.to_string()))?;
 
@@ -169,7 +205,10 @@ impl Builder {
     /// Build a source distribution (PEP 517)
     pub fn build_sdist(&self, output_dir: &Path) -> Result<BuildResult> {
         let pyproject = PyProject::load(&self.project_root)?;
-        let project = pyproject.project.as_ref().ok_or(Error::MissingProjectMetadata)?;
+        let project = pyproject
+            .project
+            .as_ref()
+            .ok_or(Error::MissingProjectMetadata)?;
 
         let name = &project.name;
         let version = project.version.as_ref().ok_or(Error::MissingVersion)?;
@@ -190,20 +229,32 @@ impl Builder {
         let base_dir = format!("{}-{}", name, version);
 
         // Add pyproject.toml
-        let pyproject_content = std::fs::read_to_string(self.project_root.join("pyproject.toml"))
-            .map_err(Error::Io)?;
-        add_to_tar(&mut tar, &format!("{}/pyproject.toml", base_dir), pyproject_content.as_bytes())?;
+        let pyproject_content =
+            std::fs::read_to_string(self.project_root.join("pyproject.toml")).map_err(Error::Io)?;
+        add_to_tar(
+            &mut tar,
+            &format!("{}/pyproject.toml", base_dir),
+            pyproject_content.as_bytes(),
+        )?;
 
         // Add PKG-INFO
         let pkg_info = generate_pkg_info(&pyproject)?;
-        add_to_tar(&mut tar, &format!("{}/PKG-INFO", base_dir), pkg_info.as_bytes())?;
+        add_to_tar(
+            &mut tar,
+            &format!("{}/PKG-INFO", base_dir),
+            pkg_info.as_bytes(),
+        )?;
 
         // Add README if exists
         for readme in &["README.md", "README.rst", "README.txt", "README"] {
             let readme_path = self.project_root.join(readme);
             if readme_path.exists() {
                 let content = std::fs::read_to_string(&readme_path).map_err(Error::Io)?;
-                add_to_tar(&mut tar, &format!("{}/{}", base_dir, readme), content.as_bytes())?;
+                add_to_tar(
+                    &mut tar,
+                    &format!("{}/{}", base_dir, readme),
+                    content.as_bytes(),
+                )?;
                 break;
             }
         }
@@ -213,7 +264,11 @@ impl Builder {
             let license_path = self.project_root.join(license);
             if license_path.exists() {
                 let content = std::fs::read_to_string(&license_path).map_err(Error::Io)?;
-                add_to_tar(&mut tar, &format!("{}/{}", base_dir, license), content.as_bytes())?;
+                add_to_tar(
+                    &mut tar,
+                    &format!("{}/{}", base_dir, license),
+                    content.as_bytes(),
+                )?;
                 break;
             }
         }
@@ -255,7 +310,7 @@ impl Builder {
 
 /// Normalize package name for wheel filename (PEP 427)
 fn normalize_name(name: &str) -> String {
-    name.replace('-', "_").replace('.', "_")
+    name.replace(['-', '.'], "_")
 }
 
 /// Find a Python package directory in the given directory
@@ -316,7 +371,8 @@ fn add_file_to_zip<W: Write + std::io::Seek>(
     options: SimpleFileOptions,
     records: &mut Vec<(String, String, u64)>,
 ) -> Result<()> {
-    zip.start_file(path, options).map_err(|e| Error::Zip(e.to_string()))?;
+    zip.start_file(path, options)
+        .map_err(|e| Error::Zip(e.to_string()))?;
     zip.write_all(content).map_err(Error::Io)?;
 
     let hash = base64_urlsafe_nopad(&Sha256::digest(content));
@@ -333,7 +389,10 @@ fn add_directory_to_zip<W: Write + std::io::Seek>(
     options: SimpleFileOptions,
     records: &mut Vec<(String, String, u64)>,
 ) -> Result<()> {
-    for entry in walkdir::WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
+    for entry in walkdir::WalkDir::new(dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
         let path = entry.path();
 
         // Skip __pycache__ and .pyc files
@@ -348,7 +407,11 @@ fn add_directory_to_zip<W: Write + std::io::Seek>(
 
         if path.is_file() {
             let relative = path.strip_prefix(dir).unwrap();
-            let archive_path = format!("{}/{}", prefix, relative.to_string_lossy().replace('\\', "/"));
+            let archive_path = format!(
+                "{}/{}",
+                prefix,
+                relative.to_string_lossy().replace('\\', "/")
+            );
 
             let mut content = Vec::new();
             std::fs::File::open(path)
@@ -365,7 +428,10 @@ fn add_directory_to_zip<W: Write + std::io::Seek>(
 
 /// Generate METADATA file content (PEP 566)
 fn generate_metadata(pyproject: &PyProject) -> Result<String> {
-    let project = pyproject.project.as_ref().ok_or(Error::MissingProjectMetadata)?;
+    let project = pyproject
+        .project
+        .as_ref()
+        .ok_or(Error::MissingProjectMetadata)?;
 
     let mut metadata = String::new();
     metadata.push_str("Metadata-Version: 2.1\n");
@@ -429,7 +495,10 @@ fn generate_metadata(pyproject: &PyProject) -> Result<String> {
     // Optional dependencies (extras)
     for (extra, deps) in &project.optional_dependencies {
         for dep in deps {
-            metadata.push_str(&format!("Requires-Dist: {} ; extra == \"{}\"\n", dep, extra));
+            metadata.push_str(&format!(
+                "Requires-Dist: {} ; extra == \"{}\"\n",
+                dep, extra
+            ));
         }
         metadata.push_str(&format!("Provides-Extra: {}\n", extra));
     }
@@ -438,7 +507,9 @@ fn generate_metadata(pyproject: &PyProject) -> Result<String> {
     if let Some(ref readme) = project.readme {
         match readme {
             crate::pep::Readme::Path(path) => {
-                let readme_path = pyproject.project.as_ref()
+                let readme_path = pyproject
+                    .project
+                    .as_ref()
                     .map(|_| Path::new(path))
                     .unwrap_or(Path::new(path));
 
@@ -451,16 +522,18 @@ fn generate_metadata(pyproject: &PyProject) -> Result<String> {
                         "text/plain"
                     };
                     metadata.push_str(&format!("Description-Content-Type: {}\n", content_type));
-                    metadata.push_str("\n");
+                    metadata.push('\n');
                     metadata.push_str(&content);
                 }
             }
-            crate::pep::Readme::Inline { text, content_type, .. } => {
+            crate::pep::Readme::Inline {
+                text, content_type, ..
+            } => {
                 if let Some(ref ct) = content_type {
                     metadata.push_str(&format!("Description-Content-Type: {}\n", ct));
                 }
                 if let Some(ref t) = text {
-                    metadata.push_str("\n");
+                    metadata.push('\n');
                     metadata.push_str(t);
                 }
             }
@@ -523,20 +596,30 @@ fn generate_pkg_info(pyproject: &PyProject) -> Result<String> {
 /// Add content to tar archive
 fn add_to_tar<W: Write>(tar: &mut tar::Builder<W>, path: &str, content: &[u8]) -> Result<()> {
     let mut header = tar::Header::new_gnu();
-    header.set_path(path).map_err(|e| Error::Tar(e.to_string()))?;
+    header
+        .set_path(path)
+        .map_err(|e| Error::Tar(e.to_string()))?;
     header.set_size(content.len() as u64);
     header.set_mode(0o644);
     header.set_mtime(0);
     header.set_cksum();
 
-    tar.append(&header, content).map_err(|e| Error::Tar(e.to_string()))?;
+    tar.append(&header, content)
+        .map_err(|e| Error::Tar(e.to_string()))?;
 
     Ok(())
 }
 
 /// Add directory recursively to tar archive
-fn add_directory_to_tar<W: Write>(tar: &mut tar::Builder<W>, dir: &Path, prefix: &str) -> Result<()> {
-    for entry in walkdir::WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
+fn add_directory_to_tar<W: Write>(
+    tar: &mut tar::Builder<W>,
+    dir: &Path,
+    prefix: &str,
+) -> Result<()> {
+    for entry in walkdir::WalkDir::new(dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
         let path = entry.path();
 
         // Skip __pycache__ and .pyc files
@@ -551,7 +634,11 @@ fn add_directory_to_tar<W: Write>(tar: &mut tar::Builder<W>, dir: &Path, prefix:
 
         if path.is_file() {
             let relative = path.strip_prefix(dir).unwrap();
-            let archive_path = format!("{}/{}", prefix, relative.to_string_lossy().replace('\\', "/"));
+            let archive_path = format!(
+                "{}/{}",
+                prefix,
+                relative.to_string_lossy().replace('\\', "/")
+            );
 
             let content = std::fs::read(path).map_err(Error::Io)?;
             add_to_tar(tar, &archive_path, &content)?;

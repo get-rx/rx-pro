@@ -109,8 +109,7 @@ impl ExportCommand {
 
         // Filter by --only if specified
         if !self.only.is_empty() {
-            let only_lower: Vec<String> =
-                self.only.iter().map(|s| s.to_lowercase()).collect();
+            let only_lower: Vec<String> = self.only.iter().map(|s| s.to_lowercase()).collect();
             packages.retain(|(name, _)| only_lower.contains(&name.to_lowercase()));
         }
 

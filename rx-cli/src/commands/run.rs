@@ -18,7 +18,7 @@ use tracing::debug;
 
 use rx_core::pep::PyProject;
 use rx_core::workspace::Workspace;
-use rx_core::{load_dotenv, AffectedConfig, detect_affected_with_transitive, DotenvConfig};
+use rx_core::{detect_affected_with_transitive, load_dotenv, AffectedConfig, DotenvConfig};
 
 #[derive(Args)]
 pub struct RunCommand {
@@ -227,7 +227,10 @@ impl RunCommand {
                 bail!("Script '{}' has empty command", first);
             }
 
-            let (program, mut script_args) = parsed.split_first().map(|(p, a)| (p.clone(), a.to_vec())).unwrap();
+            let (program, mut script_args) = parsed
+                .split_first()
+                .map(|(p, a)| (p.clone(), a.to_vec()))
+                .unwrap();
 
             // Append any additional arguments passed by user
             script_args.extend(rest.iter().cloned());
@@ -326,7 +329,10 @@ impl RunCommand {
             bail!("Some packages failed");
         }
 
-        println!("All {} affected packages completed successfully.", result.all.len());
+        println!(
+            "All {} affected packages completed successfully.",
+            result.all.len()
+        );
         Ok(())
     }
 
@@ -377,7 +383,10 @@ impl RunCommand {
 
         // Load dotenv
         let dotenv_config = if self.no_dotenv {
-            DotenvConfig { enabled: false, ..Default::default() }
+            DotenvConfig {
+                enabled: false,
+                ..Default::default()
+            }
         } else {
             self.load_dotenv_config(project_dir)
         };

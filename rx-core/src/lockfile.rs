@@ -13,7 +13,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-use crate::resolver::{ResolvedPackage, Resolution};
+use crate::resolver::{Resolution, ResolvedPackage};
 use crate::{Error, Result};
 
 /// Lockfile format version
@@ -130,13 +130,17 @@ impl Lockfile {
                     },
                     dependencies: pkg.dependencies.clone(),
                     markers: pkg.markers.clone(),
-                    files: pkg.files.iter().map(|f| PlatformFile {
-                        url: f.url.clone(),
-                        hash: f.hash.clone(),
-                        markers: f.markers.clone(),
-                        python: f.python.clone(),
-                        tags: f.tags.clone(),
-                    }).collect(),
+                    files: pkg
+                        .files
+                        .iter()
+                        .map(|f| PlatformFile {
+                            url: f.url.clone(),
+                            hash: f.hash.clone(),
+                            markers: f.markers.clone(),
+                            python: f.python.clone(),
+                            tags: f.tags.clone(),
+                        })
+                        .collect(),
                 },
             );
         }
@@ -157,8 +161,7 @@ impl Lockfile {
 
     /// Load a lockfile from disk
     pub fn load(path: &Path) -> Result<Self> {
-        let content = std::fs::read_to_string(path)
-            .map_err(|e| Error::Io(e))?;
+        let content = std::fs::read_to_string(path).map_err(Error::Io)?;
         Self::parse(&content)
     }
 
@@ -200,13 +203,17 @@ impl Lockfile {
                 hash: pkg.hash.clone().unwrap_or_default(),
                 dependencies: pkg.dependencies.clone(),
                 markers: pkg.markers.clone(),
-                files: pkg.files.iter().map(|f| ResolvedFile {
-                    url: f.url.clone(),
-                    hash: f.hash.clone(),
-                    markers: f.markers.clone(),
-                    python: f.python.clone(),
-                    tags: f.tags.clone(),
-                }).collect(),
+                files: pkg
+                    .files
+                    .iter()
+                    .map(|f| ResolvedFile {
+                        url: f.url.clone(),
+                        hash: f.hash.clone(),
+                        markers: f.markers.clone(),
+                        python: f.python.clone(),
+                        tags: f.tags.clone(),
+                    })
+                    .collect(),
             })
             .collect();
 
@@ -344,7 +351,10 @@ version = "1.26.0"
 
         let graph = lockfile.dependency_graph();
         assert_eq!(graph.get("requests").unwrap().len(), 2);
-        assert!(graph.get("requests").unwrap().contains(&"urllib3".to_string()));
+        assert!(graph
+            .get("requests")
+            .unwrap()
+            .contains(&"urllib3".to_string()));
 
         let reverse = lockfile.reverse_dependencies("urllib3");
         assert!(reverse.contains(&"requests".to_string()));

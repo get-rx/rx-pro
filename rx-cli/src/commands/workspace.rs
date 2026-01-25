@@ -13,7 +13,9 @@ use clap::{Args, Subcommand};
 use rx_core::lockfile::Lockfile;
 use rx_core::resolver::Resolver;
 use rx_core::workspace::Workspace;
-use rx_core::{default_cache_dir, install_path_dependency, load_path_dependencies, Installer, VenvManager};
+use rx_core::{
+    default_cache_dir, install_path_dependency, load_path_dependencies, Installer, VenvManager,
+};
 
 #[derive(Args)]
 pub struct WorkspaceCommand {
@@ -85,8 +87,8 @@ impl WorkspaceInitCommand {
         }
 
         // Create workspace
-        let workspace = Workspace::create(&root, self.shared_venv)
-            .context("Failed to create workspace")?;
+        let workspace =
+            Workspace::create(&root, self.shared_venv).context("Failed to create workspace")?;
 
         println!("Initialized workspace at {}", root.display());
         println!();
@@ -126,8 +128,7 @@ impl WorkspaceAddCommand {
                 .context("Not in a workspace. Run 'rx workspace init' first.")?,
         };
 
-        let mut workspace = Workspace::load_from_root(&root)
-            .context("Failed to load workspace")?;
+        let mut workspace = Workspace::load_from_root(&root).context("Failed to load workspace")?;
 
         workspace.add_member(&self.path)?;
 
@@ -165,8 +166,7 @@ impl WorkspaceRemoveCommand {
                 .context("Not in a workspace. Run 'rx workspace init' first.")?,
         };
 
-        let mut workspace = Workspace::load_from_root(&root)
-            .context("Failed to load workspace")?;
+        let mut workspace = Workspace::load_from_root(&root).context("Failed to load workspace")?;
 
         if workspace.remove_member(&self.path)? {
             println!("Removed '{}' from workspace", self.path);
@@ -201,8 +201,7 @@ impl WorkspaceListCommand {
                 .context("Not in a workspace. Run 'rx workspace init' first.")?,
         };
 
-        let workspace = Workspace::load_from_root(&root)
-            .context("Failed to load workspace")?;
+        let workspace = Workspace::load_from_root(&root).context("Failed to load workspace")?;
 
         println!("Workspace: {}", root.display());
         println!("Shared venv: {}", workspace.shared_venv);
@@ -257,8 +256,7 @@ impl WorkspaceLockCommand {
                 .context("Not in a workspace. Run 'rx workspace init' first.")?,
         };
 
-        let workspace = Workspace::load_from_root(&root)
-            .context("Failed to load workspace")?;
+        let workspace = Workspace::load_from_root(&root).context("Failed to load workspace")?;
 
         let members = workspace.members();
         if members.is_empty() {
@@ -279,7 +277,9 @@ impl WorkspaceLockCommand {
         // Resolve
         println!("Resolving dependencies...");
         let resolver = Resolver::new();
-        let resolution = resolver.resolve(&all_deps).await
+        let resolution = resolver
+            .resolve(&all_deps)
+            .await
             .context("Failed to resolve dependencies")?;
 
         // Create lockfile
@@ -322,16 +322,14 @@ impl WorkspaceSyncCommand {
                 .context("Not in a workspace. Run 'rx workspace init' first.")?,
         };
 
-        let workspace = Workspace::load_from_root(&root)
-            .context("Failed to load workspace")?;
+        let workspace = Workspace::load_from_root(&root).context("Failed to load workspace")?;
 
         let lockfile_path = workspace.lockfile_path();
         if !lockfile_path.exists() {
             bail!("No lockfile found. Run 'rx workspace lock' first.");
         }
 
-        let lockfile = Lockfile::load(&lockfile_path)
-            .context("Failed to load lockfile")?;
+        let lockfile = Lockfile::load(&lockfile_path).context("Failed to load lockfile")?;
 
         if lockfile.is_empty() {
             println!("Lockfile is empty. Nothing to sync.");
@@ -401,7 +399,8 @@ impl WorkspaceSyncCommand {
         }
 
         println!();
-        println!("Installed {} packages ({} downloaded, {} cached)",
+        println!(
+            "Installed {} packages ({} downloaded, {} cached)",
             installed, downloaded, cached
         );
 

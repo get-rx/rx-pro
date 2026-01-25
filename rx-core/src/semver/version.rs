@@ -40,7 +40,10 @@ impl Version {
         let text = text.trim();
 
         // Strip leading 'v' or 'V' if present
-        let text = text.strip_prefix('v').or_else(|| text.strip_prefix('V')).unwrap_or(text);
+        let text = text
+            .strip_prefix('v')
+            .or_else(|| text.strip_prefix('V'))
+            .unwrap_or(text);
 
         if text.is_empty() {
             return Err(Error::InvalidVersion("empty version string".to_string()));
@@ -222,7 +225,9 @@ impl Prerelease {
         // Validate: alphanumeric and hyphens, dot-separated
         for part in s.split('.') {
             if part.is_empty() {
-                return Err(Error::InvalidVersion("empty prerelease identifier".to_string()));
+                return Err(Error::InvalidVersion(
+                    "empty prerelease identifier".to_string(),
+                ));
             }
             if !part.chars().all(|c| c.is_ascii_alphanumeric() || c == '-') {
                 return Err(Error::InvalidVersion(format!(

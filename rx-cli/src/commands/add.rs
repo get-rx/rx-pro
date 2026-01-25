@@ -44,21 +44,23 @@ impl AddCommand {
         };
 
         // Load existing pyproject.toml
-        let mut pyproject = PyProject::load(&project_dir)
-            .with_context(|| {
-                format!(
-                    "No pyproject.toml found in {:?}. Run 'rx init' first.",
-                    project_dir
-                )
-            })?;
+        let mut pyproject = PyProject::load(&project_dir).with_context(|| {
+            format!(
+                "No pyproject.toml found in {:?}. Run 'rx init' first.",
+                project_dir
+            )
+        })?;
 
         // Handle path dependencies (editable or copy mode)
         if self.editable || self.path {
-            return self.add_path_dependencies(&project_dir, &mut pyproject).await;
+            return self
+                .add_path_dependencies(&project_dir, &mut pyproject)
+                .await;
         }
 
         // Regular PyPI dependencies
-        self.add_pypi_dependencies(&project_dir, &mut pyproject).await
+        self.add_pypi_dependencies(&project_dir, &mut pyproject)
+            .await
     }
 
     /// Add path dependencies (editable or copy mode)
@@ -102,7 +104,9 @@ impl AddCommand {
 
             let name = dep_pyproject
                 .name()
-                .ok_or_else(|| anyhow::anyhow!("Package at {} has no name in pyproject.toml", path_str))?
+                .ok_or_else(|| {
+                    anyhow::anyhow!("Package at {} has no name in pyproject.toml", path_str)
+                })?
                 .to_string();
 
             // Validate as a path dependency
@@ -116,7 +120,8 @@ impl AddCommand {
         }
 
         // Save pyproject.toml
-        pyproject.save(project_dir)
+        pyproject
+            .save(project_dir)
             .with_context(|| "Failed to update pyproject.toml")?;
         println!("✓ Updated pyproject.toml");
 
@@ -191,13 +196,15 @@ impl AddCommand {
         }
 
         // Save pyproject.toml
-        pyproject.save(project_dir)
+        pyproject
+            .save(project_dir)
             .with_context(|| "Failed to update pyproject.toml")?;
         println!("✓ Updated pyproject.toml");
 
         // Create/update lockfile
         let lockfile = Lockfile::from_resolution(&resolution);
-        lockfile.save(&project_dir.join("rx.lock"))
+        lockfile
+            .save(&project_dir.join("rx.lock"))
             .with_context(|| "Failed to update rx.lock")?;
         println!("✓ Updated rx.lock");
 
