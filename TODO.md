@@ -200,7 +200,11 @@ TOML format with:
 
 ### Priority: Medium
 
-- [ ] `rx remove` - Remove dependencies
+- [x] `rx remove` - Remove dependencies ✅
+  - [x] Remove from main or dev dependencies
+  - [x] Re-resolve and update lockfile
+  - [x] `--dry-run` to preview changes
+  - [x] `--no-lock` to skip lockfile update
 - [x] `rx build` - Build wheel/sdist ✅
 - [x] `rx publish` - Publish to PyPI ✅
 
