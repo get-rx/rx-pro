@@ -9,6 +9,7 @@
 
 pub mod builder;
 pub mod error;
+pub mod index;
 pub mod installer;
 pub mod pep;
 pub mod resolver;

@@ -19,6 +19,7 @@ thiserror.workspace = true
 anyhow.workspace = true
 tracing.workspace = true
 reqwest.workspace = true
+futures.workspace = true
 pubgrub.workspace = true
 rayon.workspace = true
 flate2.workspace = true

@@ -32,33 +32,88 @@ impl Requirement {
     }
 
     /// Parse a PEP 508 requirement string
+    /// Format: name[extras] specifier ; markers
+    /// Examples:
+    ///   - "requests"
+    ///   - "requests>=2.0"
+    ///   - "requests[security]>=2.0"
+    ///   - "requests>=2.0 ; python_version >= '3.8'"
+    ///   - "PySocks!=1.5.7,>=1.5.6; extra == 'socks'"
     pub fn parse(s: &str) -> Result<Self, Error> {
-        // TODO: Implement full PEP 508 parsing
-        // For now, handle simple cases like "package>=1.0"
-
         let s = s.trim();
+        if s.is_empty() {
+            return Err(Error::InvalidDependency(s.to_string()));
+        }
 
-        // Find where the name ends
-        let name_end = s
-            .find(|c: char| !c.is_alphanumeric() && c != '-' && c != '_' && c != '.')
-            .unwrap_or(s.len());
+        // Split by ';' to separate marker
+        let (main_part, marker) = if let Some(semi_pos) = s.find(';') {
+            let marker = s[semi_pos + 1..].trim().to_string();
+            let main = s[..semi_pos].trim();
+            (main, if marker.is_empty() { None } else { Some(marker) })
+        } else {
+            (s, None)
+        };
 
-        let name = s[..name_end].to_string();
+        // Parse the main part: name[extras]specifier
+        let mut name = String::new();
+        let mut extras = Vec::new();
+        let mut specifier = None;
+        let mut chars = main_part.chars().peekable();
+
+        // Parse name (alphanumeric, -, _, .)
+        while let Some(&c) = chars.peek() {
+            if c.is_alphanumeric() || c == '-' || c == '_' || c == '.' {
+                name.push(c);
+                chars.next();
+            } else {
+                break;
+            }
+        }
+
         if name.is_empty() {
             return Err(Error::InvalidDependency(s.to_string()));
         }
 
-        let specifier = if name_end < s.len() {
-            Some(s[name_end..].to_string())
-        } else {
-            None
-        };
+        // Parse extras [extra1,extra2]
+        if chars.peek() == Some(&'[') {
+            chars.next(); // consume '['
+            let mut extra = String::new();
+            while let Some(&c) = chars.peek() {
+                if c == ']' {
+                    chars.next();
+                    if !extra.is_empty() {
+                        extras.push(extra.trim().to_string());
+                    }
+                    break;
+                } else if c == ',' {
+                    chars.next();
+                    if !extra.is_empty() {
+                        extras.push(extra.trim().to_string());
+                        extra = String::new();
+                    }
+                } else {
+                    extra.push(c);
+                    chars.next();
+                }
+            }
+        }
+
+        // Skip whitespace
+        while chars.peek() == Some(&' ') {
+            chars.next();
+        }
+
+        // Rest is specifier
+        let remaining: String = chars.collect();
+        if !remaining.is_empty() {
+            specifier = Some(remaining.trim().to_string());
+        }
 
         Ok(Self {
             name,
             specifier,
-            extras: vec![],
-            marker: None,
+            extras,
+            marker,
             url: None,
         })
     }
@@ -111,6 +166,7 @@ mod tests {
         let req = Requirement::parse("requests").unwrap();
         assert_eq!(req.name, "requests");
         assert!(req.specifier.is_none());
+        assert!(req.marker.is_none());
     }
 
     #[test]
@@ -121,8 +177,40 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_with_extras() {
+        let req = Requirement::parse("requests[security,socks]>=2.0").unwrap();
+        assert_eq!(req.name, "requests");
+        assert_eq!(req.extras, vec!["security", "socks"]);
+        assert_eq!(req.specifier, Some(">=2.0".to_string()));
+    }
+
+    #[test]
+    fn test_parse_with_marker() {
+        let req = Requirement::parse("requests>=2.0 ; python_version >= '3.8'").unwrap();
+        assert_eq!(req.name, "requests");
+        assert_eq!(req.specifier, Some(">=2.0".to_string()));
+        assert_eq!(req.marker, Some("python_version >= '3.8'".to_string()));
+    }
+
+    #[test]
+    fn test_parse_pysocks() {
+        let req = Requirement::parse("PySocks!=1.5.7,>=1.5.6; extra == 'socks'").unwrap();
+        assert_eq!(req.name, "PySocks");
+        assert_eq!(req.specifier, Some("!=1.5.7,>=1.5.6".to_string()));
+        assert_eq!(req.marker, Some("extra == 'socks'".to_string()));
+    }
+
+    #[test]
     fn test_display() {
         let req = Requirement::new("requests").with_specifier(">=2.0");
         assert_eq!(req.to_string(), "requests>=2.0");
+    }
+
+    #[test]
+    fn test_display_with_marker() {
+        let req = Requirement::new("requests")
+            .with_specifier(">=2.0")
+            .with_marker("python_version >= '3.8'");
+        assert_eq!(req.to_string(), "requests>=2.0 ; python_version >= '3.8'");
     }
 }
