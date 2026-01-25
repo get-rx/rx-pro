@@ -58,6 +58,15 @@ smallvec = "1.13"
 # Regex
 regex = "1.11"
 
+# Directory walking
+walkdir = "2.5"
+
+# Tar archives
+tar = "0.4"
+
+# Base64 encoding
+base64 = "0.22"
+
 # Wasm plugins
 extism = "1.7"
 

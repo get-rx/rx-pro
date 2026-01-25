@@ -179,7 +179,7 @@ TOML format with:
 ### Priority: Medium
 
 - [ ] `rx remove` - Remove dependencies
-- [ ] `rx build` - Build wheel/sdist
+- [x] `rx build` - Build wheel/sdist ✅
 - [ ] `rx publish` - Publish to PyPI
 
 ### Priority: Medium - Monorepo & Workspace
