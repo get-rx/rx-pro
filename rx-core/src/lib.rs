@@ -21,7 +21,10 @@ pub mod semver;
 pub mod venv;
 pub mod versioning;
 
-pub use audit::{AuditReport, Auditor, FixRecommendation, FixResult, Severity, Vulnerability};
+pub use audit::{
+    AuditConfig, AuditReport, Auditor, FixRecommendation, FixResult, IgnoredVulnerability,
+    Severity, Vulnerability,
+};
 pub use dotenv::{DotenvConfig, load_dotenv};
 pub use error::{Error, Result};
 pub use installer::{default_cache_dir, InstallResult, Installer};

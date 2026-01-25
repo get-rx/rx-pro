@@ -90,11 +90,14 @@ TOML format with:
 - [x] `--ignore` flag to skip specific vulnerability IDs
 - [x] Text and JSON output formats (`--format`)
 
-### Future Enhancements (audit)
+### Future Enhancements (audit) ✅
 
-- [ ] Check packages against PyPI Advisory Database
-- [ ] Check packages against GitHub Advisory Database
-- [ ] Ignore list support in `[tool.rx.audit]` section of pyproject.toml
+- [x] PyPI yanked version detection (warns about yanked packages)
+- [x] Ignore list support in `[tool.rx.audit]` section of pyproject.toml
+  - [x] Simple string format: `ignore = ["CVE-2023-1234"]`
+  - [x] Full format with reason and expiration: `ignore = [{ id = "CVE-2023-1234", reason = "Not applicable", expires = "2024-12-31" }]`
+- [x] `--no-yanked` flag to skip yanked version checking
+- Note: OSV already aggregates PyPI (PYSEC) and GitHub (GHSA) advisories
 
 ---
 

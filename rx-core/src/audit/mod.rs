@@ -4,9 +4,11 @@
 //! automated fix recommendations.
 
 pub mod osv;
+pub mod pypi;
 pub mod types;
 
 pub use osv::OsvClient;
+pub use pypi::PyPIClient;
 pub use types::*;
 
 use std::collections::{HashMap, HashSet};
@@ -20,8 +22,21 @@ use crate::Result;
 pub struct Auditor {
     /// OSV client for vulnerability queries
     osv_client: OsvClient,
-    /// Set of vulnerability IDs to ignore
-    ignored_ids: HashSet<String>,
+    /// PyPI client for yanked version detection
+    pypi_client: PyPIClient,
+    /// Audit configuration
+    config: AuditConfig,
+}
+
+/// Audit configuration
+#[derive(Debug, Clone, Default)]
+pub struct AuditConfig {
+    /// Vulnerability IDs to ignore (from CLI)
+    pub ignored_ids: HashSet<String>,
+    /// Ignored vulnerabilities with metadata (from config file)
+    pub ignored_vulnerabilities: Vec<IgnoredVulnerability>,
+    /// Whether to check for yanked versions
+    pub check_yanked: bool,
 }
 
 impl Auditor {
@@ -29,21 +44,83 @@ impl Auditor {
     pub fn new() -> Self {
         Self {
             osv_client: OsvClient::new(),
-            ignored_ids: HashSet::new(),
+            pypi_client: PyPIClient::new(),
+            config: AuditConfig::default(),
         }
     }
 
-    /// Create an auditor with ignored vulnerabilities
+    /// Create an auditor with ignored vulnerabilities (from CLI)
     pub fn with_ignored(ignored: Vec<String>) -> Self {
         Self {
             osv_client: OsvClient::new(),
-            ignored_ids: ignored.into_iter().collect(),
+            pypi_client: PyPIClient::new(),
+            config: AuditConfig {
+                ignored_ids: ignored.into_iter().collect(),
+                ignored_vulnerabilities: Vec::new(),
+                check_yanked: true,
+            },
+        }
+    }
+
+    /// Create an auditor with full configuration
+    pub fn with_config(config: AuditConfig) -> Self {
+        Self {
+            osv_client: OsvClient::new(),
+            pypi_client: PyPIClient::new(),
+            config,
         }
     }
 
     /// Add vulnerability IDs to ignore
     pub fn ignore(&mut self, ids: impl IntoIterator<Item = String>) {
-        self.ignored_ids.extend(ids);
+        self.config.ignored_ids.extend(ids);
+    }
+
+    /// Check if a vulnerability ID should be ignored
+    fn is_ignored(&self, id: &str) -> bool {
+        // Check simple ignore list
+        if self.config.ignored_ids.contains(id) {
+            return true;
+        }
+
+        // Check configured ignores with expiration
+        for ignored in &self.config.ignored_vulnerabilities {
+            if ignored.id == id || ignored.id == "*" {
+                // Check expiration
+                if let Some(expires) = &ignored.expires {
+                    if let Ok(expiry_date) = chrono::NaiveDate::parse_from_str(expires, "%Y-%m-%d") {
+                        let today = chrono::Utc::now().date_naive();
+                        if today > expiry_date {
+                            // Ignore has expired
+                            continue;
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Get all effective ignored IDs (for reporting)
+    pub fn effective_ignores(&self) -> Vec<&str> {
+        let mut ignores: Vec<&str> = self.config.ignored_ids.iter().map(|s| s.as_str()).collect();
+
+        for ignored in &self.config.ignored_vulnerabilities {
+            // Check expiration
+            let is_expired = ignored.expires.as_ref().map_or(false, |expires| {
+                chrono::NaiveDate::parse_from_str(expires, "%Y-%m-%d")
+                    .map(|expiry| chrono::Utc::now().date_naive() > expiry)
+                    .unwrap_or(false)
+            });
+
+            if !is_expired {
+                ignores.push(&ignored.id);
+            }
+        }
+
+        ignores
     }
 
     /// Audit packages from a lockfile
@@ -72,8 +149,8 @@ impl Auditor {
                 .cloned()
                 .unwrap_or_default()
                 .into_iter()
-                .filter(|v| !self.ignored_ids.contains(&v.id))
-                .filter(|v| !v.aliases.iter().any(|a| self.ignored_ids.contains(a)))
+                .filter(|v| !self.is_ignored(&v.id))
+                .filter(|v| !v.aliases.iter().any(|a| self.is_ignored(a)))
                 .collect();
 
             let ignored_count = vuln_map
@@ -94,6 +171,12 @@ impl Auditor {
                 version: version.to_string(),
                 vulnerabilities,
             });
+        }
+
+        // Check for yanked versions if enabled
+        if self.config.check_yanked {
+            let yanked = self.pypi_client.check_yanked_batch(packages).await?;
+            report.yanked_packages = yanked;
         }
 
         Ok(report)
@@ -334,7 +417,51 @@ mod tests {
     fn test_auditor_ignore() {
         let mut auditor = Auditor::new();
         auditor.ignore(["CVE-2023-1234".to_string()]);
-        assert!(auditor.ignored_ids.contains("CVE-2023-1234"));
+        assert!(auditor.config.ignored_ids.contains("CVE-2023-1234"));
+    }
+
+    #[test]
+    fn test_auditor_is_ignored() {
+        let config = AuditConfig {
+            ignored_ids: vec!["CVE-2023-1234".to_string()].into_iter().collect(),
+            ignored_vulnerabilities: vec![
+                IgnoredVulnerability {
+                    id: "GHSA-xxxx".to_string(),
+                    reason: Some("Not applicable".to_string()),
+                    expires: None,
+                },
+            ],
+            check_yanked: true,
+        };
+        let auditor = Auditor::with_config(config);
+
+        assert!(auditor.is_ignored("CVE-2023-1234"));
+        assert!(auditor.is_ignored("GHSA-xxxx"));
+        assert!(!auditor.is_ignored("CVE-2023-9999"));
+    }
+
+    #[test]
+    fn test_auditor_expired_ignore() {
+        let config = AuditConfig {
+            ignored_ids: HashSet::new(),
+            ignored_vulnerabilities: vec![
+                IgnoredVulnerability {
+                    id: "CVE-2023-EXPIRED".to_string(),
+                    reason: Some("Testing".to_string()),
+                    expires: Some("2020-01-01".to_string()), // Expired
+                },
+                IgnoredVulnerability {
+                    id: "CVE-2023-ACTIVE".to_string(),
+                    reason: Some("Testing".to_string()),
+                    expires: Some("2099-12-31".to_string()), // Not expired
+                },
+            ],
+            check_yanked: true,
+        };
+        let auditor = Auditor::with_config(config);
+
+        assert!(!auditor.is_ignored("CVE-2023-EXPIRED")); // Expired, should not be ignored
+        assert!(auditor.is_ignored("CVE-2023-ACTIVE"));   // Not expired, should be ignored
     }
 
     #[test]
