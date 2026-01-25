@@ -24,8 +24,12 @@ pubgrub.workspace = true
 rayon.workspace = true
 flate2.workspace = true
 zstd.workspace = true
+zip.workspace = true
+sha2.workspace = true
+hex.workspace = true
 indexmap.workspace = true
 smallvec.workspace = true
 
 [dev-dependencies]
 proptest.workspace = true
+tempfile.workspace = true
