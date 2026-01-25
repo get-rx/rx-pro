@@ -5,7 +5,7 @@ A blazing-fast Python package manager written in Rust.
 ## Installation
 
 ```bash
-pip install t-rex
+pip install trex-py
 ```
 
 ## CLI Usage

@@ -13,7 +13,7 @@ Key differentiators:
 
 Quick start:
 ```
-pip install t-rex
+pip install trex-py
 rx init my-project && cd my-project
 rx add requests numpy
 rx sync
@@ -48,7 +48,7 @@ After being frustrated with slow dependency resolution in Poetry, I decided to b
 
 **Getting Started:**
 ```bash
-pip install t-rex
+pip install trex-py
 rx init my-project
 rx add requests numpy pandas
 rx sync

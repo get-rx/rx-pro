@@ -5,7 +5,7 @@ Introducing T-Rex: A Python package manager written in Rust.
 
 10-50x faster than Poetry. Native build backend. WebAssembly plugins.
 
-pip install t-rex
+pip install trex-py
 
 https://github.com/stherrien/t-rex
 
@@ -69,7 +69,7 @@ Multi-stage builds. Optimized images. One command deploy.
 ## Tweet 8 (CTA)
 Get started in 30 seconds:
 
-pip install t-rex
+pip install trex-py
 rx init my-project
 cd my-project
 rx add requests
@@ -95,7 +95,7 @@ After experiencing slow dependency resolution with existing tools, I built somet
 
 The Python ecosystem deserves fast, modern tooling. T-Rex brings Rust-level performance to Python development.
 
-Try it out: pip install t-rex
+Try it out: pip install trex-py
 GitHub: https://github.com/stherrien/t-rex
 
 #Python #Rust #OpenSource #DeveloperTools #PackageManager
