@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, BuildCommand, InitCommand, LockCommand, RunCommand, SyncCommand};
+use crate::commands::{AddCommand, AuditCommand, BuildCommand, InitCommand, LockCommand, RunCommand, SyncCommand};
 
 #[derive(Parser)]
 #[command(
@@ -39,6 +39,9 @@ pub enum Commands {
 
     /// Build the project (wheel and sdist)
     Build(BuildCommand),
+
+    /// Check for security vulnerabilities in dependencies
+    Audit(AuditCommand),
 }
 
 impl Cli {
@@ -50,6 +53,7 @@ impl Cli {
             Commands::Sync(cmd) => cmd.run().await,
             Commands::Run(cmd) => cmd.run().await,
             Commands::Build(cmd) => cmd.run().await,
+            Commands::Audit(cmd) => cmd.run().await,
         }
     }
 }
