@@ -1,4 +1,7 @@
 //! Native Rust build backend for Python packages (PEP 517)
+//!
+//! Supports bundling local path dependencies (non-editable) into wheels
+//! for monorepo deployments.
 
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
@@ -7,6 +10,7 @@ use sha2::{Digest, Sha256};
 use zip::write::SimpleFileOptions;
 use zip::ZipWriter;
 
+use crate::path_dep::{load_path_dependencies, PathDependency};
 use crate::pep::PyProject;
 use crate::{Error, Result};
 
@@ -14,6 +18,8 @@ use crate::{Error, Result};
 pub struct Builder {
     /// Project root directory
     project_root: PathBuf,
+    /// Whether to include local path dependencies in the wheel
+    include_local_deps: bool,
 }
 
 /// Result of a build operation
@@ -30,7 +36,14 @@ impl Builder {
     pub fn new(project_root: impl Into<PathBuf>) -> Self {
         Self {
             project_root: project_root.into(),
+            include_local_deps: true, // Default to including local deps
         }
+    }
+
+    /// Set whether to include local path dependencies in the wheel
+    pub fn with_include_local_deps(mut self, include: bool) -> Self {
+        self.include_local_deps = include;
+        self
     }
 
     /// Build a wheel (PEP 427)
@@ -84,6 +97,24 @@ impl Builder {
         if let Some(ref pkg_dir) = package_dir {
             let pkg_name = pkg_dir.file_name().unwrap().to_string_lossy().to_string();
             add_directory_to_zip(&mut zip, pkg_dir, &pkg_name, options, &mut records)?;
+        }
+
+        // Include local path dependencies (non-editable only)
+        if self.include_local_deps {
+            let path_deps = load_path_dependencies(&self.project_root).unwrap_or_default();
+            for (dep_name, dep) in path_deps {
+                // Only include non-editable dependencies
+                if !dep.editable {
+                    if let Ok(local_pkg_dir) = find_local_package_dir(&dep, &self.project_root) {
+                        let local_pkg_name = local_pkg_dir.file_name()
+                            .unwrap_or_default()
+                            .to_string_lossy()
+                            .to_string();
+                        tracing::info!("Including local dependency '{}' in wheel", dep_name);
+                        add_directory_to_zip(&mut zip, &local_pkg_dir, &local_pkg_name, options, &mut records)?;
+                    }
+                }
+            }
         }
 
         // Create dist-info directory
@@ -238,6 +269,43 @@ fn find_package_in_dir(dir: &Path) -> Option<PathBuf> {
         }
     }
     None
+}
+
+/// Find the package directory for a local path dependency
+fn find_local_package_dir(dep: &PathDependency, base_dir: &Path) -> Result<PathBuf> {
+    let resolved_path = dep.resolve_path(base_dir);
+    let normalized_name = dep.name.replace('-', "_");
+
+    // Try src layout first: src/<name>/
+    let src_layout = resolved_path.join("src").join(&normalized_name);
+    if src_layout.exists() && src_layout.join("__init__.py").exists() {
+        return Ok(src_layout);
+    }
+
+    // Try flat layout: <name>/
+    let flat_layout = resolved_path.join(&normalized_name);
+    if flat_layout.exists() && flat_layout.join("__init__.py").exists() {
+        return Ok(flat_layout);
+    }
+
+    // Try to find any package in src/
+    let src_dir = resolved_path.join("src");
+    if src_dir.exists() {
+        if let Some(pkg) = find_package_in_dir(&src_dir) {
+            return Ok(pkg);
+        }
+    }
+
+    // Try to find any package at root
+    if let Some(pkg) = find_package_in_dir(&resolved_path) {
+        return Ok(pkg);
+    }
+
+    Err(Error::Config(format!(
+        "Could not find Python package for local dependency '{}' in {}",
+        dep.name,
+        resolved_path.display()
+    )))
 }
 
 /// Add a file to the zip archive and record its hash

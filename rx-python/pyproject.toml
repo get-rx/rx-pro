@@ -1,0 +1,44 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "t-rex"
+version = "0.1.0"
+description = "A blazing-fast Python package manager written in Rust"
+readme = "README.md"
+license = { text = "MIT OR Apache-2.0" }
+authors = [{ name = "Shawn Therrien" }]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Rust",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: System :: Software Distribution",
+]
+keywords = ["package-manager", "pip", "poetry", "rust", "fast"]
+
+[project.urls]
+Homepage = "https://github.com/stherrien/t-rex"
+Documentation = "https://stherrien.github.io/t-rex/"
+Repository = "https://github.com/stherrien/t-rex"
+Changelog = "https://github.com/stherrien/t-rex/blob/main/CHANGELOG.md"
+
+[project.scripts]
+rx = "trex:_cli_main"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "python"
+module-name = "trex._trex"
