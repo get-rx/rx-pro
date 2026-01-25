@@ -98,13 +98,28 @@ TOML format with:
 
 ---
 
+## ✅ Completed: Run Command (`rx run`)
+
+**Location**: `rx-cli/src/commands/run.rs`
+
+### Implemented Features
+
+- [x] Execute commands in the project's virtual environment
+- [x] Prepend venv bin directory to PATH
+- [x] Set VIRTUAL_ENV environment variable
+- [x] Forward exit codes from child process
+- [x] Support for venv-installed commands (python, pip, pytest, etc.)
+- [x] Fallback to system PATH for commands not in venv
+- [x] `--project` flag to specify project directory
+
+---
+
 ## Future Enhancements
 
 ### Priority: Medium
 
 - [ ] `rx remove` - Remove dependencies
 - [ ] `rx update` - Update dependencies within constraints
-- [ ] `rx run` - Run commands in venv
 
 ### Priority: Low
 
