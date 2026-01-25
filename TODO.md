@@ -47,13 +47,17 @@
 - [x] Run resolver
 - [x] Write rx.lock (without installing)
 
-### `rx sync` (Partial)
+### `rx sync` ✅
 
 - [x] Read rx.lock
 - [x] --dry-run flag to show what would be installed
-- [ ] Download packages (parallel) - TODO
-- [ ] Install into venv - TODO
-- [ ] Verify hashes - TODO
+- [x] Create virtual environment natively (without venv module)
+- [x] Download packages (parallel, up to 8 concurrent)
+- [x] Cache downloaded wheels (~/.cache/rx/wheels)
+- [x] Verify SHA256 hashes
+- [x] Install into venv site-packages
+- [x] --recreate flag to recreate venv from scratch
+- [x] --python flag to specify Python interpreter
 
 ---
 
@@ -70,7 +74,6 @@ TOML format with:
 
 ## Future Enhancements
 
-- [ ] `rx sync` - Full installation into venv
 - [ ] `rx remove` - Remove dependencies
 - [ ] `rx update` - Update dependencies within constraints
 - [ ] `rx build` - Build wheel/sdist
@@ -78,3 +81,6 @@ TOML format with:
 - [ ] `rx run` - Run commands in venv
 - [ ] Workspace support
 - [ ] Plugin system (Wasm)
+- [ ] Platform markers in lockfile
+- [ ] Dependency graph in lockfile
+- [ ] Editable installs (PEP 660)

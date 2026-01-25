@@ -18,4 +18,6 @@ pub mod semver;
 pub mod venv;
 
 pub use error::{Error, Result};
+pub use installer::{default_cache_dir, InstallResult, Installer};
 pub use lockfile::Lockfile;
+pub use venv::VenvManager;

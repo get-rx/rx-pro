@@ -231,6 +231,9 @@ rx version set <version>   # Set explicit version
 | CLI `add` | ✅ Done | Resolves deps, updates pyproject.toml & rx.lock |
 | CLI `lock` | ✅ Done | Regenerates lockfile from pyproject.toml |
 | Lockfile (rx.lock) | ✅ Done | TOML format with versions, URLs, sha256 hashes |
+| CLI `sync` | ✅ Done | Creates venv, downloads packages in parallel, verifies hashes, installs |
+| Native Venv Manager | ✅ Done | Creates venvs without venv module |
+| Package Installer | ✅ Done | Parallel downloads, wheel caching, hash verification |
 
 ### TODO 📋
 
@@ -241,5 +244,5 @@ rx version set <version>   # Set explicit version
 | ~~**P1**~~ | ~~CLI `add` Command~~ | ✅ **DONE** - Resolves deps, updates pyproject.toml & rx.lock |
 | ~~**P2**~~ | ~~Lockfile Format~~ | ✅ **DONE** - TOML format with versions, URLs, hashes |
 | ~~**P3**~~ | ~~CLI `lock` Command~~ | ✅ **DONE** - Regenerate lockfile without installing |
-| **P2** | CLI `sync` Command | Install resolved packages into venv (partial - dry-run works) |
+| ~~**P2**~~ | ~~CLI `sync` Command~~ | ✅ **DONE** - Full venv creation, parallel downloads, hash verification |
 | **P3** | CLI `remove` Command | Remove dependencies, re-resolve |
