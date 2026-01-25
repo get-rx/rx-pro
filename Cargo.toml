@@ -55,6 +55,9 @@ hex = "0.4"
 indexmap = { version = "2.7", features = ["serde"] }
 smallvec = "1.13"
 
+# Regex
+regex = "1.11"
+
 # Wasm plugins
 extism = "1.7"
 

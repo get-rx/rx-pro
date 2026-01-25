@@ -29,6 +29,7 @@ sha2.workspace = true
 hex.workspace = true
 indexmap.workspace = true
 smallvec.workspace = true
+regex.workspace = true
 
 [dev-dependencies]
 proptest.workspace = true
