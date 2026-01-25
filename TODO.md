@@ -227,9 +227,12 @@ TOML format with:
   - [x] Support editable and copy installation modes
   - [x] Auto-install during `rx sync` and `rx workspace sync`
   - [ ] Include local code when building wheels (future enhancement)
-- [ ] **Affected Detection**
-  - [ ] `rx run --affected` for changed packages only
-  - [ ] Git-based change detection
+- [x] **Affected Detection** ✅
+  - [x] `rx affected` command to list affected workspace members
+  - [x] `rx run --affected` to run commands on changed packages only
+  - [x] Git-based change detection (committed, uncommitted, untracked)
+  - [x] Transitive dependency detection (`--include-dependents`)
+  - [x] Configurable base branch (`--base`)
 
 ### Priority: Low - Platform & Infrastructure
 

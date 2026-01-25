@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
+use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
 
 #[derive(Parser)]
 #[command(
@@ -72,6 +72,9 @@ pub enum Commands {
 
     /// Manage monorepo workspaces
     Workspace(WorkspaceCommand),
+
+    /// Detect affected workspace members based on git changes
+    Affected(AffectedCommand),
 }
 
 impl Cli {
@@ -94,6 +97,7 @@ impl Cli {
             Commands::Publish(cmd) => cmd.run().await,
             Commands::Task(cmd) => cmd.run().await,
             Commands::Workspace(cmd) => cmd.run().await,
+            Commands::Affected(cmd) => cmd.run().await,
         }
     }
 }

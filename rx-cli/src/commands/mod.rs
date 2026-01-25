@@ -1,4 +1,5 @@
 mod add;
+mod affected;
 mod audit;
 mod build;
 mod bundle;
@@ -17,6 +18,7 @@ mod version;
 mod workspace;
 
 pub use add::AddCommand;
+pub use affected::AffectedCommand;
 pub use audit::AuditCommand;
 pub use build::BuildCommand;
 pub use bundle::BundleCommand;

@@ -8,6 +8,7 @@
 //! - Security auditing (CVE checking)
 //! - PEP standards compliance
 
+pub mod affected;
 pub mod audit;
 pub mod builder;
 pub mod dotenv;
@@ -35,3 +36,7 @@ pub use venv::VenvManager;
 pub use versioning::{VersioningConfig, get_version, get_git_version, bump_version};
 pub use workspace::{Workspace, MemberInfo};
 pub use path_dep::{PathDependency, load_path_dependencies, install_path_dependency};
+pub use affected::{
+    AffectedConfig, AffectedResult, detect_affected, detect_affected_with_transitive,
+    build_dependency_graph, get_transitive_affected,
+};
