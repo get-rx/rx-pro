@@ -96,6 +96,18 @@ There is no single tool that offers Rust-speed for both installation AND buildin
 | **REQ-WORK-002** | **Dependency Hoisting**: Shared dependencies across the workspace must be physically stored once on disk (content-addressable store). |
 | **REQ-WORK-003** | **Graph Execution**: `rx run --affected` should identify which packages have changed and run tasks only for them and their dependents. |
 
+### 4.5 Feature Set: Security (CVE Checking)
+
+| ID | Requirement |
+|----|-------------|
+| **REQ-SEC-001** | **Vulnerability Scanner**: `rx audit` must check all installed packages against known vulnerability databases (OSV, PyPI Advisory Database, GitHub Advisory Database). |
+| **REQ-SEC-002** | **Severity Reporting**: Must report vulnerabilities with severity levels (Critical, High, Medium, Low) and CVE identifiers. |
+| **REQ-SEC-003** | **Auto-Fix**: `rx audit --fix` must automatically update vulnerable packages to patched versions when available. |
+| **REQ-SEC-004** | **Transitive Handling**: When fixing vulnerabilities, must properly handle transitive dependencies - if a child package needs updating, parent packages may also need updating to compatible versions. |
+| **REQ-SEC-005** | **Force Flag**: `rx audit --fix --force` allows users to apply fixes at their own risk when automatic resolution fails or would cause breaking changes. |
+| **REQ-SEC-006** | **CI Integration**: Exit with non-zero code when vulnerabilities are found (configurable severity threshold). |
+| **REQ-SEC-007** | **Ignore List**: Support `[tool.rx.audit]` section in pyproject.toml to ignore specific CVEs (with justification comments). |
+
 ---
 
 ## 5. Technical Architecture & Constraints
@@ -201,6 +213,12 @@ rx publish                 # Publish to PyPI
 # Execution
 rx run <script>            # Run script in venv
 rx run --affected <cmd>    # Run only for affected packages
+
+# Security
+rx audit                   # Check for vulnerabilities
+rx audit --fix             # Auto-fix vulnerabilities
+rx audit --fix --force     # Force fix (user's risk)
+rx audit --severity high   # Fail only on high+ severity
 
 # Workspace
 rx workspace init          # Initialize workspace
