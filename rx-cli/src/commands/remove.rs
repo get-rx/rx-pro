@@ -23,6 +23,10 @@ pub struct RemoveCommand {
     #[arg(long)]
     pub dev: bool,
 
+    /// Remove from path dependencies ([tool.rx.dependencies])
+    #[arg(long)]
+    pub path: bool,
+
     /// Don't update the lockfile after removing
     #[arg(long)]
     pub no_lock: bool,
@@ -49,6 +53,11 @@ impl RemoveCommand {
                 project_dir
             )
         })?;
+
+        // Handle path dependency removal
+        if self.path {
+            return self.remove_path_dependencies(&project_dir, &mut pyproject);
+        }
 
         // Normalize package names for comparison (lowercase, underscores to hyphens)
         let packages_to_remove: Vec<String> = self
@@ -122,6 +131,55 @@ impl RemoveCommand {
             println!();
             println!("Run 'rx sync' to update your virtual environment.");
         }
+
+        Ok(())
+    }
+
+    /// Remove path dependencies from [tool.rx.dependencies]
+    fn remove_path_dependencies(
+        &self,
+        project_dir: &PathBuf,
+        pyproject: &mut PyProject,
+    ) -> Result<()> {
+        let mut removed = Vec::new();
+        let mut not_found = Vec::new();
+
+        for name in &self.packages {
+            if pyproject.remove_path_dependency(name) {
+                removed.push(name.clone());
+            } else {
+                not_found.push(name.clone());
+            }
+        }
+
+        if removed.is_empty() && not_found.is_empty() {
+            println!("No path dependencies found to remove.");
+            return Ok(());
+        }
+
+        if !not_found.is_empty() {
+            println!("Not found in path dependencies: {}", not_found.join(", "));
+        }
+
+        if removed.is_empty() {
+            return Ok(());
+        }
+
+        if self.dry_run {
+            println!("Would remove path dependencies:");
+            for pkg in &removed {
+                println!("  - {}", pkg);
+            }
+            return Ok(());
+        }
+
+        pyproject.save(project_dir)?;
+        println!("Removed {} path dependency(ies):", removed.len());
+        for pkg in &removed {
+            println!("  - {}", pkg);
+        }
+        println!();
+        println!("Run 'rx sync' to update your virtual environment.");
 
         Ok(())
     }

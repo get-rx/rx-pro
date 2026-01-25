@@ -263,8 +263,18 @@ TOML format with:
   - [x] Plugin manifest support (.toml file)
   - [x] Global (~/.rx/plugins) and project-local plugins
   - [x] Configuration in `[tool.rx.plugins]`
+- [x] **Editable Installs (PEP 660)** ✅
+  - [x] `rx add -e <path>` - Add editable path dependency
+  - [x] `rx add --path <path>` - Add non-editable (copy mode) path dependency
+  - [x] `rx remove --path <name>` - Remove path dependency
+  - [x] Configuration in `[tool.rx.dependencies]`
+  - [x] Auto-detect package name from target's pyproject.toml
+  - [x] Validate path exists and contains pyproject.toml
+  - [x] `.pth` file creation for editable installs
+  - [x] `.egg-link` file for compatibility
+  - [x] Support both src/ layout and flat layout
+  - [x] Installed via `rx sync`
 - [ ] Platform markers in lockfile
 - [ ] Dependency graph in lockfile
-- [ ] Editable installs (PEP 660)
 - [ ] Private registry authentication
 - [ ] `rx import poetry` - Migration from Poetry
