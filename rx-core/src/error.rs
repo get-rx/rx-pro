@@ -24,6 +24,9 @@ pub enum Error {
     #[error("invalid version specifier: {0}")]
     InvalidVersion(String),
 
+    #[error("invalid version specifier: {0}")]
+    InvalidSpecifier(String),
+
     #[error("invalid dependency specifier: {0}")]
     InvalidDependency(String),
 
@@ -38,6 +41,15 @@ pub enum Error {
 
     #[error("build error: {0}")]
     BuildError(String),
+
+    #[error("resolution error: {0}")]
+    Resolution(String),
+
+    #[error("index error: {0}")]
+    Index(String),
+
+    #[error("no compatible version found for {package}")]
+    NoCompatibleVersion { package: String },
 
     #[error("network error: {0}")]
     Network(#[from] reqwest::Error),

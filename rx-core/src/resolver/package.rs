@@ -1,12 +1,25 @@
 //! Package representation for the resolver
 
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 
 /// A Python package identifier
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Package {
     /// Normalized package name
     pub name: String,
+}
+
+impl PartialOrd for Package {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Package {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.name.cmp(&other.name)
+    }
 }
 
 impl Package {
