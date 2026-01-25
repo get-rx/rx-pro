@@ -6,7 +6,7 @@ use anyhow::{Context, Result};
 use clap::Args;
 use tracing::info;
 
-use rx_core::{default_cache_dir, Installer, Lockfile, VenvManager};
+use rx_core::{default_cache_dir, install_path_dependency, load_path_dependencies, Installer, Lockfile, VenvManager};
 
 #[derive(Args)]
 pub struct SyncCommand {
@@ -133,6 +133,25 @@ impl SyncCommand {
                 success_count,
                 cached_count
             );
+        }
+
+        // Install path dependencies
+        let path_deps = load_path_dependencies(&project_dir).unwrap_or_default();
+        if !path_deps.is_empty() {
+            println!();
+            println!("Installing {} path dependencies:", path_deps.len());
+
+            for (name, dep) in &path_deps {
+                let mode = if dep.editable { "editable" } else { "copy" };
+                match install_path_dependency(dep, &project_dir, &site_packages).await {
+                    Ok(_) => {
+                        println!("  {} ({}) ✓", name, mode);
+                    }
+                    Err(e) => {
+                        println!("  {} - FAILED: {}", name, e);
+                    }
+                }
+            }
         }
 
         // Show activation hint
