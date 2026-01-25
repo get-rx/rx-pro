@@ -4,12 +4,18 @@
 //! - VIRTUAL_ENV set
 //! - PATH modified to include venv bin directory
 //! - PS1 modified to show the venv name (for supported shells)
+//! - Environment variables from .env file
 
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
 use anyhow::{bail, Context, Result};
 use clap::Args;
+use tracing::debug;
+
+use rx_core::pep::PyProject;
+use rx_core::{load_dotenv, DotenvConfig};
 
 #[derive(Args)]
 pub struct ShellCommand {
@@ -20,6 +26,10 @@ pub struct ShellCommand {
     /// Shell to use (auto-detected if not specified)
     #[arg(long, short)]
     pub shell: Option<String>,
+
+    /// Don't load .env file
+    #[arg(long)]
+    pub no_dotenv: bool,
 }
 
 impl ShellCommand {
@@ -65,6 +75,22 @@ impl ShellCommand {
             .and_then(|n| n.to_str())
             .unwrap_or(".venv");
 
+        // Load dotenv configuration
+        let dotenv_config = if self.no_dotenv {
+            DotenvConfig {
+                enabled: false,
+                ..Default::default()
+            }
+        } else {
+            self.load_dotenv_config(&project_dir)
+        };
+
+        // Load environment variables from .env
+        let dotenv_vars = load_dotenv(&project_dir, &dotenv_config).unwrap_or_default();
+        if !dotenv_vars.is_empty() {
+            debug!("Loaded {} variables from .env", dotenv_vars.len());
+        }
+
         // Set up environment
         let current_path = std::env::var("PATH").unwrap_or_default();
         let path_sep = if cfg!(windows) { ";" } else { ":" };
@@ -73,6 +99,9 @@ impl ShellCommand {
         println!("Spawning shell with virtual environment activated...");
         println!("  Shell: {}", shell_name);
         println!("  Venv: {:?}", venv_path);
+        if !dotenv_vars.is_empty() {
+            println!("  Dotenv: {} variables loaded", dotenv_vars.len());
+        }
         println!();
         println!("Type 'exit' or press Ctrl+D to return to your normal shell.");
         println!();
@@ -86,6 +115,8 @@ impl ShellCommand {
             &bin_dir,
             &new_path,
             venv_name,
+            &dotenv_vars,
+            &dotenv_config,
         )?;
 
         if !status.success() {
@@ -134,6 +165,22 @@ impl ShellCommand {
         return Ok(PathBuf::from("cmd.exe"));
     }
 
+    fn load_dotenv_config(&self, project_dir: &PathBuf) -> DotenvConfig {
+        // Try to load from pyproject.toml [tool.rx.dotenv]
+        if let Ok(pyproject) = PyProject::load(project_dir) {
+            if let Some(rx_config) = pyproject.tool.get("rx") {
+                if let Some(dotenv_table) = rx_config.get("dotenv") {
+                    if let Some(table) = dotenv_table.as_table() {
+                        return DotenvConfig::from_toml(table);
+                    }
+                }
+            }
+        }
+
+        // Default configuration
+        DotenvConfig::new()
+    }
+
     fn spawn_shell(
         &self,
         shell_path: &PathBuf,
@@ -143,6 +190,8 @@ impl ShellCommand {
         bin_dir: &PathBuf,
         new_path: &str,
         venv_name: &str,
+        dotenv_vars: &HashMap<String, String>,
+        dotenv_config: &DotenvConfig,
     ) -> Result<std::process::ExitStatus> {
         let mut cmd = Command::new(shell_path);
 
@@ -154,6 +203,13 @@ impl ShellCommand {
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit());
+
+        // Add dotenv variables
+        for (key, value) in dotenv_vars {
+            if dotenv_config.override_env || std::env::var(key).is_err() {
+                cmd.env(key, value);
+            }
+        }
 
         // Shell-specific configuration
         match shell_name {
@@ -309,6 +365,7 @@ mod tests {
         let cmd = ShellCommand {
             project: PathBuf::from("."),
             shell: Some("/bin/zsh".to_string()),
+            no_dotenv: false,
         };
         let shell = cmd.detect_shell().unwrap();
         assert_eq!(shell, PathBuf::from("/bin/zsh"));
@@ -319,6 +376,7 @@ mod tests {
         let cmd = ShellCommand {
             project: PathBuf::from("."),
             shell: None,
+            no_dotenv: false,
         };
         // This should succeed on any system
         let shell = cmd.detect_shell();

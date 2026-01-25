@@ -174,9 +174,14 @@ TOML format with:
   - [x] Auto-detect user's shell from SHELL env var
   - [x] Modified prompt to show venv name
   - [x] `-s/--shell` to override shell
-- [ ] **Dotenv Support**
-  - [ ] Auto-load `.env` on `rx run` and `rx shell`
-  - [ ] Config in `[tool.rx.dotenv]`
+- [x] **Dotenv Support** ✅
+  - [x] Auto-load `.env` on `rx run` and `rx shell`
+  - [x] Config in `[tool.rx.dotenv]`
+  - [x] Support for quoted values, escape sequences, multiline
+  - [x] Variable interpolation (`${VAR}` and `$VAR`)
+  - [x] Extra files via `extra_files` config
+  - [x] `--no-dotenv` flag to skip loading
+  - [x] `override` config to override existing env vars
 - [ ] **Script Aliases** (`[tool.rx.scripts]`)
   - [ ] Define command aliases like npm scripts
   - [ ] `rx run test` → `pytest -v tests/`

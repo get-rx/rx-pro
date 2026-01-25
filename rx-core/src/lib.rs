@@ -10,6 +10,7 @@
 
 pub mod audit;
 pub mod builder;
+pub mod dotenv;
 pub mod error;
 pub mod index;
 pub mod installer;
@@ -21,6 +22,7 @@ pub mod venv;
 pub mod versioning;
 
 pub use audit::{AuditReport, Auditor, FixRecommendation, FixResult, Severity, Vulnerability};
+pub use dotenv::{DotenvConfig, load_dotenv};
 pub use error::{Error, Result};
 pub use installer::{default_cache_dir, InstallResult, Installer};
 pub use lockfile::Lockfile;
