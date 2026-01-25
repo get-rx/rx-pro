@@ -80,4 +80,10 @@ pub enum Error {
 
     #[error("missing version in pyproject.toml")]
     MissingVersion,
+
+    #[error("workspace not found")]
+    WorkspaceNotFound,
+
+    #[error("configuration error: {0}")]
+    Config(String),
 }

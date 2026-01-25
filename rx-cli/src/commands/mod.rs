@@ -14,6 +14,7 @@ mod sync;
 mod task;
 mod update;
 mod version;
+mod workspace;
 
 pub use add::AddCommand;
 pub use audit::AuditCommand;
@@ -31,3 +32,4 @@ pub use sync::SyncCommand;
 pub use task::TaskCommand;
 pub use update::UpdateCommand;
 pub use version::VersionCommand;
+pub use workspace::WorkspaceCommand;
