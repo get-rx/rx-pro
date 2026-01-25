@@ -67,8 +67,8 @@ TOML format with:
 - [x] All resolved packages with exact versions
 - [x] Download URLs
 - [x] Hashes (sha256)
-- [ ] Dependency graph (future enhancement)
-- [ ] Platform markers (future enhancement)
+- [x] Dependency graph (tracks which package depends on which)
+- [x] Platform markers (PEP 508 environment markers for OS/Python-specific deps)
 
 ---
 
@@ -274,7 +274,17 @@ TOML format with:
   - [x] `.egg-link` file for compatibility
   - [x] Support both src/ layout and flat layout
   - [x] Installed via `rx sync`
-- [ ] Platform markers in lockfile
-- [ ] Dependency graph in lockfile
-- [ ] Private registry authentication
-- [ ] `rx import poetry` - Migration from Poetry
+- [x] Platform markers in lockfile ✅
+- [x] Dependency graph in lockfile ✅
+- [x] Private registry authentication ✅
+  - [x] Support for multiple registries via `[tool.rx.registries]`
+  - [x] Global config in `~/.rx/config.toml`
+  - [x] Basic auth (username/password) and token auth
+  - [x] Environment variable interpolation (`${ENV_VAR}`)
+  - [x] Priority-based registry selection
+- [x] `rx import poetry` - Migration from Poetry ✅
+  - [x] Parse Poetry pyproject.toml and poetry.lock
+  - [x] Convert Poetry constraints (^, ~, *) to PEP 440
+  - [x] Import dependencies, dev-dependencies, and scripts
+  - [x] `--dry-run` flag to preview changes
+  - [x] `--keep-poetry` flag to preserve Poetry files

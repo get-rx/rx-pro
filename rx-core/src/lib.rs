@@ -20,6 +20,7 @@ pub mod lockfile;
 pub mod path_dep;
 pub mod pep;
 pub mod polylith;
+pub mod registry;
 pub mod resolver;
 pub mod semver;
 pub mod venv;
@@ -44,3 +45,4 @@ pub use affected::{
 };
 pub use polylith::{Polylith, Brick, BrickType};
 pub use docker::{DockerConfig, DockerfileGenerator, build_image};
+pub use registry::{RegistryConfig, RegistryManager, ResolvedCredentials};

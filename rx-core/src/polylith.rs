@@ -7,7 +7,7 @@
 //! - **components/**: Reusable building blocks with well-defined interfaces
 //! - **projects/**: Deployable artifacts that combine bases and components
 //!
-//! ```
+//! ```text
 //! workspace/
 //! ├── bases/
 //! │   └── myapp-cli/           # CLI entry point
