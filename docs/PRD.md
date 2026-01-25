@@ -95,6 +95,9 @@ There is no single tool that offers Rust-speed for both installation AND buildin
 | **REQ-WORK-001** | **Unified Lockfile**: A single `rx.lock` at the workspace root resolving dependencies for all member projects. |
 | **REQ-WORK-002** | **Dependency Hoisting**: Shared dependencies across the workspace must be physically stored once on disk (content-addressable store). |
 | **REQ-WORK-003** | **Graph Execution**: `rx run --affected` should identify which packages have changed and run tasks only for them and their dependents. |
+| **REQ-WORK-004** | **Polylith Architecture**: Support component-based architecture where code components can be shared across multiple projects within a monorepo. |
+| **REQ-WORK-005** | **Local Path Dependencies**: Properly handle relative path dependencies in monorepos. When building wheels, include shared local code from outside the project directory. |
+| **REQ-WORK-006** | **Workspace Sync**: Single command to sync all workspace members with shared virtual environment option. |
 
 ### 4.5 Feature Set: Security (CVE Checking)
 
@@ -107,6 +110,34 @@ There is no single tool that offers Rust-speed for both installation AND buildin
 | **REQ-SEC-005** | **Force Flag**: `rx audit --fix --force` allows users to apply fixes at their own risk when automatic resolution fails or would cause breaking changes. |
 | **REQ-SEC-006** | **CI Integration**: Exit with non-zero code when vulnerabilities are found (configurable severity threshold). |
 | **REQ-SEC-007** | **Ignore List**: Support `[tool.rx.audit]` section in pyproject.toml to ignore specific CVEs (with justification comments). |
+
+### 4.6 Feature Set: Automation & Versioning
+
+| ID | Requirement |
+|----|-------------|
+| **REQ-VER-001** | **Dynamic Versioning**: Automatically derive package version from Git tags (e.g., `v1.2.3` → `1.2.3`). Support dev suffixes for commits after tags (e.g., `1.2.3.dev4+gabc123`). |
+| **REQ-VER-002** | **Version Configuration**: Support `[tool.rx.versioning]` config with `source` (git-tag, pyproject), `pattern` (tag format), and `style` (pep440, semver). |
+| **REQ-VER-003** | **Release Workflow**: `rx release` command for interactive release process - bump version, update changelog, create git tag, and optionally publish to PyPI. |
+| **REQ-VER-004** | **Version Bumping**: `rx version bump major/minor/patch/pre` to increment versions programmatically. |
+| **REQ-VER-005** | **Changelog Generation**: Auto-generate changelog entries from conventional commits between releases. |
+
+### 4.7 Feature Set: Deployment & Exporting
+
+| ID | Requirement |
+|----|-------------|
+| **REQ-DEP-001** | **Export Requirements**: `rx export` generates `requirements.txt` for environments that don't support modern tooling (Docker, legacy CI/CD). |
+| **REQ-DEP-002** | **Bundle for Deployment**: `rx bundle` packages project into deployment-ready formats (standalone venv, AWS Lambda zip, etc.). |
+| **REQ-DEP-003** | **Docker Integration**: `rx docker build` generates and builds Docker images directly from `pyproject.toml` configuration without manual Dockerfile. |
+| **REQ-DEP-004** | **Export Formats**: Support multiple export formats: requirements.txt, constraints.txt, pip-tools compatible. |
+
+### 4.8 Feature Set: Developer Experience
+
+| ID | Requirement |
+|----|-------------|
+| **REQ-DX-001** | **Shell Command**: `rx shell` spawns a subshell with the virtual environment activated. |
+| **REQ-DX-002** | **Dotenv Support**: Automatically load `.env` file when running `rx run` or `rx shell`. Configurable via `[tool.rx.dotenv]`. |
+| **REQ-DX-003** | **Script Aliases**: Support `[tool.rx.scripts]` for defining command aliases (like npm scripts). |
+| **REQ-DX-004** | **Task Runner**: `rx task <name>` runs predefined tasks with dependency ordering and parallel execution. |
 
 ---
 
@@ -203,6 +234,8 @@ rx import poetry           # Import from Poetry project
 # Dependency management
 rx add <package>           # Add dependency
 rx remove <package>        # Remove dependency
+rx update                  # Update deps to latest within constraints
+rx update <package>        # Update specific package
 rx lock                    # Generate/update lockfile
 rx sync                    # Sync venv with lockfile
 
@@ -213,6 +246,8 @@ rx publish                 # Publish to PyPI
 # Execution
 rx run <script>            # Run script in venv
 rx run --affected <cmd>    # Run only for affected packages
+rx shell                   # Spawn shell with venv activated
+rx task <name>             # Run predefined task
 
 # Security
 rx audit                   # Check for vulnerabilities
@@ -220,14 +255,30 @@ rx audit --fix             # Auto-fix vulnerabilities
 rx audit --fix --force     # Force fix (user's risk)
 rx audit --severity high   # Fail only on high+ severity
 
+# Versioning & Release
+rx version                 # Show current version (from git tag or pyproject)
+rx version bump <part>     # Bump major/minor/patch/pre
+rx version set <version>   # Set explicit version
+rx release                 # Interactive release workflow
+rx release --bump minor    # Non-interactive release with bump
+
+# Deployment & Export
+rx export                  # Export to requirements.txt
+rx export --format constraints  # Export as constraints.txt
+rx bundle                  # Bundle for deployment
+rx bundle --target lambda  # Bundle for AWS Lambda
+rx docker build            # Build Docker image from config
+
 # Workspace
 rx workspace init          # Initialize workspace
 rx workspace add <path>    # Add member to workspace
+rx workspace sync          # Sync all workspace members
+rx workspace run <cmd>     # Run command across all members
 
-# Versioning
-rx version                 # Show current version
-rx version bump <part>     # Bump major/minor/patch
-rx version set <version>   # Set explicit version
+# Plugins
+rx plugin list             # List installed plugins
+rx plugin add <name>       # Install a plugin
+rx plugin remove <name>    # Remove a plugin
 ```
 
 ---
