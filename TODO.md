@@ -72,20 +72,33 @@ TOML format with:
 
 ---
 
+## ✅ Completed: Security Audit (`rx audit`)
+
+**Location**: `rx-core/src/audit/` module, `rx-cli/src/commands/audit.rs`
+
+### Implemented Features
+
+- [x] OSV API client for vulnerability detection
+- [x] Batch detection with full detail fetching for affected packages
+- [x] CVSS severity extraction from multiple OSV response locations
+- [x] Report vulnerabilities with severity (Critical/High/Medium/Low)
+- [x] `--fix` flag to auto-update to patched versions
+- [x] Handle transitive dependencies via re-resolution
+- [x] `--force` flag to apply fixes that require transitive updates
+- [x] Non-zero exit code for CI integration
+- [x] `--severity` flag to set minimum severity threshold
+- [x] `--ignore` flag to skip specific vulnerability IDs
+- [x] Text and JSON output formats (`--format`)
+
+### Future Enhancements (audit)
+
+- [ ] Check packages against PyPI Advisory Database
+- [ ] Check packages against GitHub Advisory Database
+- [ ] Ignore list support in `[tool.rx.audit]` section of pyproject.toml
+
+---
+
 ## Future Enhancements
-
-### Priority: High
-
-- [ ] `rx audit` - CVE/vulnerability checking
-  - [ ] Check packages against OSV database
-  - [ ] Check packages against PyPI Advisory Database
-  - [ ] Check packages against GitHub Advisory Database
-  - [ ] Report vulnerabilities with severity (Critical/High/Medium/Low)
-  - [ ] `--fix` flag to auto-update to patched versions
-  - [ ] Handle transitive dependencies (update parents when children need updates)
-  - [ ] `--force` flag to apply fixes at user's own risk
-  - [ ] Non-zero exit code for CI integration (configurable threshold)
-  - [ ] Ignore list support in `[tool.rx.audit]` section
 
 ### Priority: Medium
 
