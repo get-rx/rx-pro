@@ -1,0 +1,17 @@
+//! rx-core: Core library for T-Rex Python package manager
+//!
+//! This crate provides the core functionality for T-Rex:
+//! - Dependency resolution (using pubgrub)
+//! - Package installation with caching
+//! - Native wheel/sdist building
+//! - Virtual environment management
+//! - PEP standards compliance
+
+pub mod builder;
+pub mod error;
+pub mod installer;
+pub mod pep;
+pub mod resolver;
+pub mod venv;
+
+pub use error::{Error, Result};

@@ -1,0 +1,30 @@
+[package]
+name = "rx-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Core library for T-Rex Python package manager"
+
+[dependencies]
+rx-plugin.workspace = true
+
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+reqwest.workspace = true
+pubgrub.workspace = true
+rayon.workspace = true
+flate2.workspace = true
+zstd.workspace = true
+indexmap.workspace = true
+smallvec.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
