@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
+use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PolylithCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
 
 #[derive(Parser)]
 #[command(
@@ -75,6 +75,9 @@ pub enum Commands {
 
     /// Detect affected workspace members based on git changes
     Affected(AffectedCommand),
+
+    /// Manage Polylith architecture (bases, components, projects)
+    Polylith(PolylithCommand),
 }
 
 impl Cli {
@@ -98,6 +101,7 @@ impl Cli {
             Commands::Task(cmd) => cmd.run().await,
             Commands::Workspace(cmd) => cmd.run().await,
             Commands::Affected(cmd) => cmd.run().await,
+            Commands::Polylith(cmd) => cmd.run().await,
         }
     }
 }

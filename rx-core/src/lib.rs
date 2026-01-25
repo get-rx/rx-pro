@@ -18,6 +18,7 @@ pub mod installer;
 pub mod lockfile;
 pub mod path_dep;
 pub mod pep;
+pub mod polylith;
 pub mod resolver;
 pub mod semver;
 pub mod venv;
@@ -40,3 +41,4 @@ pub use affected::{
     AffectedConfig, AffectedResult, detect_affected, detect_affected_with_transitive,
     build_dependency_graph, get_transitive_affected,
 };
+pub use polylith::{Polylith, Brick, BrickType};

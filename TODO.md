@@ -219,9 +219,16 @@ TOML format with:
   - [x] `rx workspace sync` - Install all dependencies
   - [x] Unified `rx.lock` at workspace root
   - [x] Shared venv option (`--shared-venv`)
-- [ ] **Polylith Architecture**
-  - [ ] Component-based code sharing across projects
-  - [ ] `bases/`, `components/`, `projects/` structure
+- [x] **Polylith Architecture** ✅
+  - [x] `rx polylith init <namespace>` - Initialize Polylith workspace
+  - [x] `rx polylith create base <name>` - Create entry point
+  - [x] `rx polylith create component <name>` - Create reusable component
+  - [x] `rx polylith create project <name>` - Create deployable project
+  - [x] `rx polylith list` - List all bricks
+  - [x] `rx polylith check` - Check for cycles and architecture violations
+  - [x] `rx polylith info <name>` - Show brick details
+  - [x] Component interface pattern (interface.py for public API)
+  - [x] Workspace integration with glob patterns
 - [x] **Local Path Dependencies** ✅
   - [x] Handle relative path deps in monorepos
   - [x] Support editable and copy installation modes
