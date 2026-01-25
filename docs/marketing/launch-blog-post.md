@@ -77,7 +77,7 @@ Upgraded requests 2.25.0 -> 2.31.0
 
 ```bash
 # Install
-pip install t-rex
+pip install trex-py
 
 # Create a project
 rx init my-project
@@ -106,7 +106,7 @@ T-Rex is open source and ready for production use. We're actively working on:
 
 - **Website**: https://stherrien.github.io/t-rex/
 - **GitHub**: https://github.com/stherrien/t-rex
-- **PyPI**: https://pypi.org/project/t-rex/
+- **PyPI**: https://pypi.org/project/trex-py/
 
 We'd love your feedback! Open issues, submit PRs, or just star the repo if you find it useful.
 

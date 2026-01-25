@@ -8,7 +8,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
 [![Crates.io](https://img.shields.io/crates/v/rx.svg)](https://crates.io/crates/rx)
-[![PyPI](https://img.shields.io/pypi/v/t-rex.svg)](https://pypi.org/project/t-rex/)
+[![PyPI](https://img.shields.io/pypi/v/trex-py.svg)](https://pypi.org/project/trex-py/)
 [![CI](https://github.com/stherrien/t-rex/workflows/CI/badge.svg)](https://github.com/stherrien/t-rex/actions)
 
 [Installation](#installation) • [Quick Start](#quick-start) • [Features](#features) • [Documentation](#documentation)
@@ -34,10 +34,16 @@ T-Rex combines the speed of Rust with the ergonomics of Poetry to deliver the be
 
 ## Installation
 
-### From PyPI (Recommended)
+### Quick Install (curl)
 
 ```bash
-pip install t-rex
+curl -sSf https://raw.githubusercontent.com/stherrien/t-rex/main/install.sh | bash
+```
+
+### From PyPI
+
+```bash
+pip install trex-py
 ```
 
 ### From Cargo
@@ -58,7 +64,8 @@ cargo build --release
 
 Download from [GitHub Releases](https://github.com/stherrien/t-rex/releases):
 
-- **Linux**: `rx-x86_64-unknown-linux-gnu.tar.gz`
+- **Linux (x86_64)**: `rx-x86_64-unknown-linux-gnu.tar.gz`
+- **Linux (ARM64)**: `rx-aarch64-unknown-linux-gnu.tar.gz`
 - **macOS (Intel)**: `rx-x86_64-apple-darwin.tar.gz`
 - **macOS (Apple Silicon)**: `rx-aarch64-apple-darwin.tar.gz`
 - **Windows**: `rx-x86_64-pc-windows-msvc.zip`
