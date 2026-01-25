@@ -180,7 +180,7 @@ TOML format with:
 
 - [ ] `rx remove` - Remove dependencies
 - [x] `rx build` - Build wheel/sdist ✅
-- [ ] `rx publish` - Publish to PyPI
+- [x] `rx publish` - Publish to PyPI ✅
 
 ### Priority: Medium - Monorepo & Workspace
 

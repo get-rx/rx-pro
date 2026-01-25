@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AuditCommand, BuildCommand, InitCommand, LockCommand, ReleaseCommand, RunCommand, SyncCommand, UpdateCommand, VersionCommand};
+use crate::commands::{AddCommand, AuditCommand, BuildCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RunCommand, SyncCommand, UpdateCommand, VersionCommand};
 
 #[derive(Parser)]
 #[command(
@@ -51,6 +51,9 @@ pub enum Commands {
 
     /// Create a release (bump version, changelog, tag)
     Release(ReleaseCommand),
+
+    /// Publish package to PyPI
+    Publish(PublishCommand),
 }
 
 impl Cli {
@@ -66,6 +69,7 @@ impl Cli {
             Commands::Audit(cmd) => cmd.run().await,
             Commands::Version(cmd) => cmd.run().await,
             Commands::Release(cmd) => cmd.run().await,
+            Commands::Publish(cmd) => cmd.run().await,
         }
     }
 }
