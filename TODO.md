@@ -182,9 +182,12 @@ TOML format with:
   - [x] Extra files via `extra_files` config
   - [x] `--no-dotenv` flag to skip loading
   - [x] `override` config to override existing env vars
-- [ ] **Script Aliases** (`[tool.rx.scripts]`)
-  - [ ] Define command aliases like npm scripts
-  - [ ] `rx run test` → `pytest -v tests/`
+- [x] **Script Aliases** (`[tool.rx.scripts]`) ✅
+  - [x] Define command aliases like npm scripts
+  - [x] `rx run test` → `pytest -v tests/`
+  - [x] `rx run --list` to show available scripts
+  - [x] Append extra args: `rx run test -k foo` → `pytest -v tests/ -k foo`
+  - [x] Proper quote handling in script commands
 - [ ] **Task Runner** (`rx task`)
   - [ ] Predefined tasks with dependencies
   - [ ] Parallel task execution
