@@ -68,4 +68,16 @@ pub enum Error {
 
     #[error("version error: {0}")]
     Version(String),
+
+    #[error("zip error: {0}")]
+    Zip(String),
+
+    #[error("tar error: {0}")]
+    Tar(String),
+
+    #[error("missing project metadata in pyproject.toml")]
+    MissingProjectMetadata,
+
+    #[error("missing version in pyproject.toml")]
+    MissingVersion,
 }

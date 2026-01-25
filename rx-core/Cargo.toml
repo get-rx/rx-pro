@@ -30,6 +30,9 @@ hex.workspace = true
 indexmap.workspace = true
 smallvec.workspace = true
 regex.workspace = true
+walkdir.workspace = true
+tar.workspace = true
+base64.workspace = true
 
 [dev-dependencies]
 proptest.workspace = true

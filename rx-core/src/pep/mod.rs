@@ -7,5 +7,5 @@ pub mod specifier;
 
 pub use pep440::{PreRelease, Version};
 pub use pep508::Requirement;
-pub use pep621::PyProject;
+pub use pep621::{License, ProjectMetadata, PyProject, Readme};
 pub use specifier::{Operator, VersionSpecifier, VersionSpecifiers};
