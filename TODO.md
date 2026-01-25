@@ -210,11 +210,15 @@ TOML format with:
 
 ### Priority: Medium - Monorepo & Workspace
 
-- [ ] **Workspace Support**
-  - [ ] `rx workspace init` - Initialize workspace
-  - [ ] `rx workspace add <path>` - Add member project
-  - [ ] Unified `rx.lock` at workspace root
-  - [ ] Shared venv option across members
+- [x] **Workspace Support** ✅
+  - [x] `rx workspace init` - Initialize workspace
+  - [x] `rx workspace add <path>` - Add member project
+  - [x] `rx workspace remove <path>` - Remove member
+  - [x] `rx workspace list` - List members with info
+  - [x] `rx workspace lock` - Generate unified lockfile
+  - [x] `rx workspace sync` - Install all dependencies
+  - [x] Unified `rx.lock` at workspace root
+  - [x] Shared venv option (`--shared-venv`)
 - [ ] **Polylith Architecture**
   - [ ] Component-based code sharing across projects
   - [ ] `bases/`, `components/`, `projects/` structure

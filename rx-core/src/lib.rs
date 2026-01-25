@@ -20,6 +20,7 @@ pub mod resolver;
 pub mod semver;
 pub mod venv;
 pub mod versioning;
+pub mod workspace;
 
 pub use audit::{
     AuditConfig, AuditReport, Auditor, FixRecommendation, FixResult, IgnoredVulnerability,
@@ -31,3 +32,4 @@ pub use installer::{default_cache_dir, InstallResult, Installer};
 pub use lockfile::Lockfile;
 pub use venv::VenvManager;
 pub use versioning::{VersioningConfig, get_version, get_git_version, bump_version};
+pub use workspace::{Workspace, MemberInfo};
