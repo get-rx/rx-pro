@@ -166,9 +166,15 @@ TOML format with:
   - [x] `--deps-only` for dependencies without source
   - [x] `--handler` for Lambda entry point
   - [x] `--python-version` for Docker base image
-- [ ] **Docker Integration** (`rx docker build`)
-  - [ ] Generate Dockerfile from `[tool.rx.docker]` config
-  - [ ] Build image directly without manual Dockerfile
+- [x] **Docker Integration** (`rx docker`) ✅
+  - [x] `rx docker generate` - Generate Dockerfile from config
+  - [x] `rx docker build` - Build image directly
+  - [x] `rx docker config` - Show current Docker configuration
+  - [x] Multi-stage builds for smaller images
+  - [x] Auto-generate .dockerignore
+  - [x] Support for custom entrypoint, cmd, env, expose, labels
+  - [x] APT package installation
+  - [x] Custom pre/post-copy commands
 
 #### Developer Experience
 - [x] **Shell Command** (`rx shell`) ✅

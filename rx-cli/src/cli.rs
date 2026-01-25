@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PolylithCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
+use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand, ExportCommand, InitCommand, LockCommand, PolylithCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
 
 #[derive(Parser)]
 #[command(
@@ -78,6 +78,9 @@ pub enum Commands {
 
     /// Manage Polylith architecture (bases, components, projects)
     Polylith(PolylithCommand),
+
+    /// Generate Dockerfile and build Docker images
+    Docker(DockerCommand),
 }
 
 impl Cli {
@@ -102,6 +105,7 @@ impl Cli {
             Commands::Workspace(cmd) => cmd.run().await,
             Commands::Affected(cmd) => cmd.run().await,
             Commands::Polylith(cmd) => cmd.run().await,
+            Commands::Docker(cmd) => cmd.run().await,
         }
     }
 }
