@@ -135,19 +135,19 @@ TOML format with:
 ### Priority: High - Competitive Features
 
 #### Automation & Versioning
-- [ ] **Dynamic Versioning** - Derive version from git tags automatically
-  - [ ] Read version from `git describe --tags`
-  - [ ] Support tag patterns (`v{version}`, `{version}`)
-  - [ ] Generate dev versions for commits after tag (e.g., `1.2.3.dev4+gabc123`)
-  - [ ] Config in `[tool.rx.versioning]`
+- [x] **Dynamic Versioning** - Derive version from git tags automatically ✅
+  - [x] Read version from `git describe --tags`
+  - [x] Support tag patterns (`v{version}`, `{version}`, custom)
+  - [x] Generate dev versions for commits after tag (e.g., `1.2.3.dev4+gabc123`)
+  - [x] Config in `[tool.rx.versioning]`
+- [x] **Version Commands** ✅
+  - [x] `rx version` - Show current version (from git or pyproject.toml)
+  - [x] `rx version bump major/minor/patch/pre`
+  - [x] `rx version set <version>`
 - [ ] **Release Workflow** (`rx release`)
   - [ ] Interactive release: bump version, tag, changelog, publish
   - [ ] `rx release --bump minor` for non-interactive
   - [ ] Conventional commits → changelog generation
-- [ ] **Version Commands**
-  - [ ] `rx version` - Show current version
-  - [ ] `rx version bump major/minor/patch/pre`
-  - [ ] `rx version set <version>`
 
 #### Deployment & Exporting
 - [ ] **Export** (`rx export`)

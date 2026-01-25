@@ -65,4 +65,7 @@ pub enum Error {
 
     #[error("TOML serialize error: {0}")]
     TomlSerialize(#[from] toml::ser::Error),
+
+    #[error("version error: {0}")]
+    Version(String),
 }

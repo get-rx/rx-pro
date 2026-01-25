@@ -18,9 +18,11 @@ pub mod pep;
 pub mod resolver;
 pub mod semver;
 pub mod venv;
+pub mod versioning;
 
 pub use audit::{AuditReport, Auditor, FixRecommendation, FixResult, Severity, Vulnerability};
 pub use error::{Error, Result};
 pub use installer::{default_cache_dir, InstallResult, Installer};
 pub use lockfile::Lockfile;
 pub use venv::VenvManager;
+pub use versioning::{VersioningConfig, get_version, get_git_version, bump_version};

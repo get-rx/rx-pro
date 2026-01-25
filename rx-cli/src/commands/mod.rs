@@ -6,6 +6,7 @@ mod lock;
 mod run;
 mod sync;
 mod update;
+mod version;
 
 pub use add::AddCommand;
 pub use audit::AuditCommand;
@@ -15,3 +16,4 @@ pub use lock::LockCommand;
 pub use run::RunCommand;
 pub use sync::SyncCommand;
 pub use update::UpdateCommand;
+pub use version::VersionCommand;
