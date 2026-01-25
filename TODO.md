@@ -74,11 +74,29 @@ TOML format with:
 
 ## Future Enhancements
 
+### Priority: High
+
+- [ ] `rx audit` - CVE/vulnerability checking
+  - [ ] Check packages against OSV database
+  - [ ] Check packages against PyPI Advisory Database
+  - [ ] Check packages against GitHub Advisory Database
+  - [ ] Report vulnerabilities with severity (Critical/High/Medium/Low)
+  - [ ] `--fix` flag to auto-update to patched versions
+  - [ ] Handle transitive dependencies (update parents when children need updates)
+  - [ ] `--force` flag to apply fixes at user's own risk
+  - [ ] Non-zero exit code for CI integration (configurable threshold)
+  - [ ] Ignore list support in `[tool.rx.audit]` section
+
+### Priority: Medium
+
 - [ ] `rx remove` - Remove dependencies
 - [ ] `rx update` - Update dependencies within constraints
+- [ ] `rx run` - Run commands in venv
+
+### Priority: Low
+
 - [ ] `rx build` - Build wheel/sdist
 - [ ] `rx publish` - Publish to PyPI
-- [ ] `rx run` - Run commands in venv
 - [ ] Workspace support
 - [ ] Plugin system (Wasm)
 - [ ] Platform markers in lockfile
