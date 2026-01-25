@@ -7,7 +7,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["T-Rex Contributors"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/your-org/t-rex"
+repository = "https://github.com/stherrien/t-rex"
 rust-version = "1.75"
 
 [workspace.dependencies]

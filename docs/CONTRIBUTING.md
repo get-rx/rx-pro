@@ -14,7 +14,7 @@ Thank you for your interest in contributing to T-Rex! This document provides gui
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/t-rex.git
+git clone https://github.com/stherrien/t-rex.git
 cd t-rex
 
 # Build the project
