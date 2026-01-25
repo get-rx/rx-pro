@@ -5,8 +5,10 @@
 //! - Package installation with caching
 //! - Native wheel/sdist building
 //! - Virtual environment management
+//! - Security auditing (CVE checking)
 //! - PEP standards compliance
 
+pub mod audit;
 pub mod builder;
 pub mod error;
 pub mod index;
@@ -17,6 +19,7 @@ pub mod resolver;
 pub mod semver;
 pub mod venv;
 
+pub use audit::{AuditReport, Auditor, FixRecommendation, FixResult, Severity, Vulnerability};
 pub use error::{Error, Result};
 pub use installer::{default_cache_dir, InstallResult, Installer};
 pub use lockfile::Lockfile;
