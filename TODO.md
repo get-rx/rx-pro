@@ -132,16 +132,81 @@ TOML format with:
 
 ## Future Enhancements
 
+### Priority: High - Competitive Features
+
+#### Automation & Versioning
+- [ ] **Dynamic Versioning** - Derive version from git tags automatically
+  - [ ] Read version from `git describe --tags`
+  - [ ] Support tag patterns (`v{version}`, `{version}`)
+  - [ ] Generate dev versions for commits after tag (e.g., `1.2.3.dev4+gabc123`)
+  - [ ] Config in `[tool.rx.versioning]`
+- [ ] **Release Workflow** (`rx release`)
+  - [ ] Interactive release: bump version, tag, changelog, publish
+  - [ ] `rx release --bump minor` for non-interactive
+  - [ ] Conventional commits → changelog generation
+- [ ] **Version Commands**
+  - [ ] `rx version` - Show current version
+  - [ ] `rx version bump major/minor/patch/pre`
+  - [ ] `rx version set <version>`
+
+#### Deployment & Exporting
+- [ ] **Export** (`rx export`)
+  - [ ] Generate `requirements.txt` from lockfile
+  - [ ] `--format constraints` for constraints.txt
+  - [ ] `--with-hashes` for hash-pinned requirements
+- [ ] **Bundle** (`rx bundle`)
+  - [ ] Bundle project into standalone venv
+  - [ ] `--target lambda` for AWS Lambda zip
+  - [ ] `--target docker` for Docker-ready bundle
+- [ ] **Docker Integration** (`rx docker build`)
+  - [ ] Generate Dockerfile from `[tool.rx.docker]` config
+  - [ ] Build image directly without manual Dockerfile
+
+#### Developer Experience
+- [ ] **Shell Command** (`rx shell`)
+  - [ ] Spawn subshell with venv activated
+  - [ ] Support bash, zsh, fish, powershell
+- [ ] **Dotenv Support**
+  - [ ] Auto-load `.env` on `rx run` and `rx shell`
+  - [ ] Config in `[tool.rx.dotenv]`
+- [ ] **Script Aliases** (`[tool.rx.scripts]`)
+  - [ ] Define command aliases like npm scripts
+  - [ ] `rx run test` → `pytest -v tests/`
+- [ ] **Task Runner** (`rx task`)
+  - [ ] Predefined tasks with dependencies
+  - [ ] Parallel task execution
+
 ### Priority: Medium
 
 - [ ] `rx remove` - Remove dependencies
-
-### Priority: Low
-
 - [ ] `rx build` - Build wheel/sdist
 - [ ] `rx publish` - Publish to PyPI
-- [ ] Workspace support
-- [ ] Plugin system (Wasm)
+
+### Priority: Medium - Monorepo & Workspace
+
+- [ ] **Workspace Support**
+  - [ ] `rx workspace init` - Initialize workspace
+  - [ ] `rx workspace add <path>` - Add member project
+  - [ ] Unified `rx.lock` at workspace root
+  - [ ] Shared venv option across members
+- [ ] **Polylith Architecture**
+  - [ ] Component-based code sharing across projects
+  - [ ] `bases/`, `components/`, `projects/` structure
+- [ ] **Local Path Dependencies**
+  - [ ] Handle relative path deps in monorepos
+  - [ ] Include local code when building wheels
+- [ ] **Affected Detection**
+  - [ ] `rx run --affected` for changed packages only
+  - [ ] Git-based change detection
+
+### Priority: Low - Platform & Infrastructure
+
+- [ ] **Plugin System (Wasm)**
+  - [ ] `rx plugin list/add/remove`
+  - [ ] Lifecycle hooks: pre-resolve, post-build, etc.
+  - [ ] Sandboxed execution via Wasmtime/Extism
 - [ ] Platform markers in lockfile
 - [ ] Dependency graph in lockfile
 - [ ] Editable installs (PEP 660)
+- [ ] Private registry authentication
+- [ ] `rx import poetry` - Migration from Poetry
