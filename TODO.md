@@ -249,10 +249,20 @@ TOML format with:
 
 ### Priority: Low - Platform & Infrastructure
 
-- [ ] **Plugin System (Wasm)**
-  - [ ] `rx plugin list/add/remove`
-  - [ ] Lifecycle hooks: pre-resolve, post-build, etc.
-  - [ ] Sandboxed execution via Wasmtime/Extism
+- [x] **Plugin System (WebAssembly)** ✅
+  - [x] `rx plugin list` - List installed plugins
+  - [x] `rx plugin add <name> <source>` - Add plugin from file or URL
+  - [x] `rx plugin remove <name>` - Remove plugin
+  - [x] `rx plugin info <name>` - Show plugin details
+  - [x] `rx plugin enable/disable <name>` - Toggle plugin
+  - [x] `rx plugin run <hook>` - Manually run a hook
+  - [x] `rx plugin init <name>` - Create plugin development template
+  - [x] Lifecycle hooks: pre-resolve, post-resolve, pre-build, post-build, pre-publish
+  - [x] Sandboxed execution via Extism/Wasmtime
+  - [x] Capability-based permissions model
+  - [x] Plugin manifest support (.toml file)
+  - [x] Global (~/.rx/plugins) and project-local plugins
+  - [x] Configuration in `[tool.rx.plugins]`
 - [ ] Platform markers in lockfile
 - [ ] Dependency graph in lockfile
 - [ ] Editable installs (PEP 660)

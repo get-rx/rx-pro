@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand, ExportCommand, InitCommand, LockCommand, PolylithCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
+use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand, ExportCommand, InitCommand, LockCommand, PluginCommand, PolylithCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
 
 #[derive(Parser)]
 #[command(
@@ -81,6 +81,9 @@ pub enum Commands {
 
     /// Generate Dockerfile and build Docker images
     Docker(DockerCommand),
+
+    /// Manage WebAssembly plugins
+    Plugin(PluginCommand),
 }
 
 impl Cli {
@@ -106,6 +109,7 @@ impl Cli {
             Commands::Affected(cmd) => cmd.run().await,
             Commands::Polylith(cmd) => cmd.run().await,
             Commands::Docker(cmd) => cmd.run().await,
+            Commands::Plugin(cmd) => cmd.run().await,
         }
     }
 }
