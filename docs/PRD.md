@@ -227,21 +227,19 @@ rx version set <version>   # Set explicit version
 | pubgrub DependencyProvider | ✅ Done | Pre-crawls transitive deps |
 | Dependency Resolver | ✅ Done | Returns packages with URLs/hashes |
 | Native SemVer Tool | ✅ Done | Full SemVer 2.0 with ranges (^, ~, *, hyphen, OR) |
-
-### In Progress 🚧
-
-| Component | Status | Notes |
-|-----------|--------|-------|
-| CLI Integration | 🚧 Stub | Commands exist but don't call resolver |
+| CLI `init` | ✅ Done | Creates pyproject.toml, rx.lock, src/, tests/ |
+| CLI `add` | ✅ Done | Resolves deps, updates pyproject.toml & rx.lock |
+| CLI `lock` | ✅ Done | Regenerates lockfile from pyproject.toml |
+| Lockfile (rx.lock) | ✅ Done | TOML format with versions, URLs, sha256 hashes |
 
 ### TODO 📋
 
 | Priority | Component | Description |
 |----------|-----------|-------------|
 | ~~**P0**~~ | ~~**Native SemVer Tool**~~ | ✅ **DONE** - Full SemVer 2.0 support with ranges, bumping, prerelease |
-| **P1** | CLI `init` Command | Create pyproject.toml with PEP 621 metadata, venv setup |
-| **P1** | CLI `add` Command | Wire up to resolver, update pyproject.toml, generate lockfile |
-| **P2** | Lockfile Format | Design and implement `rx.lock` format |
-| **P2** | CLI `sync` Command | Install resolved packages into venv |
+| ~~**P1**~~ | ~~CLI `init` Command~~ | ✅ **DONE** - Creates pyproject.toml, rx.lock, src/, tests/ |
+| ~~**P1**~~ | ~~CLI `add` Command~~ | ✅ **DONE** - Resolves deps, updates pyproject.toml & rx.lock |
+| ~~**P2**~~ | ~~Lockfile Format~~ | ✅ **DONE** - TOML format with versions, URLs, hashes |
+| ~~**P3**~~ | ~~CLI `lock` Command~~ | ✅ **DONE** - Regenerate lockfile without installing |
+| **P2** | CLI `sync` Command | Install resolved packages into venv (partial - dry-run works) |
 | **P3** | CLI `remove` Command | Remove dependencies, re-resolve |
-| **P3** | CLI `lock` Command | Regenerate lockfile without installing |

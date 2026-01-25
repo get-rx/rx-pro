@@ -23,60 +23,54 @@
 
 ---
 
-## Next Up: CLI Integration
+## ✅ Completed: CLI Integration
 
-## CLI Integration
+### `rx init` ✅
 
-Wire up CLI commands to use the implemented resolver.
+- [x] Create project directory structure (src/, tests/)
+- [x] Generate pyproject.toml with PEP 621 metadata
+- [x] Generate initial rx.lock (empty)
+- [x] Create __init__.py with version
 
-### `rx init`
+### `rx add <package>` ✅
 
-- [ ] Create project directory structure
-- [ ] Generate pyproject.toml with PEP 621 metadata
-- [ ] Prompt for project name, version, description
-- [ ] Set up virtual environment
-- [ ] Generate initial rx.lock (empty)
+- [x] Parse package specifier (name, version constraint)
+- [x] Load existing pyproject.toml
+- [x] Call resolver with new + existing dependencies
+- [x] Update pyproject.toml `[project.dependencies]`
+- [x] Generate/update rx.lock with resolved versions
+- [x] Support --dev flag for dev dependencies
 
-### `rx add <package>`
+### `rx lock` ✅
 
-- [ ] Parse package specifier (name, version constraint)
-- [ ] Load existing pyproject.toml
-- [ ] Call resolver with new + existing dependencies
-- [ ] Update pyproject.toml `[project.dependencies]`
-- [ ] Generate/update rx.lock with resolved versions
-- [ ] Optionally sync venv (install packages)
+- [x] Read pyproject.toml dependencies
+- [x] Run resolver
+- [x] Write rx.lock (without installing)
 
-### `rx sync`
+### `rx sync` (Partial)
 
-- [ ] Read rx.lock
-- [ ] Download packages (parallel)
-- [ ] Install into venv
-- [ ] Verify hashes
-
-### `rx lock`
-
-- [ ] Read pyproject.toml dependencies
-- [ ] Run resolver
-- [ ] Write rx.lock (without installing)
+- [x] Read rx.lock
+- [x] --dry-run flag to show what would be installed
+- [ ] Download packages (parallel) - TODO
+- [ ] Install into venv - TODO
+- [ ] Verify hashes - TODO
 
 ---
 
-## Lockfile Format (rx.lock)
+## ✅ Completed: Lockfile Format (rx.lock)
 
-Design a lockfile format that captures:
-
-- [ ] All resolved packages with exact versions
-- [ ] Download URLs
-- [ ] Hashes (sha256)
-- [ ] Dependency graph (which package requires which)
-- [ ] Platform markers (for universal locks)
-
-Consider: TOML vs JSON vs custom format
+TOML format with:
+- [x] All resolved packages with exact versions
+- [x] Download URLs
+- [x] Hashes (sha256)
+- [ ] Dependency graph (future enhancement)
+- [ ] Platform markers (future enhancement)
 
 ---
 
 ## Future Enhancements
 
+- [ ] `rx sync` - Full installation into venv
 - [ ] `rx remove` - Remove dependencies
 - [ ] `rx update` - Update dependencies within constraints
 - [ ] `rx build` - Build wheel/sdist
