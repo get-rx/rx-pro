@@ -10,6 +10,7 @@
 
 pub mod affected;
 pub mod audit;
+pub mod docker;
 pub mod builder;
 pub mod dotenv;
 pub mod error;
@@ -42,3 +43,4 @@ pub use affected::{
     build_dependency_graph, get_transitive_affected,
 };
 pub use polylith::{Polylith, Brick, BrickType};
+pub use docker::{DockerConfig, DockerfileGenerator, build_image};
