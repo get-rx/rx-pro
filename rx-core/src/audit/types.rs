@@ -154,6 +154,8 @@ pub struct AuditReport {
     pub packages: Vec<PackageAuditResult>,
     /// Packages that were ignored
     pub ignored: Vec<String>,
+    /// Packages using yanked versions
+    pub yanked_packages: Vec<crate::audit::pypi::YankedPackage>,
 }
 
 impl AuditReport {
@@ -162,7 +164,13 @@ impl AuditReport {
         Self {
             packages: Vec::new(),
             ignored: Vec::new(),
+            yanked_packages: Vec::new(),
         }
+    }
+
+    /// Check if any packages are using yanked versions
+    pub fn has_yanked(&self) -> bool {
+        !self.yanked_packages.is_empty()
     }
 
     /// Get total number of vulnerabilities

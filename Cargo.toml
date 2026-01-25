@@ -67,6 +67,9 @@ tar = "0.4"
 # Base64 encoding
 base64 = "0.22"
 
+# Date/time
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+
 # MD5 hashing
 md5 = "0.7"
 
