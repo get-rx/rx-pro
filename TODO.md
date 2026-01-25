@@ -156,10 +156,13 @@ TOML format with:
   - [x] `--with-hashes` for hash-pinned requirements
   - [x] `--only` and `--exclude` filters for specific packages
   - [x] `-o/--output` to write to file (defaults to stdout)
-- [ ] **Bundle** (`rx bundle`)
-  - [ ] Bundle project into standalone venv
-  - [ ] `--target lambda` for AWS Lambda zip
-  - [ ] `--target docker` for Docker-ready bundle
+- [x] **Bundle** (`rx bundle`) ✅
+  - [x] Bundle project into standalone venv
+  - [x] `--target lambda` for AWS Lambda zip
+  - [x] `--target docker` for Docker-ready bundle
+  - [x] `--deps-only` for dependencies without source
+  - [x] `--handler` for Lambda entry point
+  - [x] `--python-version` for Docker base image
 - [ ] **Docker Integration** (`rx docker build`)
   - [ ] Generate Dockerfile from `[tool.rx.docker]` config
   - [ ] Build image directly without manual Dockerfile

@@ -1,6 +1,7 @@
 mod add;
 mod audit;
 mod build;
+mod bundle;
 mod export;
 mod init;
 mod lock;
@@ -14,6 +15,7 @@ mod version;
 pub use add::AddCommand;
 pub use audit::AuditCommand;
 pub use build::BuildCommand;
+pub use bundle::BundleCommand;
 pub use export::ExportCommand;
 pub use init::InitCommand;
 pub use lock::LockCommand;
