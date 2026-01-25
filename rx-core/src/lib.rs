@@ -11,9 +11,11 @@ pub mod builder;
 pub mod error;
 pub mod index;
 pub mod installer;
+pub mod lockfile;
 pub mod pep;
 pub mod resolver;
 pub mod semver;
 pub mod venv;
 
 pub use error::{Error, Result};
+pub use lockfile::Lockfile;

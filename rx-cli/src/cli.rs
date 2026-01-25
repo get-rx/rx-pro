@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, BuildCommand, InitCommand, RunCommand, SyncCommand};
+use crate::commands::{AddCommand, BuildCommand, InitCommand, LockCommand, RunCommand, SyncCommand};
 
 #[derive(Parser)]
 #[command(
@@ -28,6 +28,9 @@ pub enum Commands {
     /// Add dependencies to the project
     Add(AddCommand),
 
+    /// Generate/update the lockfile without installing
+    Lock(LockCommand),
+
     /// Synchronize the virtual environment with the lockfile
     Sync(SyncCommand),
 
@@ -43,6 +46,7 @@ impl Cli {
         match self.command {
             Commands::Init(cmd) => cmd.run().await,
             Commands::Add(cmd) => cmd.run().await,
+            Commands::Lock(cmd) => cmd.run().await,
             Commands::Sync(cmd) => cmd.run().await,
             Commands::Run(cmd) => cmd.run().await,
             Commands::Build(cmd) => cmd.run().await,
