@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AuditCommand, BuildCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RunCommand, SyncCommand, UpdateCommand, VersionCommand};
+use crate::commands::{AddCommand, AuditCommand, BuildCommand, BundleCommand, ExportCommand, InitCommand, LockCommand, PublishCommand, ReleaseCommand, RunCommand, SyncCommand, UpdateCommand, VersionCommand};
 
 #[derive(Parser)]
 #[command(
@@ -43,6 +43,9 @@ pub enum Commands {
     /// Build the project (wheel and sdist)
     Build(BuildCommand),
 
+    /// Bundle project for deployment (standalone, Lambda, Docker)
+    Bundle(BundleCommand),
+
     /// Export lockfile to requirements.txt or constraints.txt
     Export(ExportCommand),
 
@@ -69,6 +72,7 @@ impl Cli {
             Commands::Run(cmd) => cmd.run().await,
             Commands::Update(cmd) => cmd.run().await,
             Commands::Build(cmd) => cmd.run().await,
+            Commands::Bundle(cmd) => cmd.run().await,
             Commands::Export(cmd) => cmd.run().await,
             Commands::Audit(cmd) => cmd.run().await,
             Commands::Version(cmd) => cmd.run().await,
