@@ -205,4 +205,42 @@ rx run --affected <cmd>    # Run only for affected packages
 # Workspace
 rx workspace init          # Initialize workspace
 rx workspace add <path>    # Add member to workspace
+
+# Versioning
+rx version                 # Show current version
+rx version bump <part>     # Bump major/minor/patch
+rx version set <version>   # Set explicit version
 ```
+
+---
+
+## 9. Implementation Status & TODO
+
+### Completed ✅
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| PEP 440 Version Parsing | ✅ Done | Full support for pre/post/dev/epoch/local |
+| PEP 508 Requirement Parsing | ✅ Done | Includes markers and extras |
+| Version Specifier Parsing | ✅ Done | Converts to pubgrub ranges |
+| PyPI Index Client | ✅ Done | Caching, concurrent fetching |
+| pubgrub DependencyProvider | ✅ Done | Pre-crawls transitive deps |
+| Dependency Resolver | ✅ Done | Returns packages with URLs/hashes |
+
+### In Progress 🚧
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| CLI Integration | 🚧 Stub | Commands exist but don't call resolver |
+
+### TODO 📋
+
+| Priority | Component | Description |
+|----------|-----------|-------------|
+| **P0** | **Native SemVer Tool** | Implement Semantic Versioning that beats Poetry's - fast, correct, with comparison/bumping/range satisfaction |
+| **P1** | CLI `init` Command | Create pyproject.toml with PEP 621 metadata, venv setup |
+| **P1** | CLI `add` Command | Wire up to resolver, update pyproject.toml, generate lockfile |
+| **P2** | Lockfile Format | Design and implement `rx.lock` format |
+| **P2** | CLI `sync` Command | Install resolved packages into venv |
+| **P3** | CLI `remove` Command | Remove dependencies, re-resolve |
+| **P3** | CLI `lock` Command | Regenerate lockfile without installing |
