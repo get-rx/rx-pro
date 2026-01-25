@@ -150,10 +150,12 @@ TOML format with:
   - [x] Conventional commits → changelog generation
 
 #### Deployment & Exporting
-- [ ] **Export** (`rx export`)
-  - [ ] Generate `requirements.txt` from lockfile
-  - [ ] `--format constraints` for constraints.txt
-  - [ ] `--with-hashes` for hash-pinned requirements
+- [x] **Export** (`rx export`) ✅
+  - [x] Generate `requirements.txt` from lockfile
+  - [x] `--format constraints` for constraints.txt
+  - [x] `--with-hashes` for hash-pinned requirements
+  - [x] `--only` and `--exclude` filters for specific packages
+  - [x] `-o/--output` to write to file (defaults to stdout)
 - [ ] **Bundle** (`rx bundle`)
   - [ ] Bundle project into standalone venv
   - [ ] `--target lambda` for AWS Lambda zip
