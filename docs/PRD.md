@@ -226,6 +226,7 @@ rx version set <version>   # Set explicit version
 | PyPI Index Client | ✅ Done | Caching, concurrent fetching |
 | pubgrub DependencyProvider | ✅ Done | Pre-crawls transitive deps |
 | Dependency Resolver | ✅ Done | Returns packages with URLs/hashes |
+| Native SemVer Tool | ✅ Done | Full SemVer 2.0 with ranges (^, ~, *, hyphen, OR) |
 
 ### In Progress 🚧
 
@@ -237,7 +238,7 @@ rx version set <version>   # Set explicit version
 
 | Priority | Component | Description |
 |----------|-----------|-------------|
-| **P0** | **Native SemVer Tool** | Implement Semantic Versioning that beats Poetry's - fast, correct, with comparison/bumping/range satisfaction |
+| ~~**P0**~~ | ~~**Native SemVer Tool**~~ | ✅ **DONE** - Full SemVer 2.0 support with ranges, bumping, prerelease |
 | **P1** | CLI `init` Command | Create pyproject.toml with PEP 621 metadata, venv setup |
 | **P1** | CLI `add` Command | Wire up to resolver, update pyproject.toml, generate lockfile |
 | **P2** | Lockfile Format | Design and implement `rx.lock` format |

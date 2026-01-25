@@ -13,6 +13,7 @@ pub mod index;
 pub mod installer;
 pub mod pep;
 pub mod resolver;
+pub mod semver;
 pub mod venv;
 
 pub use error::{Error, Result};
