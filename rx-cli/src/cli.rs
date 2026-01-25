@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AuditCommand, BuildCommand, InitCommand, LockCommand, RunCommand, SyncCommand, UpdateCommand, VersionCommand};
+use crate::commands::{AddCommand, AuditCommand, BuildCommand, InitCommand, LockCommand, ReleaseCommand, RunCommand, SyncCommand, UpdateCommand, VersionCommand};
 
 #[derive(Parser)]
 #[command(
@@ -48,6 +48,9 @@ pub enum Commands {
 
     /// Show or manage project version
     Version(VersionCommand),
+
+    /// Create a release (bump version, changelog, tag)
+    Release(ReleaseCommand),
 }
 
 impl Cli {
@@ -62,6 +65,7 @@ impl Cli {
             Commands::Build(cmd) => cmd.run().await,
             Commands::Audit(cmd) => cmd.run().await,
             Commands::Version(cmd) => cmd.run().await,
+            Commands::Release(cmd) => cmd.run().await,
         }
     }
 }

@@ -144,10 +144,10 @@ TOML format with:
   - [x] `rx version` - Show current version (from git or pyproject.toml)
   - [x] `rx version bump major/minor/patch/pre`
   - [x] `rx version set <version>`
-- [ ] **Release Workflow** (`rx release`)
-  - [ ] Interactive release: bump version, tag, changelog, publish
-  - [ ] `rx release --bump minor` for non-interactive
-  - [ ] Conventional commits → changelog generation
+- [x] **Release Workflow** (`rx release`) ✅
+  - [x] Interactive release: bump version, tag, changelog, publish
+  - [x] `rx release --bump minor` for non-interactive
+  - [x] Conventional commits → changelog generation
 
 #### Deployment & Exporting
 - [ ] **Export** (`rx export`)
