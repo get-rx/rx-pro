@@ -312,6 +312,40 @@ impl PyProject {
         Ok(())
     }
 
+    /// Add a path dependency to [tool.rx.dependencies]
+    pub fn add_path_dependency(&mut self, name: String, path: String, editable: bool) {
+        // Ensure tool.rx.dependencies exists
+        let rx = self
+            .tool
+            .entry("rx".to_string())
+            .or_insert_with(|| toml::Value::Table(toml::map::Map::new()));
+
+        if let toml::Value::Table(rx_table) = rx {
+            let deps = rx_table
+                .entry("dependencies".to_string())
+                .or_insert_with(|| toml::Value::Table(toml::map::Map::new()));
+
+            if let toml::Value::Table(deps_table) = deps {
+                // Create the path dependency entry
+                let mut dep_entry = toml::map::Map::new();
+                dep_entry.insert("path".to_string(), toml::Value::String(path));
+                dep_entry.insert("editable".to_string(), toml::Value::Boolean(editable));
+
+                deps_table.insert(name, toml::Value::Table(dep_entry));
+            }
+        }
+    }
+
+    /// Remove a path dependency from [tool.rx.dependencies]
+    pub fn remove_path_dependency(&mut self, name: &str) -> bool {
+        if let Some(toml::Value::Table(rx)) = self.tool.get_mut("rx") {
+            if let Some(toml::Value::Table(deps)) = rx.get_mut("dependencies") {
+                return deps.remove(name).is_some();
+            }
+        }
+        false
+    }
+
     /// Get all dependencies (main + dev) as parsed Requirements
     pub fn all_dependencies(&self) -> Vec<crate::pep::Requirement> {
         let mut reqs = Vec::new();
