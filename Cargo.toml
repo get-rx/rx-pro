@@ -1,0 +1,63 @@
+[workspace]
+resolver = "2"
+members = ["rx-cli", "rx-core", "rx-plugin"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["T-Rex Contributors"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/your-org/t-rex"
+rust-version = "1.75"
+
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1.43", features = ["full"] }
+
+# CLI
+clap = { version = "4.5", features = ["derive"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# HTTP
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+
+# Dependency resolution
+pubgrub = "0.2"
+
+# Parallelism
+rayon = "1.10"
+
+# Compression
+flate2 = "1.0"
+zstd = "0.13"
+
+# Collections
+indexmap = { version = "2.7", features = ["serde"] }
+smallvec = "1.13"
+
+# Wasm plugins
+extism = "1.7"
+
+# Testing
+proptest = "1.5"
+
+# Internal crates
+rx-core = { path = "rx-core" }
+rx-plugin = { path = "rx-plugin" }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

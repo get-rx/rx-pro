@@ -1,0 +1,25 @@
+[package]
+name = "rx"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "T-Rex: A fast Python package manager written in Rust"
+
+[[bin]]
+name = "rx"
+path = "src/main.rs"
+
+[dependencies]
+rx-core.workspace = true
+
+clap.workspace = true
+tokio.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
