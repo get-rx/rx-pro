@@ -168,9 +168,12 @@ TOML format with:
   - [ ] Build image directly without manual Dockerfile
 
 #### Developer Experience
-- [ ] **Shell Command** (`rx shell`)
-  - [ ] Spawn subshell with venv activated
-  - [ ] Support bash, zsh, fish, powershell
+- [x] **Shell Command** (`rx shell`) ✅
+  - [x] Spawn subshell with venv activated
+  - [x] Support bash, zsh, fish, powershell
+  - [x] Auto-detect user's shell from SHELL env var
+  - [x] Modified prompt to show venv name
+  - [x] `-s/--shell` to override shell
 - [ ] **Dotenv Support**
   - [ ] Auto-load `.env` on `rx run` and `rx shell`
   - [ ] Config in `[tool.rx.dotenv]`
