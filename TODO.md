@@ -222,9 +222,11 @@ TOML format with:
 - [ ] **Polylith Architecture**
   - [ ] Component-based code sharing across projects
   - [ ] `bases/`, `components/`, `projects/` structure
-- [ ] **Local Path Dependencies**
-  - [ ] Handle relative path deps in monorepos
-  - [ ] Include local code when building wheels
+- [x] **Local Path Dependencies** ✅
+  - [x] Handle relative path deps in monorepos
+  - [x] Support editable and copy installation modes
+  - [x] Auto-install during `rx sync` and `rx workspace sync`
+  - [ ] Include local code when building wheels (future enhancement)
 - [ ] **Affected Detection**
   - [ ] `rx run --affected` for changed packages only
   - [ ] Git-based change detection

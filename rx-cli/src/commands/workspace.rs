@@ -13,7 +13,7 @@ use clap::{Args, Subcommand};
 use rx_core::lockfile::Lockfile;
 use rx_core::resolver::Resolver;
 use rx_core::workspace::Workspace;
-use rx_core::{default_cache_dir, Installer, VenvManager};
+use rx_core::{default_cache_dir, install_path_dependency, load_path_dependencies, Installer, VenvManager};
 
 #[derive(Args)]
 pub struct WorkspaceCommand {
@@ -404,6 +404,38 @@ impl WorkspaceSyncCommand {
         println!("Installed {} packages ({} downloaded, {} cached)",
             installed, downloaded, cached
         );
+
+        // Install path dependencies from all workspace members
+        let members = workspace.members();
+        let mut total_path_deps = 0;
+
+        for member in members {
+            let path_deps = load_path_dependencies(member).unwrap_or_default();
+            if !path_deps.is_empty() {
+                if total_path_deps == 0 {
+                    println!();
+                    println!("Installing path dependencies:");
+                }
+
+                for (name, dep) in &path_deps {
+                    let mode = if dep.editable { "editable" } else { "copy" };
+                    match install_path_dependency(dep, member, &site_packages).await {
+                        Ok(_) => {
+                            println!("  {} ({}) ✓", name, mode);
+                            total_path_deps += 1;
+                        }
+                        Err(e) => {
+                            println!("  {} - FAILED: {}", name, e);
+                        }
+                    }
+                }
+            }
+        }
+
+        if total_path_deps > 0 {
+            println!();
+            println!("Installed {} path dependencies", total_path_deps);
+        }
 
         if workspace.shared_venv {
             println!();
