@@ -17,7 +17,8 @@ use clap::Args;
 use tracing::debug;
 
 use rx_core::pep::PyProject;
-use rx_core::{load_dotenv, DotenvConfig};
+use rx_core::workspace::Workspace;
+use rx_core::{load_dotenv, AffectedConfig, detect_affected_with_transitive, DotenvConfig};
 
 #[derive(Args)]
 pub struct RunCommand {
@@ -33,6 +34,14 @@ pub struct RunCommand {
     #[arg(long)]
     pub list: bool,
 
+    /// Run only on affected workspace members (based on git changes)
+    #[arg(long)]
+    pub affected: bool,
+
+    /// Base branch for affected detection (default: main)
+    #[arg(long, default_value = "main")]
+    pub base: String,
+
     /// Command or script to run (e.g., python, pytest, or a script alias)
     #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
     pub command: Vec<String>,
@@ -40,6 +49,11 @@ pub struct RunCommand {
 
 impl RunCommand {
     pub async fn run(self) -> Result<()> {
+        // Handle --affected flag for workspace
+        if self.affected {
+            return self.run_affected().await;
+        }
+
         let project_dir = if self.project.as_os_str() == "." {
             std::env::current_dir()?
         } else {
@@ -253,6 +267,148 @@ impl RunCommand {
 
         // Default configuration
         DotenvConfig::new()
+    }
+
+    /// Run command on affected workspace members only
+    async fn run_affected(&self) -> Result<()> {
+        if self.command.is_empty() {
+            bail!("No command specified. Use 'rx run --affected <command>'");
+        }
+
+        // Find workspace root
+        let start_dir = if self.project.as_os_str() == "." {
+            std::env::current_dir()?
+        } else {
+            self.project.canonicalize()?
+        };
+
+        let workspace = Workspace::load(&start_dir)
+            .context("Not in a workspace. --affected only works in workspaces.")?;
+
+        // Detect affected packages
+        let config = AffectedConfig::new().with_base(&self.base);
+        let result = detect_affected_with_transitive(&workspace, &config)?;
+
+        if result.all.is_empty() {
+            println!("No affected packages detected. Nothing to run.");
+            return Ok(());
+        }
+
+        println!("Running on {} affected packages:", result.all.len());
+        println!();
+
+        let mut any_failed = false;
+
+        for member in &result.all {
+            let rel_path = member.strip_prefix(&workspace.root).unwrap_or(member);
+            let name = if let Ok(pyproject) = PyProject::load(member) {
+                pyproject.name().unwrap_or("<unnamed>").to_string()
+            } else {
+                rel_path.to_string_lossy().to_string()
+            };
+
+            println!("▸ {} ({})", name, rel_path.display());
+
+            // Run the command in this member's directory
+            match self.run_in_project(member).await {
+                Ok(_) => {
+                    println!("  ✓ Success");
+                }
+                Err(e) => {
+                    println!("  ✗ Failed: {}", e);
+                    any_failed = true;
+                }
+            }
+            println!();
+        }
+
+        if any_failed {
+            bail!("Some packages failed");
+        }
+
+        println!("All {} affected packages completed successfully.", result.all.len());
+        Ok(())
+    }
+
+    /// Run the command in a specific project directory
+    async fn run_in_project(&self, project_dir: &Path) -> Result<()> {
+        // Check for virtual environment (try workspace venv or local)
+        let workspace_venv = Workspace::find_root(project_dir)
+            .ok()
+            .map(|root| root.join(".venv"));
+
+        let local_venv = project_dir.join(".venv");
+
+        let venv_path = if local_venv.exists() {
+            local_venv
+        } else if let Some(ref ws_venv) = workspace_venv {
+            if ws_venv.exists() {
+                ws_venv.clone()
+            } else {
+                bail!("No virtual environment found. Run 'rx sync' or 'rx workspace sync' first.");
+            }
+        } else {
+            bail!("No virtual environment found. Run 'rx sync' first.");
+        };
+
+        // Get venv bin directory
+        #[cfg(unix)]
+        let bin_dir = venv_path.join("bin");
+        #[cfg(windows)]
+        let bin_dir = venv_path.join("Scripts");
+
+        // Load scripts from this project
+        let scripts = self.load_scripts(project_dir);
+
+        // Resolve command (may be a script alias)
+        let (program, args) = self.resolve_command(&scripts)?;
+
+        // Find program
+        let program_path = self.find_program(&program, &bin_dir);
+
+        // Set up environment
+        let current_path = std::env::var("PATH").unwrap_or_default();
+        let new_path = format!(
+            "{}{}{}",
+            bin_dir.display(),
+            if cfg!(windows) { ";" } else { ":" },
+            current_path
+        );
+
+        // Load dotenv
+        let dotenv_config = if self.no_dotenv {
+            DotenvConfig { enabled: false, ..Default::default() }
+        } else {
+            self.load_dotenv_config(project_dir)
+        };
+        let dotenv_vars = load_dotenv(project_dir, &dotenv_config).unwrap_or_default();
+
+        // Build and execute command
+        let mut cmd = Command::new(&program_path);
+        cmd.args(&args)
+            .current_dir(project_dir)
+            .env("PATH", &new_path)
+            .env("VIRTUAL_ENV", &venv_path)
+            .env_remove("PYTHONHOME")
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit());
+
+        for (key, value) in &dotenv_vars {
+            if dotenv_config.override_env || std::env::var(key).is_err() {
+                cmd.env(key, value);
+            }
+        }
+
+        let status = cmd
+            .status()
+            .with_context(|| format!("Failed to execute '{}'", program))?;
+
+        if !status.success() {
+            bail!("Command exited with code {}", status.code().unwrap_or(1));
+        }
+
+        Ok(())
     }
 }
 
