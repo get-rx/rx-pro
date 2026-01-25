@@ -86,6 +86,7 @@ extism = "1.7"
 # Testing
 proptest = "1.5"
 tempfile = "3.15"
+criterion = { version = "0.5", features = ["html_reports"] }
 
 # Internal crates
 rx-core = { path = "rx-core" }
