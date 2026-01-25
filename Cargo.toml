@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = ["rx-cli", "rx-core", "rx-plugin"]
+exclude = ["rx-python"]
 
 [workspace.package]
 version = "0.1.0"
