@@ -10,6 +10,7 @@ mod release;
 mod run;
 mod shell;
 mod sync;
+mod task;
 mod update;
 mod version;
 
@@ -25,5 +26,6 @@ pub use release::ReleaseCommand;
 pub use run::RunCommand;
 pub use shell::ShellCommand;
 pub use sync::SyncCommand;
+pub use task::TaskCommand;
 pub use update::UpdateCommand;
 pub use version::VersionCommand;
