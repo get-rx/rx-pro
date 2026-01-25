@@ -188,9 +188,12 @@ TOML format with:
   - [x] `rx run --list` to show available scripts
   - [x] Append extra args: `rx run test -k foo` → `pytest -v tests/ -k foo`
   - [x] Proper quote handling in script commands
-- [ ] **Task Runner** (`rx task`)
-  - [ ] Predefined tasks with dependencies
-  - [ ] Parallel task execution
+- [x] **Task Runner** (`rx task`) ✅
+  - [x] Predefined tasks with dependencies
+  - [x] Parallel task execution
+  - [x] Topological sort with cycle detection
+  - [x] `--list` flag to show available tasks
+  - [x] `--sequential` flag to disable parallel execution
 
 ### Priority: Medium
 
