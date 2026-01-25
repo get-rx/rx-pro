@@ -106,7 +106,7 @@ impl OsvClient {
         // Identify packages with vulnerabilities
         let mut vulnerable_packages: Vec<(&str, &str)> = Vec::new();
         for (i, result) in batch_response.results.iter().enumerate() {
-            if i < packages.len() && result.vulns.as_ref().map_or(false, |v| !v.is_empty()) {
+            if i < packages.len() && result.vulns.as_ref().is_some_and(|v| !v.is_empty()) {
                 vulnerable_packages.push(packages[i]);
             }
         }

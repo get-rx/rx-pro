@@ -73,10 +73,8 @@ impl Installer {
 
         // Install each downloaded package
         let mut results = Vec::new();
-        for (name, _pkg) in packages {
-            let download_result = download_results
-                .iter()
-                .find(|(n, _, _)| n == name);
+        for name in packages.keys() {
+            let download_result = download_results.iter().find(|(n, _, _)| n == name);
 
             match download_result {
                 Some((_, Some(cached_path), downloaded)) => {
@@ -242,10 +240,10 @@ impl Installer {
                 #[cfg(unix)]
                 {
                     use std::os::unix::fs::PermissionsExt;
-                    if entry_path.starts_with("..") || entry_path.to_string_lossy().contains("/bin/") {
-                        let mut perms = fs::metadata(&dest_path)
-                            .map_err(Error::Io)?
-                            .permissions();
+                    if entry_path.starts_with("..")
+                        || entry_path.to_string_lossy().contains("/bin/")
+                    {
+                        let mut perms = fs::metadata(&dest_path).map_err(Error::Io)?.permissions();
                         perms.set_mode(0o755);
                         fs::set_permissions(&dest_path, perms).map_err(Error::Io)?;
                     }
@@ -313,7 +311,10 @@ pub fn default_cache_dir() -> PathBuf {
     #[cfg(windows)]
     {
         if let Ok(local_app_data) = std::env::var("LOCALAPPDATA") {
-            return PathBuf::from(local_app_data).join("rx").join("cache").join("wheels");
+            return PathBuf::from(local_app_data)
+                .join("rx")
+                .join("cache")
+                .join("wheels");
         }
     }
 

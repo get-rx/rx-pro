@@ -42,8 +42,8 @@ use std::path::PathBuf;
 use anyhow::{bail, Context, Result};
 use clap::{Args, Subcommand};
 
-use rx_plugin::{Hook, HookContext, PluginConfig, PluginHost};
 use rx_core::pep::PyProject;
+use rx_plugin::{Hook, HookContext, PluginConfig, PluginHost};
 
 #[derive(Args)]
 pub struct PluginCommand {
@@ -118,8 +118,7 @@ impl PluginListCommand {
 
         // Load global plugins
         let plugin_dir = host.plugin_dir().to_path_buf();
-        let _global_count = host.load_from_dir(&plugin_dir)
-            .unwrap_or(0);
+        let _global_count = host.load_from_dir(&plugin_dir).unwrap_or(0);
 
         // Load project plugins if not global-only
         if !self.global {
@@ -147,7 +146,11 @@ impl PluginListCommand {
         println!();
 
         for plugin in plugins {
-            let status = if plugin.enabled { "enabled" } else { "disabled" };
+            let status = if plugin.enabled {
+                "enabled"
+            } else {
+                "disabled"
+            };
 
             if self.verbose {
                 println!("  {} ({})", plugin.name, status);
@@ -164,10 +167,7 @@ impl PluginListCommand {
                 let hooks_count = plugin.manifest.hooks.len();
                 println!(
                     "  {} v{} ({}, {} hooks)",
-                    plugin.name,
-                    plugin.manifest.version,
-                    status,
-                    hooks_count
+                    plugin.name, plugin.manifest.version, status, hooks_count
                 );
             }
         }
@@ -215,40 +215,42 @@ impl PluginAddCommand {
         let mut host = PluginHost::with_default_dir();
         host.ensure_plugin_dir()?;
 
-        let plugin_path = if self.source.starts_with("http://") || self.source.starts_with("https://") {
-            // Download
-            println!("Downloading plugin from {}...", self.source);
-            let dest = host.plugin_dir().join(format!("{}.wasm", self.name));
+        let plugin_path =
+            if self.source.starts_with("http://") || self.source.starts_with("https://") {
+                // Download
+                println!("Downloading plugin from {}...", self.source);
+                let dest = host.plugin_dir().join(format!("{}.wasm", self.name));
 
-            let response = reqwest::get(&self.source).await
-                .context("Failed to download plugin")?;
+                let response = reqwest::get(&self.source)
+                    .await
+                    .context("Failed to download plugin")?;
 
-            if !response.status().is_success() {
-                bail!("Failed to download plugin: HTTP {}", response.status());
-            }
+                if !response.status().is_success() {
+                    bail!("Failed to download plugin: HTTP {}", response.status());
+                }
 
-            let bytes = response.bytes().await?;
-            std::fs::write(&dest, &bytes)?;
-            dest
-        } else {
-            // Copy local file
-            let source_path = PathBuf::from(&self.source);
-            if !source_path.exists() {
-                bail!("Plugin file not found: {}", self.source);
-            }
+                let bytes = response.bytes().await?;
+                std::fs::write(&dest, &bytes)?;
+                dest
+            } else {
+                // Copy local file
+                let source_path = PathBuf::from(&self.source);
+                if !source_path.exists() {
+                    bail!("Plugin file not found: {}", self.source);
+                }
 
-            let dest = host.plugin_dir().join(format!("{}.wasm", self.name));
-            std::fs::copy(&source_path, &dest)?;
+                let dest = host.plugin_dir().join(format!("{}.wasm", self.name));
+                std::fs::copy(&source_path, &dest)?;
 
-            // Also copy manifest if it exists
-            let manifest_src = source_path.with_extension("toml");
-            if manifest_src.exists() {
-                let manifest_dest = dest.with_extension("toml");
-                std::fs::copy(&manifest_src, &manifest_dest)?;
-            }
+                // Also copy manifest if it exists
+                let manifest_src = source_path.with_extension("toml");
+                if manifest_src.exists() {
+                    let manifest_dest = dest.with_extension("toml");
+                    std::fs::copy(&manifest_src, &manifest_dest)?;
+                }
 
-            dest
-        };
+                dest
+            };
 
         // Try to load to validate
         host.load(&self.name, &plugin_path)?;
@@ -273,8 +275,8 @@ impl PluginAddCommand {
 
         // Update pyproject.toml
         let content = std::fs::read_to_string(&pyproject_path)?;
-        let mut doc: toml_edit::DocumentMut = content.parse()
-            .context("Failed to parse pyproject.toml")?;
+        let mut doc: toml_edit::DocumentMut =
+            content.parse().context("Failed to parse pyproject.toml")?;
 
         // Ensure [tool.rx.plugins] exists
         if !doc.contains_key("tool") {
@@ -283,7 +285,11 @@ impl PluginAddCommand {
         if !doc["tool"].as_table().unwrap().contains_key("rx") {
             doc["tool"]["rx"] = toml_edit::Item::Table(toml_edit::Table::new());
         }
-        if !doc["tool"]["rx"].as_table().unwrap().contains_key("plugins") {
+        if !doc["tool"]["rx"]
+            .as_table()
+            .unwrap()
+            .contains_key("plugins")
+        {
             doc["tool"]["rx"]["plugins"] = toml_edit::Item::Table(toml_edit::Table::new());
         }
 
@@ -360,13 +366,16 @@ impl PluginRemoveCommand {
             let mut doc: toml_edit::DocumentMut = content.parse()?;
 
             // Remove plugin from config
-            let tool = doc.get_mut("tool")
+            let tool = doc
+                .get_mut("tool")
                 .and_then(|t: &mut toml_edit::Item| t.as_table_mut());
             if let Some(tool) = tool {
-                let rx = tool.get_mut("rx")
+                let rx = tool
+                    .get_mut("rx")
                     .and_then(|t: &mut toml_edit::Item| t.as_table_mut());
                 if let Some(rx) = rx {
-                    let plugins = rx.get_mut("plugins")
+                    let plugins = rx
+                        .get_mut("plugins")
                         .and_then(|t: &mut toml_edit::Item| t.as_table_mut());
                     if let Some(plugins) = plugins {
                         if plugins.remove(&self.name).is_some() {
@@ -429,7 +438,8 @@ impl PluginInfoCommand {
             }
         }
 
-        let plugin = host.get_plugin(&self.name)
+        let plugin = host
+            .get_plugin(&self.name)
             .ok_or_else(|| anyhow::anyhow!("Failed to load plugin"))?;
 
         println!("Plugin: {}", plugin.name);
@@ -524,16 +534,20 @@ async fn update_plugin_enabled(project: &PathBuf, name: &str, enabled: bool) -> 
     let content = std::fs::read_to_string(&pyproject_path)?;
     let mut doc: toml_edit::DocumentMut = content.parse()?;
 
-    let tool = doc.get_mut("tool")
+    let tool = doc
+        .get_mut("tool")
         .and_then(|t: &mut toml_edit::Item| t.as_table_mut());
     if let Some(tool) = tool {
-        let rx = tool.get_mut("rx")
+        let rx = tool
+            .get_mut("rx")
             .and_then(|t: &mut toml_edit::Item| t.as_table_mut());
         if let Some(rx) = rx {
-            let plugins = rx.get_mut("plugins")
+            let plugins = rx
+                .get_mut("plugins")
                 .and_then(|t: &mut toml_edit::Item| t.as_table_mut());
             if let Some(plugins) = plugins {
-                let plugin = plugins.get_mut(name)
+                let plugin = plugins
+                    .get_mut(name)
                     .and_then(|t: &mut toml_edit::Item| t.as_table_mut());
                 if let Some(plugin) = plugin {
                     plugin.insert("enabled", toml_edit::value(enabled));
@@ -657,7 +671,11 @@ impl PluginInitCommand {
         println!("Next steps:");
         println!("  cd {}", self.name);
         println!("  cargo build --release --target wasm32-wasi");
-        println!("  rx plugin add {} ./target/wasm32-wasi/release/{}.wasm", self.name, self.name.replace('-', "_"));
+        println!(
+            "  rx plugin add {} ./target/wasm32-wasi/release/{}.wasm",
+            self.name,
+            self.name.replace('-', "_")
+        );
 
         Ok(())
     }
@@ -784,7 +802,10 @@ network = false
 "#,
             self.name
         );
-        std::fs::write(dir.join(format!("{}.toml", self.name.replace('-', "_"))), manifest)?;
+        std::fs::write(
+            dir.join(format!("{}.toml", self.name.replace('-', "_"))),
+            manifest,
+        )?;
 
         // Create README
         let readme = format!(
@@ -854,7 +875,7 @@ fn load_plugin_configs(project_dir: &PathBuf) -> HashMap<String, PluginConfig> {
 
                             let settings = plugin_table
                                 .get("settings")
-                                .map(|v| toml_to_json(v))
+                                .map(toml_to_json)
                                 .unwrap_or(serde_json::Value::Null);
 
                             configs.insert(
@@ -880,15 +901,11 @@ fn toml_to_json(value: &toml::Value) -> serde_json::Value {
     match value {
         toml::Value::String(s) => serde_json::Value::String(s.clone()),
         toml::Value::Integer(i) => serde_json::Value::Number((*i).into()),
-        toml::Value::Float(f) => {
-            serde_json::Number::from_f64(*f)
-                .map(serde_json::Value::Number)
-                .unwrap_or(serde_json::Value::Null)
-        }
+        toml::Value::Float(f) => serde_json::Number::from_f64(*f)
+            .map(serde_json::Value::Number)
+            .unwrap_or(serde_json::Value::Null),
         toml::Value::Boolean(b) => serde_json::Value::Bool(*b),
-        toml::Value::Array(arr) => {
-            serde_json::Value::Array(arr.iter().map(toml_to_json).collect())
-        }
+        toml::Value::Array(arr) => serde_json::Value::Array(arr.iter().map(toml_to_json).collect()),
         toml::Value::Table(table) => {
             let map: serde_json::Map<String, serde_json::Value> = table
                 .iter()

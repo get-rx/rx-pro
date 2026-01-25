@@ -181,7 +181,9 @@ impl RegistryManager {
             configs.push(RegistryConfig::pypi());
         }
 
-        Self { registries: configs }
+        Self {
+            registries: configs,
+        }
     }
 
     /// Load registry configuration from pyproject.toml and global config
@@ -298,7 +300,12 @@ fn resolve_env_var(value: &str) -> String {
         if let Some(end) = result[start..].find('}') {
             let var_name = &result[start + 2..start + end];
             let replacement = std::env::var(var_name).unwrap_or_default();
-            result = format!("{}{}{}", &result[..start], replacement, &result[start + end + 1..]);
+            result = format!(
+                "{}{}{}",
+                &result[..start],
+                replacement,
+                &result[start + end + 1..]
+            );
         } else {
             break;
         }
@@ -325,7 +332,10 @@ mod tests {
     fn test_resolve_env_var() {
         std::env::set_var("TEST_VAR", "test_value");
         assert_eq!(resolve_env_var("${TEST_VAR}"), "test_value");
-        assert_eq!(resolve_env_var("prefix_${TEST_VAR}_suffix"), "prefix_test_value_suffix");
+        assert_eq!(
+            resolve_env_var("prefix_${TEST_VAR}_suffix"),
+            "prefix_test_value_suffix"
+        );
         std::env::remove_var("TEST_VAR");
     }
 
@@ -335,7 +345,10 @@ mod tests {
         assert_eq!(manager.registries().len(), 1);
         assert_eq!(manager.primary().unwrap().name, "pypi");
 
-        manager.add(RegistryConfig::new("private", "https://private.pypi.org/simple/"));
+        manager.add(RegistryConfig::new(
+            "private",
+            "https://private.pypi.org/simple/",
+        ));
         assert!(manager.get("private").is_some());
     }
 }

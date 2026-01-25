@@ -133,9 +133,9 @@ description = "Polylith workspace"
             )
         };
 
-        let mut doc: toml_edit::DocumentMut = content.parse().map_err(|e| {
-            Error::Config(format!("Failed to parse pyproject.toml: {}", e))
-        })?;
+        let mut doc: toml_edit::DocumentMut = content
+            .parse()
+            .map_err(|e| Error::Config(format!("Failed to parse pyproject.toml: {}", e)))?;
 
         // Ensure [tool.rx] exists
         if !doc.contains_key("tool") {
@@ -154,11 +154,7 @@ description = "Polylith workspace"
         let workspace_table = rx_table["workspace"].as_table_mut().unwrap();
 
         // Set members to include all polylith directories
-        let members = toml_edit::Array::from_iter([
-            "bases/*",
-            "components/*",
-            "projects/*",
-        ]);
+        let members = toml_edit::Array::from_iter(["bases/*", "components/*", "projects/*"]);
         workspace_table["members"] = toml_edit::Item::Value(members.into());
 
         // Add polylith config
@@ -274,9 +270,7 @@ description = "Polylith workspace"
                 .to_string();
 
             // Check if it's a brick dependency (starts with top namespace)
-            if dep_name.starts_with(&self.top_namespace)
-                || self.is_brick(&dep_name)
-            {
+            if dep_name.starts_with(&self.top_namespace) || self.is_brick(&dep_name) {
                 brick_deps.push(dep_name);
             } else {
                 external_deps.push(dep_name);
@@ -483,11 +477,7 @@ components = {components:?}
             brick_type: BrickType::Project,
             name: name.to_string(),
             path: dir,
-            brick_deps: bases
-                .iter()
-                .chain(components.iter())
-                .cloned()
-                .collect(),
+            brick_deps: bases.iter().chain(components.iter()).cloned().collect(),
             external_deps: Vec::new(),
         };
 

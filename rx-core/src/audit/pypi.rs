@@ -32,12 +32,7 @@ impl PyPIClient {
     pub async fn is_yanked(&self, package: &str, version: &str) -> Result<bool> {
         let url = format!("{}/{}/json", PYPI_API_URL, package);
 
-        let response = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(Error::Network)?;
+        let response = self.client.get(&url).send().await.map_err(Error::Network)?;
 
         if !response.status().is_success() {
             // Package not found or API error - assume not yanked
@@ -107,11 +102,7 @@ async fn check_single_package(
 ) -> Result<Option<YankedPackage>> {
     let url = format!("{}/{}/json", PYPI_API_URL, package);
 
-    let response = client
-        .get(&url)
-        .send()
-        .await
-        .map_err(Error::Network)?;
+    let response = client.get(&url).send().await.map_err(Error::Network)?;
 
     if !response.status().is_success() {
         return Ok(None);

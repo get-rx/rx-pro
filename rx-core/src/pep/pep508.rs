@@ -49,7 +49,14 @@ impl Requirement {
         let (main_part, marker) = if let Some(semi_pos) = s.find(';') {
             let marker = s[semi_pos + 1..].trim().to_string();
             let main = s[..semi_pos].trim();
-            (main, if marker.is_empty() { None } else { Some(marker) })
+            (
+                main,
+                if marker.is_empty() {
+                    None
+                } else {
+                    Some(marker)
+                },
+            )
         } else {
             (s, None)
         };

@@ -23,11 +23,11 @@
 //! ```
 
 mod error;
-mod host;
 mod hooks;
+mod host;
 mod manifest;
 
 pub use error::{PluginError, PluginResult};
-pub use host::{LoadedPlugin, PluginHost};
 pub use hooks::{Hook, HookContext, HookResult};
+pub use host::{LoadedPlugin, PluginHost};
 pub use manifest::{PluginConfig, PluginManifest, PluginPermissions};

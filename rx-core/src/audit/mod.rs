@@ -14,8 +14,8 @@ pub use types::*;
 use std::collections::{HashMap, HashSet};
 
 use crate::lockfile::Lockfile;
-use crate::resolver::Resolver;
 use crate::pep::Requirement;
+use crate::resolver::Resolver;
 use crate::Result;
 
 /// Auditor for checking package vulnerabilities
@@ -88,7 +88,8 @@ impl Auditor {
             if ignored.id == id || ignored.id == "*" {
                 // Check expiration
                 if let Some(expires) = &ignored.expires {
-                    if let Ok(expiry_date) = chrono::NaiveDate::parse_from_str(expires, "%Y-%m-%d") {
+                    if let Ok(expiry_date) = chrono::NaiveDate::parse_from_str(expires, "%Y-%m-%d")
+                    {
                         let today = chrono::Utc::now().date_naive();
                         if today > expiry_date {
                             // Ignore has expired
@@ -109,7 +110,7 @@ impl Auditor {
 
         for ignored in &self.config.ignored_vulnerabilities {
             // Check expiration
-            let is_expired = ignored.expires.as_ref().map_or(false, |expires| {
+            let is_expired = ignored.expires.as_ref().is_some_and(|expires| {
                 chrono::NaiveDate::parse_from_str(expires, "%Y-%m-%d")
                     .map(|expiry| chrono::Utc::now().date_naive() > expiry)
                     .unwrap_or(false)
@@ -136,7 +137,10 @@ impl Auditor {
 
     /// Audit a list of packages
     pub async fn audit_packages(&self, packages: &[(&str, &str)]) -> Result<AuditReport> {
-        tracing::info!("Checking {} packages for vulnerabilities...", packages.len());
+        tracing::info!(
+            "Checking {} packages for vulnerabilities...",
+            packages.len()
+        );
 
         // Query OSV for all packages
         let vuln_map = self.osv_client.query_batch(packages).await?;
@@ -153,17 +157,13 @@ impl Auditor {
                 .filter(|v| !v.aliases.iter().any(|a| self.is_ignored(a)))
                 .collect();
 
-            let ignored_count = vuln_map
-                .get(*name)
-                .map(|vs| vs.len())
-                .unwrap_or(0)
-                - vulnerabilities.len();
+            let ignored_count =
+                vuln_map.get(*name).map(|vs| vs.len()).unwrap_or(0) - vulnerabilities.len();
 
             if ignored_count > 0 {
-                report.ignored.push(format!(
-                    "{} ({} ignored)",
-                    name, ignored_count
-                ));
+                report
+                    .ignored
+                    .push(format!("{} ({} ignored)", name, ignored_count));
             }
 
             report.packages.push(PackageAuditResult {
@@ -424,13 +424,11 @@ mod tests {
     fn test_auditor_is_ignored() {
         let config = AuditConfig {
             ignored_ids: vec!["CVE-2023-1234".to_string()].into_iter().collect(),
-            ignored_vulnerabilities: vec![
-                IgnoredVulnerability {
-                    id: "GHSA-xxxx".to_string(),
-                    reason: Some("Not applicable".to_string()),
-                    expires: None,
-                },
-            ],
+            ignored_vulnerabilities: vec![IgnoredVulnerability {
+                id: "GHSA-xxxx".to_string(),
+                reason: Some("Not applicable".to_string()),
+                expires: None,
+            }],
             check_yanked: true,
         };
         let auditor = Auditor::with_config(config);
@@ -461,7 +459,7 @@ mod tests {
         let auditor = Auditor::with_config(config);
 
         assert!(!auditor.is_ignored("CVE-2023-EXPIRED")); // Expired, should not be ignored
-        assert!(auditor.is_ignored("CVE-2023-ACTIVE"));   // Not expired, should be ignored
+        assert!(auditor.is_ignored("CVE-2023-ACTIVE")); // Not expired, should be ignored
     }
 
     #[test]

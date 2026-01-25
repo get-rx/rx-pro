@@ -23,7 +23,7 @@ use anyhow::{Context, Result};
 use clap::Args;
 
 use rx_core::workspace::Workspace;
-use rx_core::{AffectedConfig, detect_affected, detect_affected_with_transitive};
+use rx_core::{detect_affected, detect_affected_with_transitive, AffectedConfig};
 
 #[derive(Args)]
 pub struct AffectedCommand {
@@ -72,8 +72,7 @@ impl AffectedCommand {
                 .context("Not in a workspace. Run 'rx workspace init' first.")?,
         };
 
-        let workspace = Workspace::load_from_root(&root)
-            .context("Failed to load workspace")?;
+        let workspace = Workspace::load_from_root(&root).context("Failed to load workspace")?;
 
         let members = workspace.members();
         if members.is_empty() {
@@ -154,16 +153,24 @@ impl AffectedCommand {
                 let version = pyproject.version().unwrap_or("0.0.0");
 
                 if is_direct {
-                    println!("  {} ({}@{}) - directly changed", rel.display(), name, version);
+                    println!(
+                        "  {} ({}@{}) - directly changed",
+                        rel.display(),
+                        name,
+                        version
+                    );
                 } else {
-                    println!("  {} ({}@{}) - depends on changed", rel.display(), name, version);
+                    println!(
+                        "  {} ({}@{}) - depends on changed",
+                        rel.display(),
+                        name,
+                        version
+                    );
                 }
+            } else if is_direct {
+                println!("  {} - directly changed", rel.display());
             } else {
-                if is_direct {
-                    println!("  {} - directly changed", rel.display());
-                } else {
-                    println!("  {} - depends on changed", rel.display());
-                }
+                println!("  {} - depends on changed", rel.display());
             }
         }
 

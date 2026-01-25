@@ -184,11 +184,7 @@ impl Version {
                 dev = Some(num);
                 pos += num_end;
             } else if rest.starts_with("post") || rest.starts_with("-") || rest.starts_with("r") {
-                let prefix_len = if rest.starts_with("post") {
-                    4
-                } else {
-                    1
-                };
+                let prefix_len = if rest.starts_with("post") { 4 } else { 1 };
                 let num_end = rest[prefix_len..]
                     .find(|c: char| !c.is_numeric())
                     .map(|i| prefix_len + i)
@@ -229,9 +225,7 @@ impl Version {
                 };
                 pre = Some(PreRelease::Beta(num));
                 pos += num_end;
-            } else if rest.starts_with("rc")
-                || rest.starts_with('c')
-                || rest.starts_with("preview")
+            } else if rest.starts_with("rc") || rest.starts_with('c') || rest.starts_with("preview")
             {
                 let prefix_len = if rest.starts_with("preview") {
                     7

@@ -103,7 +103,10 @@ impl TaskCommand {
 
         // Validate task exists
         if !tasks.contains_key(&task_name) {
-            bail!("Unknown task '{}'. Use 'rx task --list' to see available tasks.", task_name);
+            bail!(
+                "Unknown task '{}'. Use 'rx task --list' to see available tasks.",
+                task_name
+            );
         }
 
         // Check for virtual environment
@@ -123,7 +126,10 @@ impl TaskCommand {
 
         // Load dotenv
         let dotenv_config = if self.no_dotenv {
-            DotenvConfig { enabled: false, ..Default::default() }
+            DotenvConfig {
+                enabled: false,
+                ..Default::default()
+            }
         } else {
             self.load_dotenv_config(&project_dir)
         };
@@ -142,14 +148,34 @@ impl TaskCommand {
 
         // Execute tasks
         if self.sequential {
-            self.run_sequential(&execution_order, &tasks, &project_dir, &venv_path, &bin_dir, &dotenv_vars, &dotenv_config)?;
+            self.run_sequential(
+                &execution_order,
+                &tasks,
+                &project_dir,
+                &venv_path,
+                &bin_dir,
+                &dotenv_vars,
+                &dotenv_config,
+            )?;
         } else {
-            self.run_parallel(&execution_order, &tasks, &project_dir, &venv_path, &bin_dir, &dotenv_vars, &dotenv_config)?;
+            self.run_parallel(
+                &execution_order,
+                &tasks,
+                &project_dir,
+                &venv_path,
+                &bin_dir,
+                &dotenv_vars,
+                &dotenv_config,
+            )?;
         }
 
         let elapsed = start_time.elapsed();
         println!();
-        println!("✓ Task '{}' completed in {:.2}s", task_name, elapsed.as_secs_f64());
+        println!(
+            "✓ Task '{}' completed in {:.2}s",
+            task_name,
+            elapsed.as_secs_f64()
+        );
 
         Ok(())
     }
@@ -236,7 +262,10 @@ impl TaskCommand {
             toml::Value::Table(table) => {
                 // Full form with options
                 let cmd = table.get("cmd").and_then(|v| v.as_str()).map(String::from);
-                let description = table.get("description").and_then(|v| v.as_str()).map(String::from);
+                let description = table
+                    .get("description")
+                    .and_then(|v| v.as_str())
+                    .map(String::from);
                 let depends = table
                     .get("depends")
                     .and_then(|v| v.as_array())
@@ -258,7 +287,11 @@ impl TaskCommand {
         }
     }
 
-    fn build_execution_plan(&self, task_name: &str, tasks: &HashMap<String, TaskDef>) -> Result<Vec<String>> {
+    fn build_execution_plan(
+        &self,
+        task_name: &str,
+        tasks: &HashMap<String, TaskDef>,
+    ) -> Result<Vec<String>> {
         // Topological sort with cycle detection
         let mut visited = HashSet::new();
         let mut in_stack = HashSet::new();
@@ -285,9 +318,9 @@ impl TaskCommand {
             return Ok(());
         }
 
-        let task = tasks.get(name).ok_or_else(|| {
-            anyhow::anyhow!("Unknown task '{}' referenced in dependencies", name)
-        })?;
+        let task = tasks
+            .get(name)
+            .ok_or_else(|| anyhow::anyhow!("Unknown task '{}' referenced in dependencies", name))?;
 
         in_stack.insert(name.to_string());
 
@@ -315,7 +348,15 @@ impl TaskCommand {
         for task_name in order {
             let task = tasks.get(task_name).unwrap();
             if let Some(cmd) = &task.cmd {
-                self.run_task_cmd(task_name, cmd, project_dir, venv_path, bin_dir, dotenv_vars, dotenv_config)?;
+                self.run_task_cmd(
+                    task_name,
+                    cmd,
+                    project_dir,
+                    venv_path,
+                    bin_dir,
+                    dotenv_vars,
+                    dotenv_config,
+                )?;
             } else {
                 debug!("Task '{}' has no command (aggregator task)", task_name);
             }
@@ -362,12 +403,28 @@ impl TaskCommand {
                 let task_name = &ready[0];
                 let task = tasks.get(task_name).unwrap();
                 if let Some(cmd) = &task.cmd {
-                    self.run_task_cmd(task_name, cmd, project_dir, venv_path, bin_dir, dotenv_vars, dotenv_config)?;
+                    self.run_task_cmd(
+                        task_name,
+                        cmd,
+                        project_dir,
+                        venv_path,
+                        bin_dir,
+                        dotenv_vars,
+                        dotenv_config,
+                    )?;
                 }
                 completed.insert(task_name.clone());
             } else if ready.len() > 1 {
                 // Run in parallel using threads
-                let results = self.run_tasks_parallel(&ready, tasks, project_dir, venv_path, bin_dir, dotenv_vars, dotenv_config)?;
+                let results = self.run_tasks_parallel(
+                    &ready,
+                    tasks,
+                    project_dir,
+                    venv_path,
+                    bin_dir,
+                    dotenv_vars,
+                    dotenv_config,
+                )?;
 
                 for (task_name, result) in results {
                     result.with_context(|| format!("Task '{}' failed", task_name))?;
@@ -420,7 +477,15 @@ impl TaskCommand {
 
                 thread::spawn(move || {
                     let result = if let Some(cmd) = cmd {
-                        run_task_cmd_static(&name, &cmd, &project_dir, &venv_path, &bin_dir, &dotenv_vars, &dotenv_config)
+                        run_task_cmd_static(
+                            &name,
+                            &cmd,
+                            &project_dir,
+                            &venv_path,
+                            &bin_dir,
+                            &dotenv_vars,
+                            &dotenv_config,
+                        )
                     } else {
                         Ok(())
                     };
@@ -431,7 +496,9 @@ impl TaskCommand {
 
         // Wait for all threads
         for handle in handles {
-            handle.join().map_err(|_| anyhow::anyhow!("Thread panicked"))?;
+            handle
+                .join()
+                .map_err(|_| anyhow::anyhow!("Thread panicked"))?;
         }
 
         let results = Arc::try_unwrap(results)
@@ -452,7 +519,15 @@ impl TaskCommand {
         dotenv_vars: &HashMap<String, String>,
         dotenv_config: &DotenvConfig,
     ) -> Result<()> {
-        run_task_cmd_static(task_name, cmd, project_dir, venv_path, bin_dir, dotenv_vars, dotenv_config)
+        run_task_cmd_static(
+            task_name,
+            cmd,
+            project_dir,
+            venv_path,
+            bin_dir,
+            dotenv_vars,
+            dotenv_config,
+        )
     }
 
     fn load_dotenv_config(&self, project_dir: &Path) -> DotenvConfig {
@@ -530,10 +605,16 @@ fn run_task_cmd_static(
     }
 
     // Execute
-    let status = command.status().with_context(|| format!("Failed to execute task '{}'", task_name))?;
+    let status = command
+        .status()
+        .with_context(|| format!("Failed to execute task '{}'", task_name))?;
 
     if !status.success() {
-        bail!("Task '{}' failed with exit code {}", task_name, status.code().unwrap_or(-1));
+        bail!(
+            "Task '{}' failed with exit code {}",
+            task_name,
+            status.code().unwrap_or(-1)
+        );
     }
 
     Ok(())
@@ -586,9 +667,18 @@ mod tests {
 
     #[test]
     fn test_parse_command() {
-        assert_eq!(parse_command("pytest -v tests/"), vec!["pytest", "-v", "tests/"]);
-        assert_eq!(parse_command("python -c \"print('hi')\""), vec!["python", "-c", "print('hi')"]);
-        assert_eq!(parse_command("echo 'hello world'"), vec!["echo", "hello world"]);
+        assert_eq!(
+            parse_command("pytest -v tests/"),
+            vec!["pytest", "-v", "tests/"]
+        );
+        assert_eq!(
+            parse_command("python -c \"print('hi')\""),
+            vec!["python", "-c", "print('hi')"]
+        );
+        assert_eq!(
+            parse_command("echo 'hello world'"),
+            vec!["echo", "hello world"]
+        );
     }
 
     #[test]
@@ -619,11 +709,14 @@ mod tests {
             task: None,
         };
 
-        let value: toml::Value = toml::from_str(r#"
+        let value: toml::Value = toml::from_str(
+            r#"
             cmd = "pytest -v"
             description = "Run tests"
             depends = ["build", "lint"]
-        "#).unwrap();
+        "#,
+        )
+        .unwrap();
 
         let task = cmd.parse_task("test", &value).unwrap();
 
@@ -644,24 +737,33 @@ mod tests {
         };
 
         let mut tasks = HashMap::new();
-        tasks.insert("build".to_string(), TaskDef {
-            name: "build".to_string(),
-            cmd: Some("echo build".to_string()),
-            description: None,
-            depends: vec![],
-        });
-        tasks.insert("test".to_string(), TaskDef {
-            name: "test".to_string(),
-            cmd: Some("echo test".to_string()),
-            description: None,
-            depends: vec!["build".to_string()],
-        });
-        tasks.insert("deploy".to_string(), TaskDef {
-            name: "deploy".to_string(),
-            cmd: Some("echo deploy".to_string()),
-            description: None,
-            depends: vec!["test".to_string()],
-        });
+        tasks.insert(
+            "build".to_string(),
+            TaskDef {
+                name: "build".to_string(),
+                cmd: Some("echo build".to_string()),
+                description: None,
+                depends: vec![],
+            },
+        );
+        tasks.insert(
+            "test".to_string(),
+            TaskDef {
+                name: "test".to_string(),
+                cmd: Some("echo test".to_string()),
+                description: None,
+                depends: vec!["build".to_string()],
+            },
+        );
+        tasks.insert(
+            "deploy".to_string(),
+            TaskDef {
+                name: "deploy".to_string(),
+                cmd: Some("echo deploy".to_string()),
+                description: None,
+                depends: vec!["test".to_string()],
+            },
+        );
 
         let plan = cmd.build_execution_plan("deploy", &tasks).unwrap();
         assert_eq!(plan, vec!["build", "test", "deploy"]);
@@ -678,21 +780,30 @@ mod tests {
         };
 
         let mut tasks = HashMap::new();
-        tasks.insert("a".to_string(), TaskDef {
-            name: "a".to_string(),
-            cmd: Some("echo a".to_string()),
-            description: None,
-            depends: vec!["b".to_string()],
-        });
-        tasks.insert("b".to_string(), TaskDef {
-            name: "b".to_string(),
-            cmd: Some("echo b".to_string()),
-            description: None,
-            depends: vec!["a".to_string()],
-        });
+        tasks.insert(
+            "a".to_string(),
+            TaskDef {
+                name: "a".to_string(),
+                cmd: Some("echo a".to_string()),
+                description: None,
+                depends: vec!["b".to_string()],
+            },
+        );
+        tasks.insert(
+            "b".to_string(),
+            TaskDef {
+                name: "b".to_string(),
+                cmd: Some("echo b".to_string()),
+                description: None,
+                depends: vec!["a".to_string()],
+            },
+        );
 
         let result = cmd.build_execution_plan("a", &tasks);
         assert!(result.is_err());
-        assert!(result.unwrap_err().to_string().contains("Circular dependency"));
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("Circular dependency"));
     }
 }

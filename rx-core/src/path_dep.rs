@@ -211,7 +211,11 @@ fn install_editable(name: &str, source_path: &Path, site_packages: &Path) -> Res
     );
     std::fs::write(&egg_link_path, egg_link_content).map_err(Error::Io)?;
 
-    tracing::info!("Installed {} (editable) from {}", name, source_path.display());
+    tracing::info!(
+        "Installed {} (editable) from {}",
+        name,
+        source_path.display()
+    );
 
     Ok(())
 }
@@ -316,7 +320,7 @@ fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<()> {
             copy_dir_recursive(&src_path, &dst_path)?;
         } else {
             // Skip .pyc files
-            if src_path.extension().map_or(false, |e| e == "pyc") {
+            if src_path.extension().is_some_and(|e| e == "pyc") {
                 continue;
             }
             std::fs::copy(&src_path, &dst_path).map_err(Error::Io)?;

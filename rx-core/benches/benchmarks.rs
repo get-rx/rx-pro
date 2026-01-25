@@ -2,13 +2,13 @@
 //!
 //! Run with: cargo bench
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use std::fs;
 use tempfile::TempDir;
 
-use rx_core::Lockfile;
 use rx_core::pep::pep440::Version;
-use rx_core::pep::{Requirement, VersionSpecifiers, PyProject};
+use rx_core::pep::{PyProject, Requirement, VersionSpecifiers};
+use rx_core::Lockfile;
 
 /// Benchmark PEP 440 version parsing
 fn bench_version_parsing(c: &mut Criterion) {

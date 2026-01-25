@@ -83,7 +83,9 @@ impl PyPIClient {
                 if let Some(ref token) = creds.token {
                     // Bearer token authentication
                     request.bearer_auth(token)
-                } else if let (Some(ref username), Some(ref password)) = (&creds.username, &creds.password) {
+                } else if let (Some(ref username), Some(ref password)) =
+                    (&creds.username, &creds.password)
+                {
                     // Basic authentication
                     request.basic_auth(username, Some(password))
                 } else {
@@ -138,11 +140,7 @@ impl PyPIClient {
 
     /// Fetch metadata for a specific version
     #[instrument(skip(self), fields(package = %name, version = %version))]
-    pub async fn get_package_version(
-        &self,
-        name: &str,
-        version: &str,
-    ) -> Result<PackageMetadata> {
+    pub async fn get_package_version(&self, name: &str, version: &str) -> Result<PackageMetadata> {
         let normalized = Self::normalize_name(name);
 
         debug!("fetching metadata for {}=={}", normalized, version);
@@ -158,7 +156,11 @@ impl PyPIClient {
             });
         }
 
-        response.error_for_status()?.json().await.map_err(Into::into)
+        response
+            .error_for_status()?
+            .json()
+            .await
+            .map_err(Into::into)
     }
 
     /// Get all available versions for a package
@@ -255,7 +257,10 @@ mod tests {
         assert_eq!(PyPIClient::normalize_name("requests"), "requests");
         assert_eq!(PyPIClient::normalize_name("Requests"), "requests");
         assert_eq!(PyPIClient::normalize_name("my_package"), "my-package");
-        assert_eq!(PyPIClient::normalize_name("zope.interface"), "zope-interface");
+        assert_eq!(
+            PyPIClient::normalize_name("zope.interface"),
+            "zope-interface"
+        );
     }
 
     #[tokio::test]

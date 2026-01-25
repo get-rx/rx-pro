@@ -66,10 +66,7 @@ impl PyPIProvider {
     }
 
     /// Build the provider by pre-fetching all required metadata
-    pub async fn build(
-        client: &PyPIClient,
-        requirements: &[Requirement],
-    ) -> Result<Self, Error> {
+    pub async fn build(client: &PyPIClient, requirements: &[Requirement]) -> Result<Self, Error> {
         // Collect all package names we need to fetch
         let names: Vec<String> = requirements.iter().map(|r| r.name.clone()).collect();
 
@@ -138,12 +135,7 @@ impl PyPIProvider {
     /// Pre-crawl the dependency graph to find all packages we need
     /// This must be called before running pubgrub to ensure all metadata is available
     pub fn discover_all_packages(&mut self) -> Vec<String> {
-        let mut to_process: Vec<String> = self
-            .seen_packages
-            .borrow()
-            .iter()
-            .cloned()
-            .collect();
+        let mut to_process: Vec<String> = self.seen_packages.borrow().iter().cloned().collect();
         let mut all_seen: HashSet<String> = to_process.iter().cloned().collect();
 
         while let Some(pkg_name) = to_process.pop() {
@@ -264,7 +256,10 @@ impl DependencyProvider<Package, Version> for PyPIProvider {
 
             // Count compatible versions
             let count = match self.get_versions(&pkg.name) {
-                Some(versions) => versions.iter().filter(|v| range.borrow().contains(v)).count(),
+                Some(versions) => versions
+                    .iter()
+                    .filter(|v| range.borrow().contains(v))
+                    .count(),
                 None => 0,
             };
 
@@ -281,14 +276,12 @@ impl DependencyProvider<Package, Version> for PyPIProvider {
         let pkg = package.borrow();
 
         // Find the highest compatible version
-        let version = self
-            .get_versions(&pkg.name)
-            .and_then(|versions| {
-                versions
-                    .iter()
-                    .find(|v| range.borrow().contains(v))
-                    .cloned()
-            });
+        let version = self.get_versions(&pkg.name).and_then(|versions| {
+            versions
+                .iter()
+                .find(|v| range.borrow().contains(v))
+                .cloned()
+        });
 
         Ok((package, version))
     }

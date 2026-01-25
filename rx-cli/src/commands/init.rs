@@ -49,7 +49,10 @@ impl InitCommand {
             .to_lowercase()
             .replace(|c: char| !c.is_alphanumeric(), "-");
 
-        info!("Initializing project '{}' at {:?}", normalized_name, project_dir);
+        info!(
+            "Initializing project '{}' at {:?}",
+            normalized_name, project_dir
+        );
 
         // Check if pyproject.toml already exists
         let pyproject_path = project_dir.join("pyproject.toml");
@@ -62,34 +65,42 @@ impl InitCommand {
 
         // Create pyproject.toml
         let pyproject = PyProject::new(&normalized_name, "0.1.0", &self.python);
-        pyproject.save(&project_dir)
+        pyproject
+            .save(&project_dir)
             .with_context(|| "Failed to create pyproject.toml")?;
 
         // Create empty lockfile
         let lockfile = Lockfile::new();
-        lockfile.save(&project_dir.join("rx.lock"))
+        lockfile
+            .save(&project_dir.join("rx.lock"))
             .with_context(|| "Failed to create rx.lock")?;
 
         // Create src directory with __init__.py
-        let src_dir = project_dir.join("src").join(&normalized_name.replace('-', "_"));
+        let src_dir = project_dir
+            .join("src")
+            .join(normalized_name.replace('-', "_"));
         std::fs::create_dir_all(&src_dir)
             .with_context(|| format!("Failed to create source directory {:?}", src_dir))?;
 
         let init_py = src_dir.join("__init__.py");
         if !init_py.exists() {
-            std::fs::write(&init_py, format!("\"\"\"{}.\"\"\"\n\n__version__ = \"0.1.0\"\n", normalized_name))
-                .with_context(|| "Failed to create __init__.py")?;
+            std::fs::write(
+                &init_py,
+                format!(
+                    "\"\"\"{}.\"\"\"\n\n__version__ = \"0.1.0\"\n",
+                    normalized_name
+                ),
+            )
+            .with_context(|| "Failed to create __init__.py")?;
         }
 
         // Create tests directory
         let tests_dir = project_dir.join("tests");
-        std::fs::create_dir_all(&tests_dir)
-            .with_context(|| "Failed to create tests directory")?;
+        std::fs::create_dir_all(&tests_dir).with_context(|| "Failed to create tests directory")?;
 
         let test_init = tests_dir.join("__init__.py");
         if !test_init.exists() {
-            std::fs::write(&test_init, "")
-                .with_context(|| "Failed to create tests/__init__.py")?;
+            std::fs::write(&test_init, "").with_context(|| "Failed to create tests/__init__.py")?;
         }
 
         println!("✓ Created pyproject.toml");

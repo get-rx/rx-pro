@@ -204,7 +204,10 @@ impl Resolver {
     }
 
     /// Extract dependency names from package metadata
-    fn extract_dependencies(metadata: &crate::index::PackageMetadata, _version: &str) -> Vec<String> {
+    fn extract_dependencies(
+        metadata: &crate::index::PackageMetadata,
+        _version: &str,
+    ) -> Vec<String> {
         // Get requires_dist from package info
         if let Some(requires_dist) = &metadata.info.requires_dist {
             return requires_dist
@@ -212,11 +215,7 @@ impl Resolver {
                 .filter_map(|req| {
                     // Parse the requirement to get the package name
                     // Format: "package-name (>=1.0)" or "package-name; extra == 'dev'"
-                    let name = req
-                        .split(|c: char| c == ' ' || c == ';' || c == '[' || c == '(')
-                        .next()
-                        .unwrap_or(req)
-                        .trim();
+                    let name = req.split([' ', ';', '[', '(']).next().unwrap_or(req).trim();
                     if name.is_empty() {
                         None
                     } else {

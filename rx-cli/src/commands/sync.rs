@@ -6,7 +6,10 @@ use anyhow::{Context, Result};
 use clap::Args;
 use tracing::info;
 
-use rx_core::{default_cache_dir, install_path_dependency, load_path_dependencies, Installer, Lockfile, VenvManager};
+use rx_core::{
+    default_cache_dir, install_path_dependency, load_path_dependencies, Installer, Lockfile,
+    VenvManager,
+};
 
 #[derive(Args)]
 pub struct SyncCommand {
@@ -106,12 +109,26 @@ impl SyncCommand {
         for result in &results {
             if result.installed {
                 if result.downloaded {
-                    println!("  {} {} ✓", result.name,
-                        lockfile.packages.get(&result.name).map(|p| p.version.as_str()).unwrap_or(""));
+                    println!(
+                        "  {} {} ✓",
+                        result.name,
+                        lockfile
+                            .packages
+                            .get(&result.name)
+                            .map(|p| p.version.as_str())
+                            .unwrap_or("")
+                    );
                     success_count += 1;
                 } else {
-                    println!("  {} {} (cached)", result.name,
-                        lockfile.packages.get(&result.name).map(|p| p.version.as_str()).unwrap_or(""));
+                    println!(
+                        "  {} {} (cached)",
+                        result.name,
+                        lockfile
+                            .packages
+                            .get(&result.name)
+                            .map(|p| p.version.as_str())
+                            .unwrap_or("")
+                    );
                     cached_count += 1;
                 }
             } else if let Some(ref err) = result.error {

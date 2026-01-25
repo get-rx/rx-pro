@@ -150,7 +150,10 @@ pub fn parse_dotenv(content: &str) -> Result<HashMap<String, String>> {
 }
 
 /// Parse a double-quoted value (supports escape sequences and multiline)
-fn parse_double_quoted(first_line: &str, lines: &mut std::iter::Peekable<std::str::Lines>) -> String {
+fn parse_double_quoted(
+    first_line: &str,
+    lines: &mut std::iter::Peekable<std::str::Lines>,
+) -> String {
     let mut value = first_line[1..].to_string(); // Remove opening quote
 
     // Check if closed on same line
@@ -159,7 +162,7 @@ fn parse_double_quoted(first_line: &str, lines: &mut std::iter::Peekable<std::st
     }
 
     // Multiline value
-    while let Some(line) = lines.next() {
+    for line in lines.by_ref() {
         value.push('\n');
         value.push_str(line);
 
@@ -176,7 +179,10 @@ fn parse_double_quoted(first_line: &str, lines: &mut std::iter::Peekable<std::st
 }
 
 /// Parse a single-quoted value (literal, no escape sequences)
-fn parse_single_quoted(first_line: &str, lines: &mut std::iter::Peekable<std::str::Lines>) -> String {
+fn parse_single_quoted(
+    first_line: &str,
+    lines: &mut std::iter::Peekable<std::str::Lines>,
+) -> String {
     let mut value = first_line[1..].to_string(); // Remove opening quote
 
     // Check if closed on same line
@@ -185,7 +191,7 @@ fn parse_single_quoted(first_line: &str, lines: &mut std::iter::Peekable<std::st
     }
 
     // Multiline value
-    while let Some(line) = lines.next() {
+    for line in lines.by_ref() {
         value.push('\n');
         value.push_str(line);
 
@@ -203,7 +209,7 @@ fn find_unescaped_quote(s: &str, quote: char) -> Option<usize> {
     let mut chars = s.chars().enumerate();
     let mut escaped = false;
 
-    while let Some((i, c)) = chars.next() {
+    for (i, c) in chars {
         if escaped {
             escaped = false;
             continue;
@@ -362,7 +368,10 @@ WITH_HASH="value # not a comment"
         let vars = parse_dotenv(content).unwrap();
         assert_eq!(vars.get("DOUBLE"), Some(&"hello world".to_string()));
         assert_eq!(vars.get("SINGLE"), Some(&"hello world".to_string()));
-        assert_eq!(vars.get("WITH_HASH"), Some(&"value # not a comment".to_string()));
+        assert_eq!(
+            vars.get("WITH_HASH"),
+            Some(&"value # not a comment".to_string())
+        );
     }
 
     #[test]

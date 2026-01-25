@@ -108,7 +108,9 @@ impl DockerGenerateCommand {
         }
 
         // Write Dockerfile
-        let output_path = self.output.unwrap_or_else(|| project_dir.join("Dockerfile"));
+        let output_path = self
+            .output
+            .unwrap_or_else(|| project_dir.join("Dockerfile"));
 
         if output_path.exists() && !self.force {
             bail!(
@@ -117,8 +119,7 @@ impl DockerGenerateCommand {
             );
         }
 
-        std::fs::write(&output_path, &dockerfile_content)
-            .context("Failed to write Dockerfile")?;
+        std::fs::write(&output_path, &dockerfile_content).context("Failed to write Dockerfile")?;
 
         println!("Generated Dockerfile at {}", output_path.display());
 
@@ -198,8 +199,8 @@ impl DockerBuildCommand {
         let tag = match self.tag {
             Some(t) => t,
             None => {
-                let pyproject = PyProject::load(&project_dir)
-                    .context("Failed to load pyproject.toml")?;
+                let pyproject =
+                    PyProject::load(&project_dir).context("Failed to load pyproject.toml")?;
                 let name = pyproject.name().unwrap_or("app");
                 let version = pyproject.version().unwrap_or("latest");
                 format!("{}:{}", name, version)
@@ -207,7 +208,10 @@ impl DockerBuildCommand {
         };
 
         // Check for or generate Dockerfile
-        let dockerfile_path = self.file.clone().unwrap_or_else(|| project_dir.join("Dockerfile"));
+        let dockerfile_path = self
+            .file
+            .clone()
+            .unwrap_or_else(|| project_dir.join("Dockerfile"));
 
         if !dockerfile_path.exists() {
             if self.no_generate {
@@ -302,8 +306,8 @@ impl DockerConfigCommand {
             self.project.canonicalize()?
         };
 
-        let config = DockerConfig::load(&project_dir)
-            .context("Failed to load Docker configuration")?;
+        let config =
+            DockerConfig::load(&project_dir).context("Failed to load Docker configuration")?;
 
         println!("Docker Configuration");
         println!();

@@ -158,8 +158,7 @@ fn parse_brick_type(s: &str) -> Result<BrickType, String> {
 impl PolylithCreateCommand {
     pub async fn run(self) -> Result<()> {
         let root = self.find_root()?;
-        let mut polylith = Polylith::load(&root)
-            .context("Failed to load Polylith workspace")?;
+        let mut polylith = Polylith::load(&root).context("Failed to load Polylith workspace")?;
 
         let brick = if self.brick_type == BrickType::Project {
             // Projects require bases and/or components
@@ -178,11 +177,7 @@ impl PolylithCreateCommand {
 
         let rel_path = brick.path.strip_prefix(&root).unwrap_or(&brick.path);
 
-        println!(
-            "Created {} '{}'",
-            self.brick_type.as_str(),
-            self.name
-        );
+        println!("Created {} '{}'", self.brick_type.as_str(), self.name);
         println!();
         println!("  Path: {}", rel_path.display());
 
@@ -271,8 +266,7 @@ pub struct PolylithListCommand {
 impl PolylithListCommand {
     pub async fn run(self) -> Result<()> {
         let root = self.find_root()?;
-        let polylith = Polylith::load(&root)
-            .context("Failed to load Polylith workspace")?;
+        let polylith = Polylith::load(&root).context("Failed to load Polylith workspace")?;
 
         println!("Polylith workspace: {}", polylith.top_namespace);
         println!();
@@ -355,8 +349,7 @@ pub struct PolylithCheckCommand {
 impl PolylithCheckCommand {
     pub async fn run(self) -> Result<()> {
         let root = self.find_root()?;
-        let polylith = Polylith::load(&root)
-            .context("Failed to load Polylith workspace")?;
+        let polylith = Polylith::load(&root).context("Failed to load Polylith workspace")?;
 
         println!("Checking Polylith workspace...");
         println!();
@@ -402,7 +395,11 @@ impl PolylithCheckCommand {
         let mut base_issues = 0;
         for base in &polylith.bases {
             for dep in &base.brick_deps {
-                if polylith.bases.iter().any(|b| &b.name == dep && b.name != base.name) {
+                if polylith
+                    .bases
+                    .iter()
+                    .any(|b| &b.name == dep && b.name != base.name)
+                {
                     if base_issues == 0 {
                         println!("FAIL");
                     }
@@ -466,8 +463,7 @@ pub struct PolylithInfoCommand {
 impl PolylithInfoCommand {
     pub async fn run(self) -> Result<()> {
         let root = self.find_root()?;
-        let polylith = Polylith::load(&root)
-            .context("Failed to load Polylith workspace")?;
+        let polylith = Polylith::load(&root).context("Failed to load Polylith workspace")?;
 
         // Find the brick
         let brick = polylith

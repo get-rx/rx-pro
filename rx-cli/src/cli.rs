@@ -1,7 +1,12 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::commands::{AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand, ExportCommand, ImportCommand, InitCommand, LockCommand, PluginCommand, PolylithCommand, PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand, TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand};
+use crate::commands::{
+    AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand,
+    ExportCommand, ImportCommand, InitCommand, LockCommand, PluginCommand, PolylithCommand,
+    PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand,
+    TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand,
+};
 
 #[derive(Parser)]
 #[command(

@@ -126,7 +126,9 @@ impl VenvManager {
     /// Get the site-packages directory
     pub fn site_packages(&self) -> Result<PathBuf> {
         if !self.exists() {
-            return Err(Error::VenvError("Virtual environment does not exist".into()));
+            return Err(Error::VenvError(
+                "Virtual environment does not exist".into(),
+            ));
         }
 
         // Read pyvenv.cfg to get Python version
@@ -141,7 +143,8 @@ impl VenvManager {
             }
         }
 
-        let version = version.ok_or_else(|| Error::VenvError("Cannot determine Python version".into()))?;
+        let version =
+            version.ok_or_else(|| Error::VenvError("Cannot determine Python version".into()))?;
         let parts: Vec<&str> = version.split('.').collect();
         if parts.len() < 2 {
             return Err(Error::VenvError("Invalid version in pyvenv.cfg".into()));
@@ -233,7 +236,10 @@ fn find_python() -> Result<PathBuf> {
 /// Get Python version as (major, minor)
 fn get_python_version(python: &Path) -> Result<(u32, u32)> {
     let output = Command::new(python)
-        .args(["-c", "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"])
+        .args([
+            "-c",
+            "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')",
+        ])
         .output()
         .map_err(|e| Error::VenvError(format!("Failed to run Python: {}", e)))?;
 
@@ -245,7 +251,10 @@ fn get_python_version(python: &Path) -> Result<(u32, u32)> {
     let parts: Vec<&str> = version.split('.').collect();
 
     if parts.len() < 2 {
-        return Err(Error::VenvError(format!("Invalid Python version: {}", version)));
+        return Err(Error::VenvError(format!(
+            "Invalid Python version: {}",
+            version
+        )));
     }
 
     let major: u32 = parts[0]
@@ -287,10 +296,7 @@ fn write_pyvenv_cfg(venv_path: &Path, python: &Path, major: u32, minor: u32) -> 
 #[cfg(unix)]
 fn create_activate_script(bin_dir: &Path, venv_path: &Path) -> Result<()> {
     let activate_path = bin_dir.join("activate");
-    let venv_name = venv_path
-        .file_name()
-        .unwrap_or_default()
-        .to_string_lossy();
+    let venv_name = venv_path.file_name().unwrap_or_default().to_string_lossy();
 
     let content = format!(
         r#"# This file must be used with "source bin/activate" *from bash*

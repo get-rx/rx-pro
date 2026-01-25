@@ -119,9 +119,10 @@ impl RemoveCommand {
             } else {
                 // Re-resolve dependencies
                 let resolver = Resolver::new();
-                let resolution = resolver.resolve(&deps).await.with_context(|| {
-                    "Failed to resolve dependencies after removal"
-                })?;
+                let resolution = resolver
+                    .resolve(&deps)
+                    .await
+                    .with_context(|| "Failed to resolve dependencies after removal")?;
 
                 let lockfile = Lockfile::from_resolution(&resolution);
                 lockfile.save(&lockfile_path)?;
