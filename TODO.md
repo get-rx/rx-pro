@@ -1,29 +1,29 @@
 # T-Rex Implementation TODO
 
-## Next Up: Native SemVer Tool
+## ✅ Completed: Native SemVer Tool
 
-**Goal**: Implement a Semantic Versioning library that beats Poetry's in speed and correctness.
+**Location**: `rx-core/src/semver/` module
 
-### Requirements
+### Implemented Features
 
-- [ ] Parse SemVer strings (1.2.3, 1.2.3-alpha.1, 1.2.3+build)
-- [ ] Version comparison (ordering, equality)
-- [ ] Version bumping (major, minor, patch, prerelease)
-- [ ] Range parsing and satisfaction checking
-  - [ ] Caret ranges: `^1.2.3` (compatible with 1.x.x)
-  - [ ] Tilde ranges: `~1.2.3` (compatible with 1.2.x)
-  - [ ] Exact: `=1.2.3`
-  - [ ] Comparison: `>=1.2.3`, `<2.0.0`
-  - [ ] Hyphen ranges: `1.2.3 - 2.0.0`
-  - [ ] OR combinations: `^1.2.3 || ^2.0.0`
-- [ ] Prerelease handling (alpha < beta < rc < release)
-- [ ] Build metadata (ignored in comparisons per spec)
-
-### Location
-
-`rx-core/src/semver/` module
+- [x] Parse SemVer strings (1.2.3, 1.2.3-alpha.1, 1.2.3+build)
+- [x] Version comparison (ordering, equality)
+- [x] Version bumping (major, minor, patch, prerelease)
+- [x] Range parsing and satisfaction checking
+  - [x] Caret ranges: `^1.2.3` (compatible with 1.x.x)
+  - [x] Tilde ranges: `~1.2.3` (compatible with 1.2.x)
+  - [x] Exact: `=1.2.3`
+  - [x] Comparison: `>=1.2.3`, `<2.0.0`
+  - [x] Hyphen ranges: `1.2.3 - 2.0.0`
+  - [x] OR combinations: `^1.2.3 || ^2.0.0`
+  - [x] Wildcard: `1.*`, `1.2.*`
+- [x] Prerelease handling (alpha < beta < rc < release)
+- [x] Build metadata (ignored in comparisons per spec)
+- [x] Serde support for serialization/deserialization
 
 ---
+
+## Next Up: CLI Integration
 
 ## CLI Integration
 
