@@ -114,12 +114,27 @@ TOML format with:
 
 ---
 
+## ✅ Completed: Update Command (`rx update`)
+
+**Location**: `rx-cli/src/commands/update.rs`
+
+### Implemented Features
+
+- [x] Re-resolve dependencies to get latest versions within constraints
+- [x] Compare old vs new lockfile and show changes
+- [x] Update specific packages only (`rx update requests urllib3`)
+- [x] `--dry-run` flag to preview changes without applying
+- [x] `--dev` flag to include dev dependencies
+- [x] `--project` flag to specify project directory
+- [x] Detect when all packages are already up to date
+
+---
+
 ## Future Enhancements
 
 ### Priority: Medium
 
 - [ ] `rx remove` - Remove dependencies
-- [ ] `rx update` - Update dependencies within constraints
 
 ### Priority: Low
 
