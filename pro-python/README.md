@@ -58,7 +58,7 @@ for pkg, ver, cve, severity, description in vulnerabilities:
 
 ## Features
 
-- **10-50x faster** than Poetry
+- **10-100x faster** than Poetry
 - **Native Rust build backend** - no Python subprocess
 - **WebAssembly plugins** for extensibility
 - **Full monorepo support** with workspaces

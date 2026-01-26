@@ -283,7 +283,7 @@ multi_stage = true
 
 ### vs Poetry
 
-- **10-50x faster** dependency resolution
+- **10-100x faster** dependency resolution
 - Native Rust build backend (no Python subprocess)
 - WebAssembly plugin system
 - Better monorepo support

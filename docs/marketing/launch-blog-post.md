@@ -14,7 +14,7 @@ Pro aims to combine the best of all worlds: **the speed of Rust, the ergonomics 
 
 ## Key Features
 
-### 10-50x Faster Than Poetry
+### 10-100x Faster Than Poetry
 
 Pro uses a native Rust dependency resolver with parallel downloads and smart caching:
 

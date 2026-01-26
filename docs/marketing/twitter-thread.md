@@ -3,7 +3,7 @@
 ## Tweet 1 (Main)
 Introducing Pro: A Python package manager written in Rust.
 
-10-50x faster than Poetry. Native build backend. WebAssembly plugins.
+10-100x faster than Poetry. Native build backend. WebAssembly plugins.
 
 pip install rx-pro
 
@@ -87,7 +87,7 @@ Excited to announce Pro, a new Python package manager written in Rust!
 
 After experiencing slow dependency resolution with existing tools, I built something faster. Pro is:
 
-- 10-50x faster than Poetry
+- 10-100x faster than Poetry
 - Has a native Rust build backend (no Python subprocess)
 - Supports WebAssembly plugins for extensibility
 - Includes full monorepo/workspace support

@@ -3,7 +3,7 @@
 **Title:** Pro: A Python package manager written in Rust with native build backend and Wasm plugins
 
 **Text:**
-Hi HN! I built Pro, a Python package manager that's 10-50x faster than Poetry.
+Hi HN! I built Pro, a Python package manager that's 10-100x faster than Poetry.
 
 Key differentiators:
 - **Native Rust build backend** - builds wheels without spawning Python
@@ -28,7 +28,7 @@ Would love feedback on the API design and feature set!
 
 # Reddit r/Python Post
 
-**Title:** I built a Python package manager in Rust that's 10-50x faster than Poetry
+**Title:** I built a Python package manager in Rust that's 10-100x faster than Poetry
 
 **Text:**
 After being frustrated with slow dependency resolution in Poetry, I decided to build something faster. Pro is written entirely in Rust and includes:
@@ -84,7 +84,7 @@ I've been working on Pro, a Python package manager written in Rust. The interest
 
 **Why Rust?**
 The main motivation was performance. Python's packaging tools are slow because they're written in Python. By using Rust, we get:
-- 10-50x faster resolution
+- 10-100x faster resolution
 - Sub-50ms wheel builds
 - Memory-safe concurrent downloads
 
