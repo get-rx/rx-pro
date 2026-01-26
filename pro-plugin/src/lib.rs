@@ -1,4 +1,4 @@
-//! rx-plugin: Plugin SDK for Pro Python package manager
+//! pro-plugin: Plugin SDK for Pro Python package manager
 //!
 //! This crate provides the plugin system for Pro:
 //! - WebAssembly plugin host (Extism)

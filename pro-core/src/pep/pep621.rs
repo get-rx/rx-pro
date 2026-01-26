@@ -158,8 +158,8 @@ impl PyProject {
                 dynamic: vec![],
             }),
             build_system: Some(BuildSystem {
-                requires: vec!["rx-core".to_string()],
-                build_backend: Some("rx_core".to_string()),
+                requires: vec!["pro-core".to_string()],
+                build_backend: Some("pro_core".to_string()),
                 backend_path: None,
             }),
             tool: HashMap::new(),

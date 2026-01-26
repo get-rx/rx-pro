@@ -1,4 +1,4 @@
-//! rx-core: Core library for Pro Python package manager
+//! pro-core: Core library for Pro Python package manager
 //!
 //! This crate provides the core functionality for Pro:
 //! - Dependency resolution (using pubgrub)

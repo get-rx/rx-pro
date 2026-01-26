@@ -1,6 +1,6 @@
 //! Integration tests for workspace functionality
 
-use rx_core::Workspace;
+use pro_core::Workspace;
 use std::fs;
 use tempfile::TempDir;
 

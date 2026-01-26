@@ -1,11 +1,11 @@
-//! Error types for rx-core
+//! Error types for pro-core
 
 use thiserror::Error;
 
-/// Result type for rx-core operations
+/// Result type for pro-core operations
 pub type Result<T> = std::result::Result<T, Error>;
 
-/// Core error type for rx-core
+/// Core error type for pro-core
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("package '{package}' not found on index")]

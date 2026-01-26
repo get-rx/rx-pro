@@ -6,9 +6,9 @@ use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criteri
 use std::fs;
 use tempfile::TempDir;
 
-use rx_core::pep::pep440::Version;
-use rx_core::pep::{PyProject, Requirement, VersionSpecifiers};
-use rx_core::Lockfile;
+use pro_core::pep::pep440::Version;
+use pro_core::pep::{PyProject, Requirement, VersionSpecifiers};
+use pro_core::Lockfile;
 
 /// Benchmark PEP 440 version parsing
 fn bench_version_parsing(c: &mut Criterion) {
@@ -176,7 +176,7 @@ fn bench_lockfile_io(c: &mut Criterion) {
     for i in 0..50 {
         lockfile.packages.insert(
             format!("package-{}", i),
-            rx_core::lockfile::LockedPackage {
+            pro_core::lockfile::LockedPackage {
                 version: format!("{}.0.0", i),
                 url: Some(format!("https://example.com/package-{}.whl", i)),
                 hash: Some("sha256:abc123".to_string()),

@@ -1,6 +1,6 @@
 //! Integration tests for the lockfile module
 
-use rx_core::Lockfile;
+use pro_core::Lockfile;
 use tempfile::TempDir;
 
 #[test]
