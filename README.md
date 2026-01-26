@@ -348,6 +348,6 @@ Dual-licensed under MIT and Apache 2.0. See [LICENSE-MIT](LICENSE-MIT) and [LICE
 
 **Built with 🦀 Rust and ❤️ by the T-Rex team**
 
-[Website](https://stherrien.github.io/t-rex/) • [GitHub](https://github.com/stherrien/t-rex) • [PyPI](https://pypi.org/project/t-rex/) • [Crates.io](https://crates.io/crates/rx)
+[Website](https://stherrien.github.io/t-rex/) • [GitHub](https://github.com/stherrien/t-rex) • [PyPI](https://pypi.org/project/trex-py/) • [Crates.io](https://crates.io/crates/rx)
 
 </div>
