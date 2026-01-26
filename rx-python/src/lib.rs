@@ -19,8 +19,9 @@
 //! vulnerabilities = audit("./my-project")
 //! ```
 
-use pyo3::prelude::*;
 use pyo3::exceptions::PyRuntimeError;
+use pyo3::prelude::*;
+use std::collections::HashMap;
 use std::path::PathBuf;
 
 /// Resolve Python package dependencies
@@ -41,17 +42,19 @@ fn resolve(requirements: Vec<String>) -> PyResult<Vec<(String, String, String)>>
             .filter_map(|r| rx_core::pep::Requirement::parse(r).ok())
             .collect();
 
-        let resolver = rx_core::Resolver::new();
+        let resolver = rx_core::resolver::Resolver::new();
         let resolution = resolver
             .resolve(&reqs)
             .await
             .map_err(|e| PyRuntimeError::new_err(format!("Resolution failed: {}", e)))?;
 
-        Ok(resolution
+        let result: Vec<(String, String, String)> = resolution
             .packages
             .into_iter()
             .map(|pkg| (pkg.name, pkg.version, pkg.url))
-            .collect())
+            .collect();
+
+        Ok(result)
     })
 }
 
@@ -79,34 +82,41 @@ fn sync(project_path: &str, recreate: bool) -> PyResult<usize> {
 
         // Create venv manager
         let venv_path = project_dir.join(".venv");
-        let mut venv = rx_core::VenvManager::new(&venv_path);
+        let venv = rx_core::VenvManager::new(&venv_path);
 
         if recreate && venv_path.exists() {
             std::fs::remove_dir_all(&venv_path)
                 .map_err(|e| PyRuntimeError::new_err(format!("Failed to remove venv: {}", e)))?;
         }
 
-        // Create venv if needed
+        // Create venv if needed (not async)
         if !venv_path.exists() {
             venv.create(None)
-                .await
                 .map_err(|e| PyRuntimeError::new_err(format!("Failed to create venv: {}", e)))?;
         }
 
+        // Get site-packages path
+        let site_packages = venv
+            .site_packages()
+            .map_err(|e| PyRuntimeError::new_err(format!("Failed to get site-packages: {}", e)))?;
+
+        // Get cache directory
+        let cache_dir = dirs::cache_dir()
+            .unwrap_or_else(|| PathBuf::from(".cache"))
+            .join("rx")
+            .join("wheels");
+
         // Install packages
-        let installer = rx_core::Installer::new(venv.site_packages());
+        let installer = rx_core::Installer::new(&cache_dir);
         let count = lockfile.packages.len();
 
-        for (name, pkg) in &lockfile.packages {
-            if let Some(ref url) = pkg.url {
-                installer
-                    .install(name, &pkg.version, url, pkg.hash.as_deref())
-                    .await
-                    .map_err(|e| {
-                        PyRuntimeError::new_err(format!("Failed to install {}: {}", name, e))
-                    })?;
-            }
-        }
+        // Convert BTreeMap to HashMap for installer
+        let packages: HashMap<_, _> = lockfile.packages.into_iter().collect();
+
+        installer
+            .install(&packages, &site_packages)
+            .await
+            .map_err(|e| PyRuntimeError::new_err(format!("Failed to install packages: {}", e)))?;
 
         Ok(count)
     })
@@ -133,21 +143,27 @@ fn build(
     let project_dir = PathBuf::from(project_path);
     let out_dir = PathBuf::from(output_dir);
 
-    let builder = rx_core::Builder::new(&project_dir);
+    let builder = rx_core::builder::Builder::new(&project_dir);
     let mut results = std::collections::HashMap::new();
 
     if wheel {
         let result = builder
             .build_wheel(&out_dir)
             .map_err(|e| PyRuntimeError::new_err(format!("Failed to build wheel: {}", e)))?;
-        results.insert("wheel".to_string(), result.path.to_string_lossy().to_string());
+        results.insert(
+            "wheel".to_string(),
+            result.path.to_string_lossy().to_string(),
+        );
     }
 
     if sdist {
         let result = builder
             .build_sdist(&out_dir)
             .map_err(|e| PyRuntimeError::new_err(format!("Failed to build sdist: {}", e)))?;
-        results.insert("sdist".to_string(), result.path.to_string_lossy().to_string());
+        results.insert(
+            "sdist".to_string(),
+            result.path.to_string_lossy().to_string(),
+        );
     }
 
     Ok(results)
@@ -159,7 +175,7 @@ fn build(
 ///     project_path: Path to the project directory
 ///
 /// Returns:
-///     List of vulnerabilities found (package, version, cve_id, severity, description)
+///     List of vulnerabilities found (package, version, vuln_id, severity, summary)
 #[pyfunction]
 fn audit(project_path: &str) -> PyResult<Vec<(String, String, String, String, String)>> {
     let rt = tokio::runtime::Runtime::new()
@@ -176,24 +192,27 @@ fn audit(project_path: &str) -> PyResult<Vec<(String, String, String, String, St
         // Create auditor
         let auditor = rx_core::audit::Auditor::new();
 
-        // Scan for vulnerabilities
-        let vulns = auditor
-            .scan(&lockfile)
+        // Audit the lockfile
+        let report = auditor
+            .audit_lockfile(&lockfile)
             .await
             .map_err(|e| PyRuntimeError::new_err(format!("Audit failed: {}", e)))?;
 
-        Ok(vulns
-            .into_iter()
-            .map(|v| {
-                (
-                    v.package,
-                    v.version,
-                    v.id,
-                    format!("{:?}", v.severity),
-                    v.summary.unwrap_or_default(),
-                )
-            })
-            .collect())
+        // Collect all vulnerabilities from all packages
+        let mut vulns = Vec::new();
+        for pkg_result in report.packages {
+            for vuln in pkg_result.vulnerabilities {
+                vulns.push((
+                    pkg_result.name.clone(),
+                    pkg_result.version.clone(),
+                    vuln.id,
+                    format!("{:?}", vuln.severity),
+                    vuln.summary,
+                ));
+            }
+        }
+
+        Ok(vulns)
     })
 }
 

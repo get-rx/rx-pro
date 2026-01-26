@@ -16,6 +16,7 @@ crate-type = ["cdylib"]
 pyo3 = { version = "0.20", features = ["extension-module"] }
 rx-core = { path = "../rx-core" }
 tokio = { version = "1", features = ["rt-multi-thread"] }
+dirs = "6.0"
 
 [build-dependencies]
 pyo3-build-config = "0.20"
