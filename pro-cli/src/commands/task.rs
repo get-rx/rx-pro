@@ -32,6 +32,7 @@ use pro_core::{load_dotenv, DotenvConfig};
 #[derive(Debug, Clone)]
 pub struct TaskDef {
     /// Task name
+    #[allow(dead_code)]
     pub name: String,
     /// Command to execute (optional if task only aggregates dependencies)
     pub cmd: Option<String>,

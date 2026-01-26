@@ -1,3 +1,8 @@
+// Allow some clippy lints that would require substantial refactoring
+#![allow(clippy::ptr_arg)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::type_complexity)]
+
 use anyhow::Result;
 use clap::Parser;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};

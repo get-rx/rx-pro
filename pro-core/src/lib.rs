@@ -11,6 +11,9 @@
 //! - Tool runner for ephemeral tool execution
 //! - PEP 723 script support
 
+// Allow some clippy lints that would require substantial refactoring
+#![allow(clippy::type_complexity)]
+
 pub mod affected;
 pub mod audit;
 pub mod builder;

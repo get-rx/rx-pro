@@ -62,7 +62,7 @@ impl ScriptMetadata {
 /// Parse PEP 723 inline script metadata from script content
 ///
 /// Looks for a block of the form:
-/// ```
+/// ```text
 /// # /// script
 /// # key = "value"
 /// # ///

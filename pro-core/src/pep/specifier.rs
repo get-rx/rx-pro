@@ -93,10 +93,10 @@ impl VersionSpecifier {
         let version_str = s[op_len..].trim();
 
         // Check for wildcard
-        let (version_str, wildcard) = if version_str.ends_with(".*") {
-            (&version_str[..version_str.len() - 2], true)
-        } else if version_str.ends_with('*') {
-            (&version_str[..version_str.len() - 1], true)
+        let (version_str, wildcard) = if let Some(stripped) = version_str.strip_suffix(".*") {
+            (stripped, true)
+        } else if let Some(stripped) = version_str.strip_suffix('*') {
+            (stripped, true)
         } else {
             (version_str, false)
         };

@@ -64,7 +64,7 @@ impl AuditCommand {
         }
 
         // Parse severity threshold
-        let severity_threshold = Severity::from_str(&self.severity);
+        let severity_threshold = self.severity.parse().unwrap_or(Severity::Unknown);
 
         // Parse ignored vulnerabilities from CLI
         let cli_ignored: Vec<String> = self

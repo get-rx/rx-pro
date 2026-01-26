@@ -215,7 +215,7 @@ fn extract_severity(osv: &OsvVulnerability) -> (Severity, Option<f32>) {
     // Try database_specific.severity (GHSA uses this)
     if let Some(db_specific) = &osv.database_specific {
         if let Some(severity_str) = &db_specific.severity {
-            return (Severity::from_str(severity_str), None);
+            return (severity_str.parse().unwrap_or(Severity::Unknown), None);
         }
         // Try CVSS score in database_specific
         if let Some(score) = db_specific.cvss_score {
@@ -235,7 +235,7 @@ fn extract_severity(osv: &OsvVulnerability) -> (Severity, Option<f32>) {
     for affected in &osv.affected {
         if let Some(sev) = &affected.database_specific {
             if let Some(severity_str) = sev.get("severity").and_then(|v| v.as_str()) {
-                return (Severity::from_str(severity_str), None);
+                return (severity_str.parse().unwrap_or(Severity::Unknown), None);
             }
         }
     }

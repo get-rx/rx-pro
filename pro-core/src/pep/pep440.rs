@@ -108,6 +108,7 @@ impl Version {
         })
     }
 
+    #[allow(clippy::type_complexity)]
     fn parse_version_part(
         s: &str,
         original: &str,
@@ -246,9 +247,8 @@ impl Version {
                 };
                 pre = Some(PreRelease::Rc(num));
                 pos += num_end;
-            } else if rest.starts_with('.') || rest.starts_with('-') || rest.starts_with('_') {
-                pos += 1;
             } else {
+                // Skip separator characters or unknown characters
                 pos += 1;
             }
         }

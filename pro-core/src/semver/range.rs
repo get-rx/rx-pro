@@ -262,20 +262,20 @@ impl Comparator {
         }
 
         // Parse operator prefix
-        let (op, rest) = if text.starts_with(">=") {
-            (Op::GreaterEq, &text[2..])
-        } else if text.starts_with("<=") {
-            (Op::LessEq, &text[2..])
-        } else if text.starts_with('>') {
-            (Op::Greater, &text[1..])
-        } else if text.starts_with('<') {
-            (Op::Less, &text[1..])
-        } else if text.starts_with('^') {
-            (Op::Caret, &text[1..])
-        } else if text.starts_with('~') {
-            (Op::Tilde, &text[1..])
-        } else if text.starts_with('=') {
-            (Op::Exact, &text[1..])
+        let (op, rest) = if let Some(rest) = text.strip_prefix(">=") {
+            (Op::GreaterEq, rest)
+        } else if let Some(rest) = text.strip_prefix("<=") {
+            (Op::LessEq, rest)
+        } else if let Some(rest) = text.strip_prefix('>') {
+            (Op::Greater, rest)
+        } else if let Some(rest) = text.strip_prefix('<') {
+            (Op::Less, rest)
+        } else if let Some(rest) = text.strip_prefix('^') {
+            (Op::Caret, rest)
+        } else if let Some(rest) = text.strip_prefix('~') {
+            (Op::Tilde, rest)
+        } else if let Some(rest) = text.strip_prefix('=') {
+            (Op::Exact, rest)
         } else {
             (Op::Exact, text)
         };

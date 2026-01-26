@@ -109,7 +109,7 @@ impl ToolListCommand {
                 let age = tool
                     .cached_at
                     .elapsed()
-                    .map(|d| format_duration(d))
+                    .map(format_duration)
                     .unwrap_or_else(|_| "unknown".to_string());
 
                 println!("  {} (v{})", tool.package, version);

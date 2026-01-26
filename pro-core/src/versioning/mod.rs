@@ -92,8 +92,9 @@ pub struct GitVersion {
 pub fn get_version(project_dir: &Path, config: &VersioningConfig) -> Result<String> {
     match config.source.as_str() {
         "git-tag" | "git" => get_git_version(project_dir, config),
-        "pyproject" | _ => {
-            // Return None to indicate pyproject.toml should be used
+        // "pyproject" or any other source falls back to pyproject.toml
+        _ => {
+            // Return error to indicate pyproject.toml should be used
             Err(Error::Version("Using pyproject.toml version".to_string()))
         }
     }

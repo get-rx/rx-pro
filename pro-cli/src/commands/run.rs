@@ -60,7 +60,7 @@ impl RunCommand {
         // Check if the first argument is a .py file with PEP 723 metadata
         if let Some(first_arg) = self.command.first() {
             let script_path = Path::new(first_arg);
-            if script_path.extension().map_or(false, |e| e == "py") && script_path.exists() {
+            if script_path.extension().is_some_and(|e| e == "py") && script_path.exists() {
                 // Check for PEP 723 metadata
                 if is_pep723_script(script_path).unwrap_or(false) {
                     return self.run_pep723_script(script_path).await;

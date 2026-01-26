@@ -318,12 +318,11 @@ fn convert_poetry_version_string(version: &str) -> String {
 
 /// Convert Poetry python constraint to PEP 440
 fn convert_poetry_python_constraint(constraint: &str) -> String {
-    // Poetry uses ^3.8 style, convert to >=3.8
+    // Poetry uses ^3.8 or ~3.8 style, convert to >=3.8
     let v = constraint.trim();
-    if v.starts_with('^') {
-        format!(">={}", &v[1..])
-    } else if v.starts_with('~') {
-        format!(">={}", &v[1..])
+    // Handle both ^ and ~ prefixes the same way - convert to >=
+    if let Some(stripped) = v.strip_prefix('^').or_else(|| v.strip_prefix('~')) {
+        format!(">={}", stripped)
     } else {
         v.to_string()
     }

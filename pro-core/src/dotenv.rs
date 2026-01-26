@@ -206,7 +206,7 @@ fn parse_single_quoted(
 
 /// Find an unescaped quote character
 fn find_unescaped_quote(s: &str, quote: char) -> Option<usize> {
-    let mut chars = s.chars().enumerate();
+    let chars = s.chars().enumerate();
     let mut escaped = false;
 
     for (i, c) in chars {

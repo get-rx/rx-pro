@@ -25,6 +25,9 @@ Pro combines the speed of Rust with the ergonomics of Poetry to deliver the best
 |---------|-----|----|---------|-----|
 | **Dependency Resolution** | ⚡ Fast (Rust) | ⚡ Fast (Rust) | 🐢 Slow | 🐢 Slow |
 | **Native Build Backend** | ✅ Rust | ❌ Python | ❌ Python | ❌ Python |
+| **Python Version Management** | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
+| **Tool Runner** | ✅ Yes (`rx tool`) | ✅ Yes (`uvx`) | ❌ No | ❌ No |
+| **PEP 723 Scripts** | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
 | **WebAssembly Plugins** | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | **Monorepo Support** | ✅ Full | ⚠️ Basic | ⚠️ Basic | ❌ No |
 | **Polylith Architecture** | ✅ Yes | ❌ No | ❌ No | ❌ No |

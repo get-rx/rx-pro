@@ -2,6 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 use std::fmt;
+use std::str::FromStr;
 
 /// Severity level of a vulnerability
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -21,17 +22,21 @@ pub enum Severity {
     Critical,
 }
 
-impl Severity {
-    /// Parse severity from string (case-insensitive)
-    pub fn from_str(s: &str) -> Self {
-        match s.to_uppercase().as_str() {
+impl FromStr for Severity {
+    type Err = std::convert::Infallible;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(match s.to_uppercase().as_str() {
             "CRITICAL" => Severity::Critical,
             "HIGH" => Severity::High,
             "MEDIUM" | "MODERATE" => Severity::Medium,
             "LOW" => Severity::Low,
             _ => Severity::Unknown,
-        }
+        })
     }
+}
+
+impl Severity {
 
     /// Get emoji for severity
     pub fn emoji(&self) -> &'static str {
@@ -262,12 +267,12 @@ mod tests {
 
     #[test]
     fn test_severity_from_str() {
-        assert_eq!(Severity::from_str("CRITICAL"), Severity::Critical);
-        assert_eq!(Severity::from_str("high"), Severity::High);
-        assert_eq!(Severity::from_str("Medium"), Severity::Medium);
-        assert_eq!(Severity::from_str("MODERATE"), Severity::Medium);
-        assert_eq!(Severity::from_str("low"), Severity::Low);
-        assert_eq!(Severity::from_str("unknown"), Severity::Unknown);
+        assert_eq!("CRITICAL".parse::<Severity>().unwrap(), Severity::Critical);
+        assert_eq!("high".parse::<Severity>().unwrap(), Severity::High);
+        assert_eq!("Medium".parse::<Severity>().unwrap(), Severity::Medium);
+        assert_eq!("MODERATE".parse::<Severity>().unwrap(), Severity::Medium);
+        assert_eq!("low".parse::<Severity>().unwrap(), Severity::Low);
+        assert_eq!("unknown".parse::<Severity>().unwrap(), Severity::Unknown);
     }
 
     #[test]
