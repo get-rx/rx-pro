@@ -5,7 +5,7 @@ A blazing-fast Python package manager written in Rust.
 ## Installation
 
 ```bash
-pip install trex-py
+pip install rx-pro
 ```
 
 ## CLI Usage
@@ -33,7 +33,7 @@ rx audit
 ## Python API
 
 ```python
-from trex import resolve, sync, build, audit
+from pro import resolve, sync, build, audit
 
 # Resolve dependencies
 packages = resolve(["requests>=2.28", "numpy"])
