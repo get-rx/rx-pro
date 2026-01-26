@@ -224,7 +224,7 @@ fn version() -> &'static str {
 
 /// Python module initialization
 #[pymodule]
-fn trex(_py: Python, m: &PyModule) -> PyResult<()> {
+fn trex(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(resolve, m)?)?;
     m.add_function(wrap_pyfunction!(sync, m)?)?;
     m.add_function(wrap_pyfunction!(build, m)?)?;
