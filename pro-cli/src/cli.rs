@@ -4,8 +4,8 @@ use clap::{Parser, Subcommand};
 use crate::commands::{
     AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand,
     ExportCommand, ImportCommand, InitCommand, LockCommand, PluginCommand, PolylithCommand,
-    PublishCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand, SyncCommand,
-    TaskCommand, UpdateCommand, VersionCommand, WorkspaceCommand,
+    PublishCommand, PythonCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand,
+    SyncCommand, TaskCommand, ToolCommand, UpdateCommand, VersionCommand, WorkspaceCommand,
 };
 
 #[derive(Parser)]
@@ -92,6 +92,12 @@ pub enum Commands {
 
     /// Import from other package managers (Poetry, etc.)
     Import(ImportCommand),
+
+    /// Manage Python installations
+    Python(PythonCommand),
+
+    /// Run Python tools in ephemeral environments
+    Tool(ToolCommand),
 }
 
 impl Cli {
@@ -119,6 +125,8 @@ impl Cli {
             Commands::Docker(cmd) => cmd.run().await,
             Commands::Plugin(cmd) => cmd.run().await,
             Commands::Import(cmd) => cmd.run().await,
+            Commands::Python(cmd) => cmd.run().await,
+            Commands::Tool(cmd) => cmd.run().await,
         }
     }
 }

@@ -18,7 +18,10 @@ use tracing::debug;
 
 use pro_core::pep::PyProject;
 use pro_core::workspace::Workspace;
-use pro_core::{detect_affected_with_transitive, load_dotenv, AffectedConfig, DotenvConfig};
+use pro_core::{
+    detect_affected_with_transitive, is_pep723_script, load_dotenv, AffectedConfig, DotenvConfig,
+    ScriptRunner,
+};
 
 #[derive(Args)]
 pub struct RunCommand {
@@ -52,6 +55,17 @@ impl RunCommand {
         // Handle --affected flag for workspace
         if self.affected {
             return self.run_affected().await;
+        }
+
+        // Check if the first argument is a .py file with PEP 723 metadata
+        if let Some(first_arg) = self.command.first() {
+            let script_path = Path::new(first_arg);
+            if script_path.extension().map_or(false, |e| e == "py") && script_path.exists() {
+                // Check for PEP 723 metadata
+                if is_pep723_script(script_path).unwrap_or(false) {
+                    return self.run_pep723_script(script_path).await;
+                }
+            }
         }
 
         let project_dir = if self.project.as_os_str() == "." {
@@ -270,6 +284,26 @@ impl RunCommand {
 
         // Default configuration
         DotenvConfig::new()
+    }
+
+    /// Run a PEP 723 script with inline dependencies
+    async fn run_pep723_script(&self, script_path: &Path) -> Result<()> {
+        let runner = ScriptRunner::new()
+            .context("Failed to initialize script runner")?;
+
+        // Get remaining arguments (after the script name)
+        let args: Vec<String> = self.command.iter().skip(1).cloned().collect();
+
+        debug!("Running PEP 723 script: {:?}", script_path);
+
+        let status = runner.run(script_path, &args).await?;
+
+        // Exit with the same code as the script
+        if !status.success() {
+            std::process::exit(status.code().unwrap_or(1));
+        }
+
+        Ok(())
     }
 
     /// Run command on affected workspace members only

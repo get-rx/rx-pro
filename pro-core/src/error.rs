@@ -86,4 +86,34 @@ pub enum Error {
 
     #[error("configuration error: {0}")]
     Config(String),
+
+    // Python version management errors
+    #[error("Python version '{version}' not found")]
+    PythonVersionNotFound { version: String },
+
+    #[error("Python version '{version}' already installed")]
+    PythonAlreadyInstalled { version: String },
+
+    #[error("unsupported platform: {0}")]
+    UnsupportedPlatform(String),
+
+    #[error("download failed: {0}")]
+    DownloadFailed(String),
+
+    #[error("extraction failed: {0}")]
+    ExtractionFailed(String),
+
+    // Tool runner errors
+    #[error("tool '{tool}' not found")]
+    ToolNotFound { tool: String },
+
+    #[error("tool execution failed: {0}")]
+    ToolExecutionFailed(String),
+
+    // Script errors
+    #[error("invalid script metadata: {0}")]
+    ScriptMetadataError(String),
+
+    #[error("script execution failed: {0}")]
+    ScriptExecutionFailed(String),
 }

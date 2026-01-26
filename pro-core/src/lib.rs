@@ -7,6 +7,9 @@
 //! - Virtual environment management
 //! - Security auditing (CVE checking)
 //! - PEP standards compliance
+//! - Python version management
+//! - Tool runner for ephemeral tool execution
+//! - PEP 723 script support
 
 pub mod affected;
 pub mod audit;
@@ -20,9 +23,12 @@ pub mod lockfile;
 pub mod path_dep;
 pub mod pep;
 pub mod polylith;
+pub mod python;
 pub mod registry;
 pub mod resolver;
+pub mod script;
 pub mod semver;
+pub mod tool;
 pub mod venv;
 pub mod versioning;
 pub mod workspace;
@@ -42,7 +48,13 @@ pub use installer::{default_cache_dir, InstallResult, Installer};
 pub use lockfile::Lockfile;
 pub use path_dep::{install_path_dependency, load_path_dependencies, PathDependency};
 pub use polylith::{Brick, BrickType, Polylith};
+pub use python::{
+    available_versions, find_matching_version, InstalledPython, Platform, PythonManager,
+    PythonVersion,
+};
 pub use registry::{RegistryConfig, RegistryManager, ResolvedCredentials};
+pub use script::{is_pep723_script, parse_script_metadata, ScriptMetadata, ScriptRunner};
+pub use tool::{CachedTool, ToolCache, ToolRunner};
 pub use venv::VenvManager;
 pub use versioning::{bump_version, get_git_version, get_version, VersioningConfig};
 pub use workspace::{MemberInfo, Workspace};
