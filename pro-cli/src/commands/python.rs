@@ -95,8 +95,7 @@ impl PythonCommand {
 
 impl PythonInstallCommand {
     pub async fn run(self) -> Result<()> {
-        let manager = PythonManager::new()
-            .context("Failed to initialize Python manager")?;
+        let manager = PythonManager::new().context("Failed to initialize Python manager")?;
 
         // Check if already installed
         if !self.force {
@@ -112,7 +111,10 @@ impl PythonInstallCommand {
         } else {
             // Force reinstall - uninstall first if exists
             if let Some(installed) = manager.find_matching(&self.version)? {
-                println!("Removing existing installation of Python {}...", installed.version);
+                println!(
+                    "Removing existing installation of Python {}...",
+                    installed.version
+                );
                 manager.uninstall(&installed.version.to_string())?;
             }
         }
@@ -133,8 +135,7 @@ impl PythonInstallCommand {
 
 impl PythonListCommand {
     pub async fn run(self) -> Result<()> {
-        let manager = PythonManager::new()
-            .context("Failed to initialize Python manager")?;
+        let manager = PythonManager::new().context("Failed to initialize Python manager")?;
 
         let installed = manager.list_installed()?;
         let available = manager.list_available();
@@ -158,12 +159,7 @@ impl PythonListCommand {
                         .unwrap_or(false);
 
                     let marker = if is_global { " (default)" } else { "" };
-                    println!(
-                        "  {} {}{}",
-                        python.version,
-                        python.path.display(),
-                        marker
-                    );
+                    println!("  {} {}{}", python.version, python.path.display(), marker);
                 }
             }
             println!();
@@ -176,11 +172,11 @@ impl PythonListCommand {
             let mut current_minor: Option<u32> = None;
             for version in &available {
                 // Check if this version is installed
-                let is_installed = installed
-                    .iter()
-                    .any(|i| i.version.major == version.version.major
+                let is_installed = installed.iter().any(|i| {
+                    i.version.major == version.version.major
                         && i.version.minor == version.version.minor
-                        && i.version.patch == version.version.patch);
+                        && i.version.patch == version.version.patch
+                });
 
                 // Show minor version header
                 if current_minor != Some(version.version.minor) {
@@ -206,8 +202,7 @@ impl PythonListCommand {
 
 impl PythonPinCommand {
     pub async fn run(self) -> Result<()> {
-        let manager = PythonManager::new()
-            .context("Failed to initialize Python manager")?;
+        let manager = PythonManager::new().context("Failed to initialize Python manager")?;
 
         let project_dir = if self.project.as_os_str() == "." {
             std::env::current_dir()?
@@ -216,8 +211,7 @@ impl PythonPinCommand {
         };
 
         // Validate version format
-        let version = PythonVersion::parse(&self.version)
-            .context("Invalid version format")?;
+        let version = PythonVersion::parse(&self.version).context("Invalid version format")?;
 
         // Check if we have this version installed
         if let Some(installed) = manager.find_matching(&self.version)? {
@@ -245,12 +239,10 @@ impl PythonPinCommand {
 
 impl PythonUseCommand {
     pub async fn run(self) -> Result<()> {
-        let manager = PythonManager::new()
-            .context("Failed to initialize Python manager")?;
+        let manager = PythonManager::new().context("Failed to initialize Python manager")?;
 
         // Validate version format
-        let version = PythonVersion::parse(&self.version)
-            .context("Invalid version format")?;
+        let version = PythonVersion::parse(&self.version).context("Invalid version format")?;
 
         // Check if we have this version installed
         if let Some(installed) = manager.find_matching(&self.version)? {
@@ -277,8 +269,7 @@ impl PythonUseCommand {
 
 impl PythonUninstallCommand {
     pub async fn run(self) -> Result<()> {
-        let manager = PythonManager::new()
-            .context("Failed to initialize Python manager")?;
+        let manager = PythonManager::new().context("Failed to initialize Python manager")?;
 
         // Check if installed
         let installed = manager

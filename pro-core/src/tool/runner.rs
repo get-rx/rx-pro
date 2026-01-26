@@ -165,7 +165,11 @@ impl ToolRunner {
                     entries
                         .filter_map(|e| e.ok())
                         .filter_map(|e| e.file_name().into_string().ok())
-                        .filter(|n| !n.starts_with("python") && !n.starts_with("pip") && !n.starts_with("activate"))
+                        .filter(|n| {
+                            !n.starts_with("python")
+                                && !n.starts_with("pip")
+                                && !n.starts_with("activate")
+                        })
                         .collect()
                 })
                 .unwrap_or_default();

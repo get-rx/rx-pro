@@ -288,8 +288,7 @@ impl RunCommand {
 
     /// Run a PEP 723 script with inline dependencies
     async fn run_pep723_script(&self, script_path: &Path) -> Result<()> {
-        let runner = ScriptRunner::new()
-            .context("Failed to initialize script runner")?;
+        let runner = ScriptRunner::new().context("Failed to initialize script runner")?;
 
         // Get remaining arguments (after the script name)
         let args: Vec<String> = self.command.iter().skip(1).cloned().collect();

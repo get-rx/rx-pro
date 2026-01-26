@@ -37,7 +37,6 @@ impl FromStr for Severity {
 }
 
 impl Severity {
-
     /// Get emoji for severity
     pub fn emoji(&self) -> &'static str {
         match self {

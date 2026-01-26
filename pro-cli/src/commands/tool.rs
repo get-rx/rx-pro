@@ -67,8 +67,7 @@ impl ToolCommand {
 
 impl ToolRunCommand {
     pub async fn run(self) -> Result<()> {
-        let runner = ToolRunner::new()
-            .context("Failed to initialize tool runner")?;
+        let runner = ToolRunner::new().context("Failed to initialize tool runner")?;
 
         let command = self.command.as_deref().unwrap_or(&self.package);
 
@@ -87,8 +86,7 @@ impl ToolRunCommand {
 
 impl ToolListCommand {
     pub async fn run(self) -> Result<()> {
-        let runner = ToolRunner::new()
-            .context("Failed to initialize tool runner")?;
+        let runner = ToolRunner::new().context("Failed to initialize tool runner")?;
 
         let tools = runner.list_cached()?;
 
@@ -131,8 +129,7 @@ impl ToolListCommand {
 
 impl ToolClearCommand {
     pub async fn run(self) -> Result<()> {
-        let runner = ToolRunner::new()
-            .context("Failed to initialize tool runner")?;
+        let runner = ToolRunner::new().context("Failed to initialize tool runner")?;
 
         match self.package {
             Some(package) => {

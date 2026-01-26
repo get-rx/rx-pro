@@ -155,14 +155,14 @@ fn parse_metadata_toml(content: &str) -> Result<ScriptMetadata> {
 
     // Extract dependencies
     if let Some(value) = table.get("dependencies") {
-        let deps = value.as_array().ok_or_else(|| {
-            Error::ScriptMetadataError("dependencies must be an array".into())
-        })?;
+        let deps = value
+            .as_array()
+            .ok_or_else(|| Error::ScriptMetadataError("dependencies must be an array".into()))?;
 
         for dep in deps {
-            let dep_str = dep.as_str().ok_or_else(|| {
-                Error::ScriptMetadataError("dependency must be a string".into())
-            })?;
+            let dep_str = dep
+                .as_str()
+                .ok_or_else(|| Error::ScriptMetadataError("dependency must be a string".into()))?;
             metadata.dependencies.push(dep_str.to_string());
         }
     }

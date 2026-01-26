@@ -96,9 +96,10 @@ impl PythonManager {
         let spec = PythonVersion::parse(version_spec)?;
 
         // Find the matching available version
-        let available = find_matching_version(&spec).ok_or_else(|| Error::PythonVersionNotFound {
-            version: version_spec.to_string(),
-        })?;
+        let available =
+            find_matching_version(&spec).ok_or_else(|| Error::PythonVersionNotFound {
+                version: version_spec.to_string(),
+            })?;
 
         let install_path = self.install_dir.join(available.version.to_string_full());
 
@@ -221,7 +222,11 @@ impl PythonManager {
         let mut file = fs::File::create(&version_file).map_err(Error::Io)?;
         writeln!(file, "{}", version_str).map_err(Error::Io)?;
 
-        tracing::info!("Pinned Python {} in {}", version_str, version_file.display());
+        tracing::info!(
+            "Pinned Python {} in {}",
+            version_str,
+            version_file.display()
+        );
 
         Ok(())
     }
@@ -393,8 +398,9 @@ impl PythonManager {
         // The archive contains python/install/* - move the install directory
         let extracted = temp_dir.join("python").join("install");
         if extracted.exists() {
-            fs::rename(&extracted, install_path)
-                .map_err(|e| Error::ExtractionFailed(format!("failed to move extracted files: {}", e)))?;
+            fs::rename(&extracted, install_path).map_err(|e| {
+                Error::ExtractionFailed(format!("failed to move extracted files: {}", e))
+            })?;
         } else {
             // Fallback: maybe the structure is different, try to find the python directory
             for entry in fs::read_dir(&temp_dir).map_err(Error::Io)? {
@@ -406,12 +412,18 @@ impl PythonManager {
                     let install_subdir = path.join("install");
                     if bin.exists() {
                         fs::rename(&path, install_path).map_err(|e| {
-                            Error::ExtractionFailed(format!("failed to move extracted files: {}", e))
+                            Error::ExtractionFailed(format!(
+                                "failed to move extracted files: {}",
+                                e
+                            ))
                         })?;
                         break;
                     } else if install_subdir.exists() {
                         fs::rename(&install_subdir, install_path).map_err(|e| {
-                            Error::ExtractionFailed(format!("failed to move extracted files: {}", e))
+                            Error::ExtractionFailed(format!(
+                                "failed to move extracted files: {}",
+                                e
+                            ))
                         })?;
                         break;
                     }
@@ -444,8 +456,9 @@ impl PythonManager {
         // Find and move the Python installation directory
         let extracted = temp_dir.join("python").join("install");
         if extracted.exists() {
-            fs::rename(&extracted, install_path)
-                .map_err(|e| Error::ExtractionFailed(format!("failed to move extracted files: {}", e)))?;
+            fs::rename(&extracted, install_path).map_err(|e| {
+                Error::ExtractionFailed(format!("failed to move extracted files: {}", e))
+            })?;
         } else {
             // Try alternative structures
             for entry in fs::read_dir(&temp_dir).map_err(Error::Io)? {
@@ -456,12 +469,18 @@ impl PythonManager {
                     let install_subdir = path.join("install");
                     if python_exe.exists() {
                         fs::rename(&path, install_path).map_err(|e| {
-                            Error::ExtractionFailed(format!("failed to move extracted files: {}", e))
+                            Error::ExtractionFailed(format!(
+                                "failed to move extracted files: {}",
+                                e
+                            ))
                         })?;
                         break;
                     } else if install_subdir.exists() {
                         fs::rename(&install_subdir, install_path).map_err(|e| {
-                            Error::ExtractionFailed(format!("failed to move extracted files: {}", e))
+                            Error::ExtractionFailed(format!(
+                                "failed to move extracted files: {}",
+                                e
+                            ))
                         })?;
                         break;
                     }
@@ -505,9 +524,7 @@ impl PythonManager {
         let candidates = ["python3", "python"];
 
         for candidate in candidates {
-            let output = Command::new("which")
-                .arg(candidate)
-                .output();
+            let output = Command::new("which").arg(candidate).output();
 
             if let Ok(output) = output {
                 if output.status.success() {
@@ -526,9 +543,7 @@ impl PythonManager {
             }
         }
 
-        Err(Error::VenvError(
-            "could not find Python interpreter".into(),
-        ))
+        Err(Error::VenvError("could not find Python interpreter".into()))
     }
 }
 
@@ -541,10 +556,7 @@ mod tests {
     fn test_build_download_url() {
         // This test may need adjustment based on current platform
         if let Ok(manager) = PythonManager::new() {
-            let version = AvailableVersion::new(
-                PythonVersion::new(3, 12, Some(5)),
-                "20240814",
-            );
+            let version = AvailableVersion::new(PythonVersion::new(3, 12, Some(5)), "20240814");
             let url = manager.build_download_url(&version);
             assert!(url.contains("cpython-3.12.5"));
             assert!(url.contains("20240814"));

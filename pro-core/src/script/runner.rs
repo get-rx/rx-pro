@@ -93,10 +93,7 @@ impl ScriptRunner {
             .stderr(Stdio::inherit())
             .status()
             .map_err(|e| {
-                Error::ScriptExecutionFailed(format!(
-                    "failed to execute script: {}",
-                    e
-                ))
+                Error::ScriptExecutionFailed(format!("failed to execute script: {}", e))
             })?;
 
         Ok(status)
@@ -156,10 +153,7 @@ impl ScriptRunner {
             .stderr(Stdio::inherit())
             .status()
             .map_err(|e| {
-                Error::ScriptExecutionFailed(format!(
-                    "failed to execute script: {}",
-                    e
-                ))
+                Error::ScriptExecutionFailed(format!("failed to execute script: {}", e))
             })?;
 
         Ok(status)

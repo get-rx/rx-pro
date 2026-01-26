@@ -148,7 +148,9 @@ impl ToolCache {
     /// Read the recorded version for a tool
     fn read_version(&self, package: &str) -> Option<String> {
         let marker = self.version_marker(package);
-        fs::read_to_string(&marker).ok().map(|s| s.trim().to_string())
+        fs::read_to_string(&marker)
+            .ok()
+            .map(|s| s.trim().to_string())
     }
 
     /// List all cached tools

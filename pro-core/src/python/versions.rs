@@ -153,66 +153,24 @@ pub fn available_versions() -> Vec<AvailableVersion> {
     // as of January 2025
     vec![
         // Python 3.13
-        AvailableVersion::new(
-            PythonVersion::new(3, 13, Some(1)),
-            "20250115",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 13, Some(0)),
-            "20241206",
-        ),
+        AvailableVersion::new(PythonVersion::new(3, 13, Some(1)), "20250115"),
+        AvailableVersion::new(PythonVersion::new(3, 13, Some(0)), "20241206"),
         // Python 3.12
-        AvailableVersion::new(
-            PythonVersion::new(3, 12, Some(8)),
-            "20250115",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 12, Some(7)),
-            "20241206",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 12, Some(6)),
-            "20240909",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 12, Some(5)),
-            "20240814",
-        ),
+        AvailableVersion::new(PythonVersion::new(3, 12, Some(8)), "20250115"),
+        AvailableVersion::new(PythonVersion::new(3, 12, Some(7)), "20241206"),
+        AvailableVersion::new(PythonVersion::new(3, 12, Some(6)), "20240909"),
+        AvailableVersion::new(PythonVersion::new(3, 12, Some(5)), "20240814"),
         // Python 3.11
-        AvailableVersion::new(
-            PythonVersion::new(3, 11, Some(11)),
-            "20250115",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 11, Some(10)),
-            "20241016",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 11, Some(9)),
-            "20240814",
-        ),
+        AvailableVersion::new(PythonVersion::new(3, 11, Some(11)), "20250115"),
+        AvailableVersion::new(PythonVersion::new(3, 11, Some(10)), "20241016"),
+        AvailableVersion::new(PythonVersion::new(3, 11, Some(9)), "20240814"),
         // Python 3.10
-        AvailableVersion::new(
-            PythonVersion::new(3, 10, Some(16)),
-            "20250115",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 10, Some(15)),
-            "20241016",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 10, Some(14)),
-            "20240814",
-        ),
+        AvailableVersion::new(PythonVersion::new(3, 10, Some(16)), "20250115"),
+        AvailableVersion::new(PythonVersion::new(3, 10, Some(15)), "20241016"),
+        AvailableVersion::new(PythonVersion::new(3, 10, Some(14)), "20240814"),
         // Python 3.9
-        AvailableVersion::new(
-            PythonVersion::new(3, 9, Some(21)),
-            "20250115",
-        ),
-        AvailableVersion::new(
-            PythonVersion::new(3, 9, Some(20)),
-            "20241016",
-        ),
+        AvailableVersion::new(PythonVersion::new(3, 9, Some(21)), "20250115"),
+        AvailableVersion::new(PythonVersion::new(3, 9, Some(20)), "20241016"),
     ]
 }
 
