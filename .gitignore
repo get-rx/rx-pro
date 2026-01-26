@@ -25,3 +25,6 @@ Thumbs.db
 
 # Database
 *.db
+
+# Marketing (local only)
+docs/marketing/
