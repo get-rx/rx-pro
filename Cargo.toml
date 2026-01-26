@@ -89,9 +89,9 @@ proptest = "1.5"
 tempfile = "3.15"
 criterion = { version = "0.5", features = ["html_reports"] }
 
-# Internal crates
-rx-core = { path = "rx-core" }
-rx-plugin = { path = "rx-plugin" }
+# Internal crates (version required for crates.io publishing)
+rx-core = { path = "rx-core", version = "0.1.0" }
+rx-plugin = { path = "rx-plugin", version = "0.1.0" }
 
 [profile.release]
 lto = true
