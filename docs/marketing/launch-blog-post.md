@@ -77,7 +77,7 @@ Upgraded requests 2.25.0 -> 2.31.0
 
 ```bash
 # Install
-pip install trex-py
+pip install rx-pro
 
 # Create a project
 rx init my-project
@@ -106,7 +106,7 @@ Pro is open source and ready for production use. We're actively working on:
 
 - **Website**: https://stherrien.github.io/pro/
 - **GitHub**: https://github.com/stherrien/pro
-- **PyPI**: https://pypi.org/project/trex-py/
+- **PyPI**: https://pypi.org/project/rx-pro/
 
 We'd love your feedback! Open issues, submit PRs, or just star the repo if you find it useful.
 

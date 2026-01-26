@@ -5,7 +5,7 @@ Introducing Pro: A Python package manager written in Rust.
 
 10-50x faster than Poetry. Native build backend. WebAssembly plugins.
 
-pip install trex-py
+pip install rx-pro
 
 https://github.com/stherrien/pro
 
@@ -69,7 +69,7 @@ Multi-stage builds. Optimized images. One command deploy.
 ## Tweet 8 (CTA)
 Get started in 30 seconds:
 
-pip install trex-py
+pip install rx-pro
 rx init my-project
 cd my-project
 rx add requests
@@ -95,7 +95,7 @@ After experiencing slow dependency resolution with existing tools, I built somet
 
 The Python ecosystem deserves fast, modern tooling. Pro brings Rust-level performance to Python development.
 
-Try it out: pip install trex-py
+Try it out: pip install rx-pro
 GitHub: https://github.com/stherrien/pro
 
 #Python #Rust #OpenSource #DeveloperTools #PackageManager

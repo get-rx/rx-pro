@@ -13,7 +13,7 @@ Key differentiators:
 
 Quick start:
 ```
-pip install trex-py
+pip install rx-pro
 rx init my-project && cd my-project
 rx add requests numpy
 rx sync
@@ -48,7 +48,7 @@ After being frustrated with slow dependency resolution in Poetry, I decided to b
 
 **Getting Started:**
 ```bash
-pip install trex-py
+pip install rx-pro
 rx init my-project
 rx add requests numpy pandas
 rx sync
@@ -71,10 +71,10 @@ Looking for feedback! What features would you want in a package manager?
 I've been working on Pro, a Python package manager written in Rust. The interesting part from a Rust perspective:
 
 **Architecture:**
-- `rx-core`: Core library with resolver, installer, builder
-- `rx-cli`: CLI using clap
-- `rx-plugin`: WebAssembly plugin system using wasmtime
-- `rx-python`: PyO3 bindings
+- `pro-core`: Core library with resolver, installer, builder
+- `pro-cli`: CLI using clap
+- `pro-plugin`: WebAssembly plugin system using wasmtime
+- `pro-python`: PyO3 bindings
 
 **Technical Highlights:**
 - PubGrub algorithm for dependency resolution
