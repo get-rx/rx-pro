@@ -302,8 +302,7 @@ multi_stage = true
 
 ## Documentation
 
-- [Full Documentation](https://stherrien.github.io/pro/)
-- [API Reference](https://stherrien.github.io/pro/api/)
+- [Documentation](https://rxpro.net/)
 - [Migration Guide](docs/MIGRATION.md)
 - [Plugin Development](docs/PLUGINS.md)
 - [Contributing](CONTRIBUTING.md)
@@ -348,6 +347,6 @@ Dual-licensed under MIT and Apache 2.0. See [LICENSE-MIT](LICENSE-MIT) and [LICE
 
 **Built with 🦀 Rust and ❤️ by the Pro team**
 
-[Website](https://stherrien.github.io/pro/) • [GitHub](https://github.com/stherrien/pro) • [PyPI](https://pypi.org/project/rx-pro/) • [Crates.io](https://crates.io/crates/pro-cli)
+[Website](https://rxpro.net/) • [GitHub](https://github.com/stherrien/pro) • [PyPI](https://pypi.org/project/rx-pro/) • [Crates.io](https://crates.io/crates/pro-cli)
 
 </div>

@@ -104,7 +104,7 @@ Pro is open source and ready for production use. We're actively working on:
 
 ## Try It Out
 
-- **Website**: https://stherrien.github.io/pro/
+- **Website**: https://rxpro.net/
 - **GitHub**: https://github.com/stherrien/pro
 - **PyPI**: https://pypi.org/project/rx-pro/
 

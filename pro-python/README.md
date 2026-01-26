@@ -67,7 +67,7 @@ for pkg, ver, cve, severity, description in vulnerabilities:
 
 ## Documentation
 
-See the [full documentation](https://stherrien.github.io/pro/) for more details.
+See the [full documentation](https://rxpro.net/) for more details.
 
 ## License
 

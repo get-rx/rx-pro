@@ -19,7 +19,7 @@ rx add requests numpy
 rx sync
 ```
 
-Website: https://stherrien.github.io/pro/
+Website: https://rxpro.net/
 GitHub: https://github.com/stherrien/pro
 
 Would love feedback on the API design and feature set!
@@ -55,7 +55,7 @@ rx sync
 ```
 
 Links:
-- Website: https://stherrien.github.io/pro/
+- Website: https://rxpro.net/
 - GitHub: https://github.com/stherrien/pro
 - Docs: https://github.com/stherrien/pro#readme
 
