@@ -3,7 +3,7 @@ requires = ["maturin>=1.4,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "pro-py"
+name = "rx-pro"
 version = "0.1.0"
 description = "A blazing-fast Python package manager written in Rust"
 readme = "README.md"

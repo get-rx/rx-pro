@@ -44,5 +44,5 @@ def _cli_main():
         sys.exit(subprocess.call([rx_path] + sys.argv[1:]))
     else:
         print("Error: rx binary not found. Please install Pro:", file=sys.stderr)
-        print("  pip install pro-py", file=sys.stderr)
+        print("  pip install rx-pro", file=sys.stderr)
         sys.exit(1)

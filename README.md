@@ -8,7 +8,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
 [![Crates.io](https://img.shields.io/crates/v/pro-cli.svg)](https://crates.io/crates/pro-cli)
-[![PyPI](https://img.shields.io/pypi/v/pro-py.svg)](https://pypi.org/project/pro-py/)
+[![PyPI](https://img.shields.io/pypi/v/rx-pro.svg)](https://pypi.org/project/rx-pro/)
 [![CI](https://github.com/stherrien/pro/workflows/CI/badge.svg)](https://github.com/stherrien/pro/actions)
 
 [Installation](#installation) • [Quick Start](#quick-start) • [Features](#features) • [Documentation](#documentation)
@@ -43,7 +43,7 @@ curl -sSf https://raw.githubusercontent.com/stherrien/pro/main/install.sh | bash
 ### From PyPI
 
 ```bash
-pip install pro-py
+pip install rx-pro
 ```
 
 ### From Cargo
@@ -348,6 +348,6 @@ Dual-licensed under MIT and Apache 2.0. See [LICENSE-MIT](LICENSE-MIT) and [LICE
 
 **Built with 🦀 Rust and ❤️ by the Pro team**
 
-[Website](https://stherrien.github.io/pro/) • [GitHub](https://github.com/stherrien/pro) • [PyPI](https://pypi.org/project/pro-py/) • [Crates.io](https://crates.io/crates/pro-cli)
+[Website](https://stherrien.github.io/pro/) • [GitHub](https://github.com/stherrien/pro) • [PyPI](https://pypi.org/project/rx-pro/) • [Crates.io](https://crates.io/crates/pro-cli)
 
 </div>
