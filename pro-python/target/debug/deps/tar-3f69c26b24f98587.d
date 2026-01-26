@@ -1,0 +1,12 @@
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/tar-3f69c26b24f98587.d: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/archive.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/builder.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/entry.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/entry_type.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/error.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/header.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/pax.rs
+
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/libtar-3f69c26b24f98587.rmeta: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/archive.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/builder.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/entry.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/entry_type.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/error.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/header.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/pax.rs
+
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/lib.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/archive.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/builder.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/entry.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/entry_type.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/error.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/header.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/src/pax.rs:

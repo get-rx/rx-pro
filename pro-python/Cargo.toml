@@ -1,0 +1,22 @@
+[package]
+name = "pro"
+version = "0.1.0"
+edition = "2021"
+authors = ["Shawn Therrien <shawntherrien@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "Python bindings for Pro package manager"
+repository = "https://github.com/stherrien/pro"
+readme = "README.md"
+
+[lib]
+name = "pro"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
+pro-core = { path = "../pro-core" }
+tokio = { version = "1", features = ["rt-multi-thread"] }
+dirs = "6.0"
+
+[build-dependencies]
+pyo3-build-config = "0.23"

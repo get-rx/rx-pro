@@ -1,8 +1,8 @@
-# Product Requirements Document (PRD): T-Rex
+# Product Requirements Document (PRD): Pro
 
 | Field | Value |
 |-------|-------|
-| **Project Name** | T-Rex (rx) |
+| **Project Name** | Pro (rx) |
 | **Status** | Draft / Planning |
 | **Target Release** | v0.1.0 (Alpha) |
 | **Primary Language** | Rust |
@@ -12,7 +12,7 @@
 
 ## 1. Executive Summary
 
-T-Rex is a unified Python package manager and build tool written in Rust. It aims to obsolete both Poetry and uv by combining the speed and standards-compliance of uv with the developer UX and extensibility of Poetry.
+Pro is a unified Python package manager and build tool written in Rust. It aims to obsolete both Poetry and uv by combining the speed and standards-compliance of uv with the developer UX and extensibility of Poetry.
 
 Its primary innovation is **rx-core**, a native Rust build backend that eliminates the need to spawn Python processes during the build step, and a **WebAssembly (Wasm) plugin system** that offers safe, high-performance extensibility.
 

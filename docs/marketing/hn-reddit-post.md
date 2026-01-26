@@ -1,9 +1,9 @@
 # Hacker News Post
 
-**Title:** T-Rex: A Python package manager written in Rust with native build backend and Wasm plugins
+**Title:** Pro: A Python package manager written in Rust with native build backend and Wasm plugins
 
 **Text:**
-Hi HN! I built T-Rex, a Python package manager that's 10-50x faster than Poetry.
+Hi HN! I built Pro, a Python package manager that's 10-50x faster than Poetry.
 
 Key differentiators:
 - **Native Rust build backend** - builds wheels without spawning Python
@@ -19,8 +19,8 @@ rx add requests numpy
 rx sync
 ```
 
-Website: https://stherrien.github.io/t-rex/
-GitHub: https://github.com/stherrien/t-rex
+Website: https://stherrien.github.io/pro/
+GitHub: https://github.com/stherrien/pro
 
 Would love feedback on the API design and feature set!
 
@@ -31,7 +31,7 @@ Would love feedback on the API design and feature set!
 **Title:** I built a Python package manager in Rust that's 10-50x faster than Poetry
 
 **Text:**
-After being frustrated with slow dependency resolution in Poetry, I decided to build something faster. T-Rex is written entirely in Rust and includes:
+After being frustrated with slow dependency resolution in Poetry, I decided to build something faster. Pro is written entirely in Rust and includes:
 
 **Speed:**
 - Parallel downloads with smart caching
@@ -55,9 +55,9 @@ rx sync
 ```
 
 Links:
-- Website: https://stherrien.github.io/t-rex/
-- GitHub: https://github.com/stherrien/t-rex
-- Docs: https://github.com/stherrien/t-rex#readme
+- Website: https://stherrien.github.io/pro/
+- GitHub: https://github.com/stherrien/pro
+- Docs: https://github.com/stherrien/pro#readme
 
 Looking for feedback! What features would you want in a package manager?
 
@@ -65,10 +65,10 @@ Looking for feedback! What features would you want in a package manager?
 
 # Reddit r/rust Post
 
-**Title:** Show r/rust: T-Rex - A Python package manager with native Rust build backend
+**Title:** Show r/rust: Pro - A Python package manager with native Rust build backend
 
 **Text:**
-I've been working on T-Rex, a Python package manager written in Rust. The interesting part from a Rust perspective:
+I've been working on Pro, a Python package manager written in Rust. The interesting part from a Rust perspective:
 
 **Architecture:**
 - `rx-core`: Core library with resolver, installer, builder
@@ -88,6 +88,6 @@ The main motivation was performance. Python's packaging tools are slow because t
 - Sub-50ms wheel builds
 - Memory-safe concurrent downloads
 
-GitHub: https://github.com/stherrien/t-rex
+GitHub: https://github.com/stherrien/pro
 
 Would appreciate any feedback on the code!

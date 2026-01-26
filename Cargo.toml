@@ -1,14 +1,14 @@
 [workspace]
 resolver = "2"
-members = ["rx-cli", "rx-core", "rx-plugin"]
-exclude = ["rx-python"]
+members = ["pro-cli", "pro-core", "pro-plugin"]
+exclude = ["pro-python"]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-authors = ["T-Rex Contributors"]
+authors = ["Pro Contributors"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/stherrien/t-rex"
+repository = "https://github.com/stherrien/pro"
 rust-version = "1.75"
 
 [workspace.dependencies]
@@ -90,8 +90,8 @@ tempfile = "3.15"
 criterion = { version = "0.5", features = ["html_reports"] }
 
 # Internal crates (version required for crates.io publishing)
-rx-core = { path = "rx-core", version = "0.1.0" }
-rx-plugin = { path = "rx-plugin", version = "0.1.0" }
+pro-core = { path = "pro-core", version = "0.1.0" }
+pro-plugin = { path = "pro-plugin", version = "0.1.0" }
 
 [profile.release]
 lto = true

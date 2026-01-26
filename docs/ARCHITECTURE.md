@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This document describes the high-level architecture of T-Rex (rx).
+This document describes the high-level architecture of Pro (rx).
 
 ## System Components
 
@@ -131,7 +131,7 @@ User Command
 ## Directory Structure
 
 ```
-t-rex/
+pro/
 ├── Cargo.toml              # Workspace manifest
 ├── rx-cli/                 # CLI binary crate
 │   ├── Cargo.toml

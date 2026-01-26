@@ -1,15 +1,15 @@
-# T-Rex (rx)
+# Pro (rx)
 
 <div align="center">
 
-![T-Rex Logo](docs/assets/logo.svg)
+![Pro Logo](docs/assets/logo.svg)
 
 **A blazing-fast Python package manager written in Rust**
 
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
-[![Crates.io](https://img.shields.io/crates/v/rx.svg)](https://crates.io/crates/rx)
-[![PyPI](https://img.shields.io/pypi/v/trex-py.svg)](https://pypi.org/project/trex-py/)
-[![CI](https://github.com/stherrien/t-rex/workflows/CI/badge.svg)](https://github.com/stherrien/t-rex/actions)
+[![Crates.io](https://img.shields.io/crates/v/pro-cli.svg)](https://crates.io/crates/pro-cli)
+[![PyPI](https://img.shields.io/pypi/v/pro-py.svg)](https://pypi.org/project/pro-py/)
+[![CI](https://github.com/stherrien/pro/workflows/CI/badge.svg)](https://github.com/stherrien/pro/actions)
 
 [Installation](#installation) • [Quick Start](#quick-start) • [Features](#features) • [Documentation](#documentation)
 
@@ -17,12 +17,12 @@
 
 ---
 
-## Why T-Rex?
+## Why Pro?
 
-T-Rex combines the speed of Rust with the ergonomics of Poetry to deliver the best Python package management experience:
+Pro combines the speed of Rust with the ergonomics of Poetry to deliver the best Python package management experience:
 
-| Feature | T-Rex | uv | Poetry | pip |
-|---------|-------|----|---------|----|
+| Feature | Pro | uv | Poetry | pip |
+|---------|-----|----|---------|-----|
 | **Dependency Resolution** | ⚡ Fast (Rust) | ⚡ Fast (Rust) | 🐢 Slow | 🐢 Slow |
 | **Native Build Backend** | ✅ Rust | ❌ Python | ❌ Python | ❌ Python |
 | **WebAssembly Plugins** | ✅ Yes | ❌ No | ❌ No | ❌ No |
@@ -37,32 +37,32 @@ T-Rex combines the speed of Rust with the ergonomics of Poetry to deliver the be
 ### Quick Install (curl)
 
 ```bash
-curl -sSf https://raw.githubusercontent.com/stherrien/t-rex/main/install.sh | bash
+curl -sSf https://raw.githubusercontent.com/stherrien/pro/main/install.sh | bash
 ```
 
 ### From PyPI
 
 ```bash
-pip install trex-py
+pip install pro-py
 ```
 
 ### From Cargo
 
 ```bash
-cargo install rx
+cargo install pro-cli
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/stherrien/t-rex.git
-cd t-rex
+git clone https://github.com/stherrien/pro.git
+cd pro
 cargo build --release
 ```
 
 ### Pre-built Binaries
 
-Download from [GitHub Releases](https://github.com/stherrien/t-rex/releases):
+Download from [GitHub Releases](https://github.com/stherrien/pro/releases):
 
 - **Linux (x86_64)**: `rx-x86_64-unknown-linux-gnu.tar.gz`
 - **Linux (ARM64)**: `rx-aarch64-unknown-linux-gnu.tar.gz`
@@ -103,7 +103,7 @@ rx publish
 
 ### ⚡ Blazing Fast
 
-T-Rex is written in Rust and uses parallel downloads, efficient caching, and a native build backend:
+Pro is written in Rust and uses parallel downloads, efficient caching, and a native build backend:
 
 ```bash
 $ rx sync
@@ -174,7 +174,7 @@ rx polylith create project myapp-cli
 
 ### 🔌 WebAssembly Plugins
 
-Extend T-Rex safely with sandboxed plugins:
+Extend Pro safely with sandboxed plugins:
 
 ```toml
 # pyproject.toml
@@ -233,7 +233,7 @@ rx import poetry
 
 ## Configuration
 
-T-Rex uses `pyproject.toml` with the `[tool.rx]` section:
+Pro uses `pyproject.toml` with the `[tool.rx]` section:
 
 ```toml
 [project]
@@ -302,8 +302,8 @@ multi_stage = true
 
 ## Documentation
 
-- [Full Documentation](https://stherrien.github.io/t-rex/)
-- [API Reference](https://stherrien.github.io/t-rex/api/)
+- [Full Documentation](https://stherrien.github.io/pro/)
+- [API Reference](https://stherrien.github.io/pro/api/)
 - [Migration Guide](docs/MIGRATION.md)
 - [Plugin Development](docs/PLUGINS.md)
 - [Contributing](CONTRIBUTING.md)
@@ -314,7 +314,7 @@ Resolving and installing a fresh Django project (Django + 50 dependencies):
 
 | Tool | Cold Resolve | Install | Total |
 |------|-------------|---------|-------|
-| **T-Rex** | 0.4s | 1.8s | **2.2s** |
+| **Pro** | 0.4s | 1.8s | **2.2s** |
 | uv | 0.5s | 2.1s | 2.6s |
 | Poetry | 8.2s | 12.4s | 20.6s |
 | pip | 6.1s | 15.2s | 21.3s |
@@ -327,8 +327,8 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ```bash
 # Clone and build
-git clone https://github.com/stherrien/t-rex.git
-cd t-rex
+git clone https://github.com/stherrien/pro.git
+cd pro
 cargo build
 
 # Run tests
@@ -346,8 +346,8 @@ Dual-licensed under MIT and Apache 2.0. See [LICENSE-MIT](LICENSE-MIT) and [LICE
 
 <div align="center">
 
-**Built with 🦀 Rust and ❤️ by the T-Rex team**
+**Built with 🦀 Rust and ❤️ by the Pro team**
 
-[Website](https://stherrien.github.io/t-rex/) • [GitHub](https://github.com/stherrien/t-rex) • [PyPI](https://pypi.org/project/trex-py/) • [Crates.io](https://crates.io/crates/rx)
+[Website](https://stherrien.github.io/pro/) • [GitHub](https://github.com/stherrien/pro) • [PyPI](https://pypi.org/project/pro-py/) • [Crates.io](https://crates.io/crates/pro-cli)
 
 </div>

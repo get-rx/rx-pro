@@ -1,6 +1,6 @@
-# Contributing to T-Rex
+# Contributing to Pro
 
-Thank you for your interest in contributing to T-Rex! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to Pro! This document provides guidelines and information for contributors.
 
 ## Getting Started
 
@@ -14,8 +14,8 @@ Thank you for your interest in contributing to T-Rex! This document provides gui
 
 ```bash
 # Clone the repository
-git clone https://github.com/stherrien/t-rex.git
-cd t-rex
+git clone https://github.com/stherrien/pro.git
+cd pro
 
 # Build the project
 cargo build

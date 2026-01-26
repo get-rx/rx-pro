@@ -1,0 +1,12 @@
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/serde-3629a7a65c9a596d.d: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/shawntherrien/Projects/vr/rx-python/target/debug/build/serde-7ceb09fb5009e528/out/private.rs
+
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/libserde-3629a7a65c9a596d.rmeta: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/shawntherrien/Projects/vr/rx-python/target/debug/build/serde-7ceb09fb5009e528/out/private.rs
+
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/build/serde-7ceb09fb5009e528/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/shawntherrien/Projects/vr/rx-python/target/debug/build/serde-7ceb09fb5009e528/out

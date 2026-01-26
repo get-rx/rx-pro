@@ -1,0 +1,39 @@
+[package]
+name = "pro-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Pro: A fast Python package manager written in Rust"
+
+[[bin]]
+name = "rx"
+path = "src/main.rs"
+
+[dependencies]
+pro-core.workspace = true
+pro-plugin.workspace = true
+
+clap.workspace = true
+tokio.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+md5.workspace = true
+dirs.workspace = true
+sha2.workspace = true
+hex.workspace = true
+walkdir.workspace = true
+zip.workspace = true
+toml.workspace = true
+toml_edit.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+tempfile.workspace = true

@@ -1,0 +1,14 @@
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/pyo3_build_config-4e8fe54b21553965.d: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/errors.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/impl_.rs /Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out/pyo3-build-config-file.txt /Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out/pyo3-build-config.txt
+
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/libpyo3_build_config-4e8fe54b21553965.rlib: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/errors.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/impl_.rs /Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out/pyo3-build-config-file.txt /Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out/pyo3-build-config.txt
+
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/libpyo3_build_config-4e8fe54b21553965.rmeta: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/errors.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/impl_.rs /Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out/pyo3-build-config-file.txt /Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out/pyo3-build-config.txt
+
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/lib.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/errors.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.20.3/src/impl_.rs:
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out/pyo3-build-config-file.txt:
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out/pyo3-build-config.txt:
+
+# env-dep:CARGO_PKG_VERSION=0.20.3
+# env-dep:OUT_DIR=/Users/shawntherrien/Projects/vr/rx-python/target/debug/build/pyo3-build-config-7127f477c22612ae/out

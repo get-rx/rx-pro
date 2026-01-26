@@ -1,10 +1,10 @@
 #!/bin/bash
-# T-Rex installer script
-# Usage: curl -sSf https://raw.githubusercontent.com/stherrien/t-rex/main/install.sh | bash
+# Pro installer script
+# Usage: curl -sSf https://raw.githubusercontent.com/stherrien/pro/main/install.sh | bash
 
 set -e
 
-REPO="stherrien/t-rex"
+REPO="stherrien/pro"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 
 # Detect OS and architecture
@@ -103,7 +103,7 @@ fi
 chmod +x "$INSTALL_DIR/rx" 2>/dev/null || true
 
 echo ""
-echo "T-Rex installed to $INSTALL_DIR/rx"
+echo "Pro installed to $INSTALL_DIR/rx"
 echo ""
 
 # Check if in PATH

@@ -1,6 +1,6 @@
-# Contributing to T-Rex
+# Contributing to Pro
 
-Thank you for your interest in contributing to T-Rex! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to Pro! This document provides guidelines and instructions for contributing.
 
 ## Getting Started
 
@@ -14,8 +14,8 @@ Thank you for your interest in contributing to T-Rex! This document provides gui
 
 ```bash
 # Clone the repository
-git clone https://github.com/stherrien/t-rex.git
-cd t-rex
+git clone https://github.com/stherrien/pro.git
+cd pro
 
 # Build in debug mode
 cargo build
@@ -33,7 +33,7 @@ RUST_LOG=debug cargo run -- sync
 ### Project Structure
 
 ```
-t-rex/
+pro/
 ├── rx-core/          # Core library (resolver, installer, builder)
 ├── rx-cli/           # Command-line interface
 ├── rx-plugin/        # WebAssembly plugin system

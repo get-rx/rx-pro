@@ -1,20 +1,20 @@
 # Twitter/X Launch Thread
 
 ## Tweet 1 (Main)
-Introducing T-Rex: A Python package manager written in Rust.
+Introducing Pro: A Python package manager written in Rust.
 
 10-50x faster than Poetry. Native build backend. WebAssembly plugins.
 
 pip install trex-py
 
-https://github.com/stherrien/t-rex
+https://github.com/stherrien/pro
 
 Thread with features:
 
 ## Tweet 2 (Speed)
 Speed comparison:
 
-T-Rex: 2.3s
+Pro: 2.3s
 uv: 2.6s
 Poetry: 20.6s
 pip: 21.3s
@@ -24,14 +24,14 @@ pip: 21.3s
 Rust resolver + parallel downloads + smart caching = fast.
 
 ## Tweet 3 (Native Build)
-Unlike other tools, T-Rex builds wheels WITHOUT spawning Python.
+Unlike other tools, Pro builds wheels WITHOUT spawning Python.
 
 Pure Rust build backend = 45ms wheel builds.
 
 No setuptools. No subprocess. Just fast.
 
 ## Tweet 4 (Plugins)
-Extend T-Rex safely with WebAssembly plugins:
+Extend Pro safely with WebAssembly plugins:
 
 [tool.rx.plugins]
 license-checker = "path/to/plugin.wasm"
@@ -77,15 +77,15 @@ rx sync
 
 Star the repo if you find it useful!
 
-https://github.com/stherrien/t-rex
+https://github.com/stherrien/pro
 
 ---
 
 # LinkedIn Post
 
-Excited to announce T-Rex, a new Python package manager written in Rust!
+Excited to announce Pro, a new Python package manager written in Rust!
 
-After experiencing slow dependency resolution with existing tools, I built something faster. T-Rex is:
+After experiencing slow dependency resolution with existing tools, I built something faster. Pro is:
 
 - 10-50x faster than Poetry
 - Has a native Rust build backend (no Python subprocess)
@@ -93,9 +93,9 @@ After experiencing slow dependency resolution with existing tools, I built somet
 - Includes full monorepo/workspace support
 - Built-in security vulnerability scanning
 
-The Python ecosystem deserves fast, modern tooling. T-Rex brings Rust-level performance to Python development.
+The Python ecosystem deserves fast, modern tooling. Pro brings Rust-level performance to Python development.
 
 Try it out: pip install trex-py
-GitHub: https://github.com/stherrien/t-rex
+GitHub: https://github.com/stherrien/pro
 
 #Python #Rust #OpenSource #DeveloperTools #PackageManager

@@ -1,0 +1,10 @@
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/rmp_serde-3603e8a707b9fe6a.d: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/bytes.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/config.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/decode.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/encode.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/../README.md
+
+/Users/shawntherrien/Projects/vr/rx-python/target/debug/deps/librmp_serde-3603e8a707b9fe6a.rmeta: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/bytes.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/config.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/decode.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/encode.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/../README.md
+
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/lib.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/bytes.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/config.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/decode.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/encode.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rmp-serde-1.3.1/src/../README.md:

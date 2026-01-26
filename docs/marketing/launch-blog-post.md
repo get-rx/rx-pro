@@ -1,6 +1,6 @@
-# Introducing T-Rex: A Blazing-Fast Python Package Manager Written in Rust
+# Introducing Pro: A Blazing-Fast Python Package Manager Written in Rust
 
-Today, I'm excited to announce T-Rex, a new Python package manager that brings Rust-level performance to the Python ecosystem. After months of development, T-Rex is ready for public use.
+Today, I'm excited to announce Pro, a new Python package manager that brings Rust-level performance to the Python ecosystem. After months of development, Pro is ready for public use.
 
 ## Why Another Package Manager?
 
@@ -10,13 +10,13 @@ The Python packaging ecosystem has improved significantly with tools like Poetry
 - **uv** is fast but delegates building to Python
 - **pip** is ubiquitous but lacks modern features
 
-T-Rex aims to combine the best of all worlds: **the speed of Rust, the ergonomics of Poetry, and unique features like WebAssembly plugins**.
+Pro aims to combine the best of all worlds: **the speed of Rust, the ergonomics of Poetry, and unique features like WebAssembly plugins**.
 
 ## Key Features
 
 ### 10-50x Faster Than Poetry
 
-T-Rex uses a native Rust dependency resolver with parallel downloads and smart caching:
+Pro uses a native Rust dependency resolver with parallel downloads and smart caching:
 
 ```bash
 $ time rx sync
@@ -31,7 +31,7 @@ $ time poetry install
 
 ### Native Build Backend
 
-Unlike other tools that shell out to Python for building, T-Rex builds pure Python packages entirely in Rust:
+Unlike other tools that shell out to Python for building, Pro builds pure Python packages entirely in Rust:
 
 ```bash
 $ rx build
@@ -41,7 +41,7 @@ Building sdist... ✓ 23ms
 
 ### WebAssembly Plugins
 
-T-Rex supports sandboxed plugins via WebAssembly, allowing safe extensibility:
+Pro supports sandboxed plugins via WebAssembly, allowing safe extensibility:
 
 ```toml
 [tool.rx.plugins]
@@ -50,7 +50,7 @@ license-checker = "~/.rx/plugins/license-checker.wasm"
 
 ### Full Monorepo Support
 
-Workspaces, unified lockfiles, and affected detection make T-Rex ideal for large codebases:
+Workspaces, unified lockfiles, and affected detection make Pro ideal for large codebases:
 
 ```bash
 $ rx affected --base main
@@ -95,7 +95,7 @@ rx run python main.py
 
 ## What's Next
 
-T-Rex is open source and ready for production use. We're actively working on:
+Pro is open source and ready for production use. We're actively working on:
 
 - More package manager migrations (PDM, Hatch)
 - IDE integrations
@@ -104,12 +104,12 @@ T-Rex is open source and ready for production use. We're actively working on:
 
 ## Try It Out
 
-- **Website**: https://stherrien.github.io/t-rex/
-- **GitHub**: https://github.com/stherrien/t-rex
+- **Website**: https://stherrien.github.io/pro/
+- **GitHub**: https://github.com/stherrien/pro
 - **PyPI**: https://pypi.org/project/trex-py/
 
 We'd love your feedback! Open issues, submit PRs, or just star the repo if you find it useful.
 
 ---
 
-*T-Rex is dual-licensed under MIT and Apache 2.0.*
+*Pro is dual-licensed under MIT and Apache 2.0.*
