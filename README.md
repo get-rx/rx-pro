@@ -122,6 +122,7 @@ Total: 2.3s
 ```bash
 rx init          # Initialize new project
 rx add/remove    # Manage dependencies
+rx update        # Update dependencies (all or specific)
 rx lock          # Generate lockfile
 rx sync          # Install dependencies
 rx run           # Run commands in venv
@@ -129,6 +130,8 @@ rx shell         # Spawn activated shell
 rx build         # Build wheel/sdist
 rx publish       # Publish to PyPI
 rx audit         # Security vulnerability scan
+rx python        # Manage Python versions
+rx tool          # Run tools in ephemeral environments
 ```
 
 ### 🔒 Security First

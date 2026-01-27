@@ -1,4 +1,10 @@
 //! Update command - update dependencies to latest versions within constraints
+//!
+//! Supports updating to specific versions:
+//! - `rx update` - update all packages to latest
+//! - `rx update requests` - update specific package to latest
+//! - `rx update requests@2.31.0` - update to specific version
+//! - `rx update requests==2.31.0` - update to specific version (pip syntax)
 
 use std::path::PathBuf;
 
@@ -17,6 +23,7 @@ pub struct UpdateCommand {
     pub project: PathBuf,
 
     /// Specific packages to update (updates all if not specified)
+    /// Use package@version or package==version to pin to specific version
     #[arg()]
     pub packages: Vec<String>,
 
@@ -27,6 +34,53 @@ pub struct UpdateCommand {
     /// Show what would be updated without making changes
     #[arg(long)]
     pub dry_run: bool,
+}
+
+/// Parsed package specification from CLI
+struct PackageSpec {
+    name: String,
+    version: Option<String>,
+}
+
+/// Parse package specification like "requests", "requests@2.31.0", or "requests==2.31.0"
+fn parse_package_spec(spec: &str) -> PackageSpec {
+    // Handle @ syntax: requests@2.31.0
+    if let Some(at_pos) = spec.find('@') {
+        return PackageSpec {
+            name: spec[..at_pos].to_string(),
+            version: Some(spec[at_pos + 1..].to_string()),
+        };
+    }
+
+    // Handle == syntax: requests==2.31.0
+    if let Some(eq_pos) = spec.find("==") {
+        return PackageSpec {
+            name: spec[..eq_pos].to_string(),
+            version: Some(spec[eq_pos + 2..].to_string()),
+        };
+    }
+
+    // Handle >= syntax: requests>=2.31.0 (just extract name)
+    if let Some(pos) = spec.find(">=") {
+        return PackageSpec {
+            name: spec[..pos].to_string(),
+            version: None,
+        };
+    }
+
+    // Handle > syntax: requests>2.31.0 (just extract name)
+    if let Some(pos) = spec.find('>') {
+        return PackageSpec {
+            name: spec[..pos].to_string(),
+            version: None,
+        };
+    }
+
+    // No version specified
+    PackageSpec {
+        name: spec.to_string(),
+        version: None,
+    }
 }
 
 impl UpdateCommand {
@@ -48,7 +102,7 @@ impl UpdateCommand {
         })?;
 
         // Load pyproject.toml
-        let pyproject = PyProject::load(&project_dir).with_context(|| {
+        let mut pyproject = PyProject::load(&project_dir).with_context(|| {
             format!(
                 "No pyproject.toml found in {:?}. Run 'rx init' first.",
                 project_dir
@@ -57,7 +111,46 @@ impl UpdateCommand {
 
         info!("Updating dependencies for {:?}", pyproject.name());
 
-        // Collect all dependencies
+        // Parse package specs and handle version pinning
+        let package_specs: Vec<PackageSpec> = self
+            .packages
+            .iter()
+            .map(|p| parse_package_spec(p))
+            .collect();
+
+        // Update pyproject.toml for packages with specific versions
+        let mut pyproject_modified = false;
+        for spec in &package_specs {
+            if let Some(ref version) = spec.version {
+                let new_constraint = format!("{}=={}", spec.name, version);
+                println!("Pinning {} to version {}", spec.name, version);
+
+                // Try to update in main dependencies first
+                let is_dev = !pyproject.dependencies().iter().any(|d| {
+                    d.split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+                        .next()
+                        .map(|n| n.to_lowercase() == spec.name.to_lowercase())
+                        .unwrap_or(false)
+                });
+
+                if is_dev || self.dev {
+                    pyproject.add_dev_dependency(new_constraint);
+                } else {
+                    pyproject.add_dependency(new_constraint);
+                }
+                pyproject_modified = true;
+            }
+        }
+
+        // Save pyproject.toml if modified
+        if pyproject_modified {
+            pyproject
+                .save(&project_dir)
+                .with_context(|| "Failed to update pyproject.toml")?;
+            println!("✓ Updated pyproject.toml");
+        }
+
+        // Collect all dependencies (re-read after modifications)
         let mut all_requirements: Vec<Requirement> = pyproject
             .dependencies()
             .iter()
@@ -78,15 +171,15 @@ impl UpdateCommand {
             return Ok(());
         }
 
-        // Determine which packages to update
+        // Determine which packages to update (use just the name, not version)
         let packages_to_update: Vec<String> = if self.packages.is_empty() {
             // Update all packages
             old_lockfile.packages.keys().cloned().collect()
         } else {
             // Normalize package names for comparison
-            self.packages
+            package_specs
                 .iter()
-                .map(|p| p.to_lowercase().replace('_', "-"))
+                .map(|p| p.name.to_lowercase().replace('_', "-"))
                 .collect()
         };
 
