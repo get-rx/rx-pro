@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="docs/assets/logo.svg" alt="Pro Logo" width="300">
+<img src="docs/assets/logo.svg" alt="rx Logo" width="300">
 
 **A blazing-fast Python package manager written in Rust**
 
@@ -17,11 +17,11 @@
 
 ---
 
-## Why Pro?
+## Why rx?
 
-Pro combines the speed of Rust with the ergonomics of Poetry to deliver the best Python package management experience:
+rx combines the speed of Rust with the ergonomics of Poetry to deliver the best Python package management experience:
 
-| Feature | Pro | uv | Poetry | pip |
+| Feature | rx | uv | Poetry | pip |
 |---------|-----|----|---------|-----|
 | **Dependency Resolution** | ⚡ Fast (Rust) | ⚡ Fast (Rust) | 🐢 Slow | 🐢 Slow |
 | **Native Build Backend** | ✅ Rust | ❌ Python | ❌ Python | ❌ Python |
@@ -111,7 +111,7 @@ rx publish
 
 ### ⚡ Blazing Fast
 
-Pro is written in Rust and uses parallel downloads, efficient caching, and a native build backend:
+rx is written in Rust and uses parallel downloads, efficient caching, and a native build backend:
 
 ```bash
 $ rx sync
@@ -186,7 +186,7 @@ rx polylith create project myapp-cli
 
 ### 🔌 WebAssembly Plugins
 
-Extend Pro safely with sandboxed plugins:
+Extend rx safely with sandboxed plugins:
 
 ```toml
 # pyproject.toml
@@ -245,7 +245,7 @@ rx import poetry
 
 ## Configuration
 
-Pro uses `pyproject.toml` with the `[tool.rx]` section:
+rx uses `pyproject.toml` with the `[tool.rx]` section:
 
 ```toml
 [project]
@@ -325,7 +325,7 @@ Resolving and installing a fresh Django project (Django + 50 dependencies):
 
 | Tool | Cold Resolve | Install | Total |
 |------|-------------|---------|-------|
-| **Pro** | 0.4s | 1.8s | **2.2s** |
+| **rx** | 0.4s | 1.8s | **2.2s** |
 | uv | 0.5s | 2.1s | 2.6s |
 | Poetry | 8.2s | 12.4s | 20.6s |
 | pip | 6.1s | 15.2s | 21.3s |
@@ -357,7 +357,7 @@ Dual-licensed under MIT and Apache 2.0. See [LICENSE-MIT](LICENSE-MIT) and [LICE
 
 <div align="center">
 
-**Built with 🦀 Rust and ❤️ by the Pro team**
+**Built with 🦀 Rust and ❤️ by the rx team**
 
 [Website](https://rxpro.net/) • [GitHub](https://github.com/pro-rx/rx) • [PyPI](https://pypi.org/project/rx-pro/) • [Crates.io](https://crates.io/crates/pro-cli)
 
