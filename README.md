@@ -1,4 +1,4 @@
-# Pro (rx)
+# rx-pro
 
 <div align="center">
 
