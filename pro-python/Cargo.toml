@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Shawn Therrien <shawntherrien@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Python bindings for Pro package manager"
-repository = "https://github.com/stherrien/pro"
+repository = "https://github.com/pro-rx/pro"
 readme = "README.md"
 
 [lib]

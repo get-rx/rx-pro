@@ -1,10 +1,10 @@
 #!/bin/bash
 # Pro installer script
-# Usage: curl -sSf https://raw.githubusercontent.com/stherrien/pro/main/install.sh | bash
+# Usage: curl -sSf https://raw.githubusercontent.com/pro-rx/pro/main/install.sh | bash
 
 set -e
 
-REPO="stherrien/pro"
+REPO="pro-rx/pro"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 
 # Detect OS and architecture

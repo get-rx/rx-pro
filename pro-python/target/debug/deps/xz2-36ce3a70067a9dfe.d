@@ -1,0 +1,11 @@
+/Users/shawntherrien/Projects/vr/pro-python/target/debug/deps/xz2-36ce3a70067a9dfe.d: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/stream.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/bufread.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/read.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/write.rs
+
+/Users/shawntherrien/Projects/vr/pro-python/target/debug/deps/libxz2-36ce3a70067a9dfe.rlib: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/stream.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/bufread.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/read.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/write.rs
+
+/Users/shawntherrien/Projects/vr/pro-python/target/debug/deps/libxz2-36ce3a70067a9dfe.rmeta: /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/lib.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/stream.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/bufread.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/read.rs /Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/write.rs
+
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/lib.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/stream.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/bufread.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/read.rs:
+/Users/shawntherrien/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xz2-0.1.7/src/write.rs:

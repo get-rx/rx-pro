@@ -14,7 +14,7 @@ Thank you for your interest in contributing to Pro! This document provides guide
 
 ```bash
 # Clone the repository
-git clone https://github.com/stherrien/pro.git
+git clone https://github.com/pro-rx/pro.git
 cd pro
 
 # Build in debug mode
