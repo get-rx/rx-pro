@@ -333,6 +333,37 @@ files = [".env", ".env.local"]
 
 ---
 
+## Self-Update
+
+Keep rx up to date with built-in update functionality.
+
+```bash
+rx self-update              # Update to latest version
+rx self-update --check      # Check for updates without installing
+rx self-update --force      # Force update even if on latest
+```
+
+### Smart Update Detection
+
+rx automatically detects how it was installed and uses the appropriate update method:
+
+| Install Method | Update Command |
+|---------------|----------------|
+| pip (`pip install rx-pro`) | `pip install --upgrade rx-pro` |
+| cargo (`cargo install pro-cli`) | `cargo install pro-cli` |
+| Binary (curl/GitHub release) | Downloads from GitHub releases |
+
+```bash
+$ rx self-update --check
+Current version: 0.1.13
+Install method:  pip
+Location:        /usr/local/bin/rx
+
+To update, run: pip install --upgrade rx-pro
+```
+
+---
+
 ## Performance
 
 Pro is built for speed:

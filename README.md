@@ -137,6 +137,7 @@ rx publish       # Publish to PyPI
 rx audit         # Security vulnerability scan
 rx python        # Manage Python versions
 rx tool          # Run tools in ephemeral environments
+rx self-update   # Update rx to latest version
 ```
 
 ### 🔒 Security First

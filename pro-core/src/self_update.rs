@@ -8,10 +8,12 @@
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use crate::python::{Arch, Os, Platform};
+use crate::python::{Os, Platform};
+#[cfg(test)]
+use crate::python::Arch;
 use crate::{Error, Result};
 
 /// GitHub repository for releases
@@ -72,7 +74,7 @@ impl SelfUpdater {
     }
 
     /// Detect how rx was installed based on executable path
-    fn detect_install_method(exe_path: &PathBuf) -> InstallMethod {
+    fn detect_install_method(exe_path: &Path) -> InstallMethod {
         let path_str = exe_path.to_string_lossy().to_lowercase();
 
         // Check for cargo install location (~/.cargo/bin/)
@@ -110,7 +112,7 @@ impl SelfUpdater {
     }
 
     /// Check if pip installed the binary at this specific path
-    fn check_pip_owns_binary(exe_path: &PathBuf) -> bool {
+    fn check_pip_owns_binary(exe_path: &Path) -> bool {
         // Get pip show output and check if the location matches
         let output = Command::new("pip")
             .args(["show", "-f", "rx-pro"])
@@ -224,7 +226,7 @@ impl SelfUpdater {
         let status = Command::new("pip")
             .args(["install", "--upgrade", "rx-pro"])
             .status()
-            .map_err(|e| Error::Io(e))?;
+            .map_err(Error::Io)?;
 
         if !status.success() {
             return Err(Error::UpdateError("pip upgrade failed".to_string()));
@@ -237,7 +239,7 @@ impl SelfUpdater {
         let status = Command::new("cargo")
             .args(["install", "pro-cli"])
             .status()
-            .map_err(|e| Error::Io(e))?;
+            .map_err(Error::Io)?;
 
         if !status.success() {
             return Err(Error::UpdateError("cargo install failed".to_string()));
@@ -429,22 +431,53 @@ mod tests {
 
     #[test]
     fn test_asset_name() {
+        use std::path::PathBuf;
+
         let updater = SelfUpdater {
             platform: Platform::new(Os::Linux, Arch::X86_64),
             current_version: "0.1.0".to_string(),
+            install_method: InstallMethod::Binary,
+            exe_path: PathBuf::from("/usr/local/bin/rx"),
         };
         assert_eq!(updater.asset_name(), "rx-x86_64-unknown-linux-gnu.tar.gz");
 
         let updater = SelfUpdater {
             platform: Platform::new(Os::MacOS, Arch::Aarch64),
             current_version: "0.1.0".to_string(),
+            install_method: InstallMethod::Binary,
+            exe_path: PathBuf::from("/usr/local/bin/rx"),
         };
         assert_eq!(updater.asset_name(), "rx-aarch64-apple-darwin.tar.gz");
 
         let updater = SelfUpdater {
             platform: Platform::new(Os::Windows, Arch::X86_64),
             current_version: "0.1.0".to_string(),
+            install_method: InstallMethod::Binary,
+            exe_path: PathBuf::from("C:\\Program Files\\rx\\rx.exe"),
         };
         assert_eq!(updater.asset_name(), "rx-x86_64-pc-windows-msvc.zip");
+    }
+
+    #[test]
+    fn test_install_method_detection() {
+        use std::path::PathBuf;
+
+        // Cargo install
+        assert_eq!(
+            SelfUpdater::detect_install_method(&PathBuf::from("/home/user/.cargo/bin/rx")),
+            InstallMethod::Cargo
+        );
+
+        // Development build
+        assert_eq!(
+            SelfUpdater::detect_install_method(&PathBuf::from("/project/target/release/rx")),
+            InstallMethod::Cargo
+        );
+
+        // Binary install
+        assert_eq!(
+            SelfUpdater::detect_install_method(&PathBuf::from("/usr/local/bin/rx")),
+            InstallMethod::Binary
+        );
     }
 }
