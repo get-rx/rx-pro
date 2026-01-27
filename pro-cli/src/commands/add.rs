@@ -8,9 +8,21 @@ use pro_core::pep::{PyProject, Requirement};
 use pro_core::resolver::Resolver;
 use pro_core::{Lockfile, PathDependency};
 
+/// Normalize package specifier: convert @ syntax to == for pip compatibility
+/// e.g., "requests@2.31.0" -> "requests==2.31.0"
+fn normalize_package_spec(spec: &str) -> String {
+    if let Some(at_pos) = spec.find('@') {
+        // Check it's not a URL (contains ://)
+        if !spec.contains("://") {
+            return format!("{}=={}", &spec[..at_pos], &spec[at_pos + 1..]);
+        }
+    }
+    spec.to_string()
+}
+
 #[derive(Args)]
 pub struct AddCommand {
-    /// Packages to add (e.g., "requests", "flask>=2.0", or paths with -e)
+    /// Packages to add (e.g., "requests", "requests@2.31.0", "flask>=2.0", or paths with -e)
     #[arg(required = true)]
     pub packages: Vec<String>,
 
@@ -150,17 +162,20 @@ impl AddCommand {
         // Parse and validate package specifiers
         let mut new_requirements = Vec::new();
         for pkg_spec in &self.packages {
+            // Normalize @ syntax to == (e.g., requests@2.31.0 -> requests==2.31.0)
+            let normalized_spec = normalize_package_spec(pkg_spec);
+
             // Parse as requirement to validate
-            let req = Requirement::parse(pkg_spec)
+            let req = Requirement::parse(&normalized_spec)
                 .with_context(|| format!("Invalid package specifier: {}", pkg_spec))?;
 
             new_requirements.push(req);
 
             // Add to pyproject.toml
             if self.dev {
-                pyproject.add_dev_dependency(pkg_spec.clone());
+                pyproject.add_dev_dependency(normalized_spec.clone());
             } else {
-                pyproject.add_dependency(pkg_spec.clone());
+                pyproject.add_dependency(normalized_spec.clone());
             }
         }
 
