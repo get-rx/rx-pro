@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Pro Logo](docs/assets/logo.svg)
+<img src="docs/assets/logo.svg" alt="Pro Logo" width="140">
 
 **A blazing-fast Python package manager written in Rust**
 
