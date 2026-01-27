@@ -13,7 +13,7 @@ name = "pro"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.23", features = ["extension-module"] }
+pyo3 = { version = "0.23", features = ["extension-module", "abi3-py38"] }
 pro-core = { path = "../pro-core" }
 tokio = { version = "1", features = ["rt-multi-thread"] }
 dirs = "6.0"
