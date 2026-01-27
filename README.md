@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="docs/assets/logo.svg" alt="Pro Logo" width="140">
+<img src="docs/assets/logo.svg" alt="Pro Logo" width="200">
 
 **A blazing-fast Python package manager written in Rust**
 
