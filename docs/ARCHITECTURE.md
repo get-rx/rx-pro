@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This document describes the high-level architecture of Pro (rx).
+This document describes the high-level architecture of rx-pro.
 
 ## System Components
 

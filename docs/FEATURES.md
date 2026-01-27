@@ -1,6 +1,6 @@
 # Features
 
-Pro (rx) is a unified Python package manager and build tool that combines Rust-level performance with Poetry-like UX and WebAssembly plugin extensibility.
+rx-pro is a unified Python package manager and build tool that combines Rust-level performance with Poetry-like UX and WebAssembly plugin extensibility.
 
 ---
 

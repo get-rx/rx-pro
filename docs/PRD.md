@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Project Name** | Pro (rx) |
+| **Project Name** | rx-pro |
 | **Status** | Draft / Planning |
 | **Target Release** | v0.1.0 (Alpha) |
 | **Primary Language** | Rust |
