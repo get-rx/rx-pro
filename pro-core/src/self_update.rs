@@ -11,9 +11,9 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use crate::python::{Os, Platform};
 #[cfg(test)]
 use crate::python::Arch;
+use crate::python::{Os, Platform};
 use crate::{Error, Result};
 
 /// GitHub repository for releases
@@ -114,9 +114,7 @@ impl SelfUpdater {
     /// Check if pip installed the binary at this specific path
     fn check_pip_owns_binary(exe_path: &Path) -> bool {
         // Get pip show output and check if the location matches
-        let output = Command::new("pip")
-            .args(["show", "-f", "rx-pro"])
-            .output();
+        let output = Command::new("pip").args(["show", "-f", "rx-pro"]).output();
 
         if let Ok(output) = output {
             if output.status.success() {
@@ -161,7 +159,10 @@ impl SelfUpdater {
             .build()
             .map_err(|e| Error::UpdateError(e.to_string()))?;
 
-        let url = format!("https://api.github.com/repos/{}/releases/latest", GITHUB_REPO);
+        let url = format!(
+            "https://api.github.com/repos/{}/releases/latest",
+            GITHUB_REPO
+        );
 
         let response = client
             .get(&url)
