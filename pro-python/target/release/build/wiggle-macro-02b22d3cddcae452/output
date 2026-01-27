@@ -1,2 +1,0 @@
-cargo:rerun-if-changed=build.rs
-cargo:rustc-env=DEBUG_OUTPUT_DIR=/Users/shawntherrien/Projects/vr/pro-python/target/release/build/wiggle-macro-02b22d3cddcae452/out

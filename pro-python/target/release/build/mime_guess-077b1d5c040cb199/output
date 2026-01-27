@@ -1,1 +1,0 @@
-cargo:rustc-env=MIME_TYPES_GENERATED_PATH=/Users/shawntherrien/Projects/vr/pro-python/target/release/build/mime_guess-077b1d5c040cb199/out/mime_types_generated.rs

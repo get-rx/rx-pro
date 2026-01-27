@@ -1,2 +1,0 @@
-cargo:rerun-if-changed=build.rs
-cargo:rustc-env=DEBUG_OUTPUT_DIR=/Users/shawntherrien/Projects/vr/pro-python/target/release/build/wasmtime-internal-component-macro-dac8cc225cc88e9f/out

@@ -1,3 +1,0 @@
-vec![
-  "/Users/shawntherrien/Projects/vr/pro-python/target/release/build/cranelift-assembler-x64-5b324ec39ca9a141/out/assembler.rs".into(),
-]
