@@ -18,10 +18,14 @@ Pro (rx) is a unified Python package manager and build tool that combines Rust-l
 
 ```bash
 rx add requests               # Add a dependency
+rx add requests@2.31.0        # Add with specific version (@ syntax)
+rx add "requests>=2.28"       # Add with version constraint
 rx add pytest --dev           # Add a dev dependency
 rx remove requests            # Remove a dependency
 rx sync                       # Install from lockfile
-rx update                     # Update to latest versions
+rx update                     # Update all to latest versions
+rx update requests            # Update specific package
+rx update requests@2.32.0     # Update to specific version
 ```
 
 ---

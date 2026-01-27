@@ -82,12 +82,17 @@ cd my-project
 
 # Add dependencies
 rx add requests numpy pandas
+rx add flask@2.3.0            # Pin to specific version
 
 # Add dev dependencies
 rx add --dev pytest black ruff
 
 # Install everything
 rx sync
+
+# Update dependencies
+rx update                     # Update all
+rx update requests@2.32.0     # Update to specific version
 
 # Run your code
 rx run python main.py
