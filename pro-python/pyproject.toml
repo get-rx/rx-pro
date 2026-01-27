@@ -30,10 +30,10 @@ classifiers = [
 keywords = ["package-manager", "pip", "poetry", "rust", "fast"]
 
 [project.urls]
-Homepage = "https://github.com/pro-rx/pro"
+Homepage = "https://github.com/pro-rx/rx"
 Documentation = "https://rxpro.net/"
-Repository = "https://github.com/pro-rx/pro"
-Changelog = "https://github.com/pro-rx/pro/blob/main/CHANGELOG.md"
+Repository = "https://github.com/pro-rx/rx"
+Changelog = "https://github.com/pro-rx/rx/blob/main/CHANGELOG.md"
 
 [project.scripts]
 rx = "pro:_cli_main"

@@ -1,10 +1,10 @@
 #!/bin/bash
 # Pro installer script
-# Usage: curl -sSf https://raw.githubusercontent.com/pro-rx/pro/main/install.sh | bash
+# Usage: curl -sSf https://raw.githubusercontent.com/pro-rx/rx/main/install.sh | bash
 
 set -e
 
-REPO="pro-rx/pro"
+REPO="pro-rx/rx"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 
 # Detect OS and architecture
