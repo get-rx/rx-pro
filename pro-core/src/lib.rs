@@ -30,6 +30,7 @@ pub mod python;
 pub mod registry;
 pub mod resolver;
 pub mod script;
+pub mod self_update;
 pub mod semver;
 pub mod tool;
 pub mod venv;
@@ -57,6 +58,7 @@ pub use python::{
 };
 pub use registry::{RegistryConfig, RegistryManager, ResolvedCredentials};
 pub use script::{is_pep723_script, parse_script_metadata, ScriptMetadata, ScriptRunner};
+pub use self_update::{InstallMethod, ReleaseInfo, SelfUpdater};
 pub use tool::{CachedTool, ToolCache, ToolRunner};
 pub use venv::VenvManager;
 pub use versioning::{bump_version, get_git_version, get_version, VersioningConfig};

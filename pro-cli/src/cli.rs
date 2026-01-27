@@ -4,8 +4,9 @@ use clap::{Parser, Subcommand};
 use crate::commands::{
     AddCommand, AffectedCommand, AuditCommand, BuildCommand, BundleCommand, DockerCommand,
     ExportCommand, ImportCommand, InitCommand, LockCommand, PluginCommand, PolylithCommand,
-    PublishCommand, PythonCommand, ReleaseCommand, RemoveCommand, RunCommand, ShellCommand,
-    SyncCommand, TaskCommand, ToolCommand, UpdateCommand, VersionCommand, WorkspaceCommand,
+    PublishCommand, PythonCommand, ReleaseCommand, RemoveCommand, RunCommand, SelfUpdateCommand,
+    ShellCommand, SyncCommand, TaskCommand, ToolCommand, UpdateCommand, VersionCommand,
+    WorkspaceCommand,
 };
 
 #[derive(Parser)]
@@ -98,6 +99,9 @@ pub enum Commands {
 
     /// Run Python tools in ephemeral environments
     Tool(ToolCommand),
+
+    /// Update rx to the latest version
+    SelfUpdate(SelfUpdateCommand),
 }
 
 impl Cli {
@@ -127,6 +131,7 @@ impl Cli {
             Commands::Import(cmd) => cmd.run().await,
             Commands::Python(cmd) => cmd.run().await,
             Commands::Tool(cmd) => cmd.run().await,
+            Commands::SelfUpdate(cmd) => cmd.run().await,
         }
     }
 }

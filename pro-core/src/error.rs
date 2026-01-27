@@ -116,4 +116,8 @@ pub enum Error {
 
     #[error("script execution failed: {0}")]
     ScriptExecutionFailed(String),
+
+    // Self-update errors
+    #[error("update error: {0}")]
+    UpdateError(String),
 }
