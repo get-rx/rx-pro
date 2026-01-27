@@ -226,7 +226,7 @@ rx audit --ignore CVE-2023-xxx  # Ignore specific CVE
 
 ## Plugin System
 
-Extend Pro with WebAssembly plugins for enterprise workflows.
+Extend rx with WebAssembly plugins for enterprise workflows.
 
 ```bash
 rx plugin install ./my-plugin.wasm
@@ -366,9 +366,9 @@ To update, run: pip install --upgrade rx-pro
 
 ## Performance
 
-Pro is built for speed:
+rx is built for speed:
 
-| Operation | Pro | Poetry | pip |
+| Operation | rx | Poetry | pip |
 |-----------|-----|--------|-----|
 | Cold install (medium project) | ~100ms | ~5s | ~3s |
 | Warm install (cached) | ~20ms | ~2s | ~1s |
