@@ -8,7 +8,7 @@ version = "0.1.13"
 edition = "2021"
 authors = ["Pro Contributors"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/pro-rx/rx"
+repository = "https://github.com/get-rx/rx-pro"
 rust-version = "1.75"
 
 [workspace.dependencies]
