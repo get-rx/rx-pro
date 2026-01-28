@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - rx-pro</title>
+    <meta name="description" content="Complete documentation for rx-pro, the blazing-fast Python package manager written in Rust.">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --secondary: #6366F1;
+            --bg-dark: #0F172A;
+            --bg-darker: #020617;
+            --text: #F8FAFC;
+            --text-muted: #94A3B8;
+            --card-bg: #1E293B;
+            --border: #334155;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-darker);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            height: 64px;
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card-bg);
+        }
+
+        /* Layout */
+        .docs-layout {
+            display: flex;
+            margin-top: 64px;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-dark);
+            border-right: 1px solid var(--border);
+            padding: 32px 24px;
+            position: fixed;
+            top: 64px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 32px;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .sidebar-links {
+            list-style: none;
+        }
+
+        .sidebar-links a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar-links a:hover {
+            color: var(--text);
+            background: var(--card-bg);
+        }
+
+        .sidebar-links a.active {
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Main Content */
+        .docs-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 48px 64px;
+            max-width: 900px;
+        }
+
+        .docs-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .docs-content h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .docs-content h2:first-of-type {
+            margin-top: 32px;
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .docs-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .docs-content p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .docs-content ul, .docs-content ol {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        .docs-content li {
+            margin-bottom: 8px;
+        }
+
+        .docs-content a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .docs-content a:hover {
+            text-decoration: underline;
+        }
+
+        .lead {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 32px;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: var(--bg-darker);
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-content {
+            padding: 16px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+
+        .code-content .comment { color: #6B7280; }
+        .code-content .command { color: var(--primary); }
+        .code-content .string { color: #F59E0B; }
+        .code-content .keyword { color: #A78BFA; }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--card-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Tables */
+        .docs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .docs-table th,
+        .docs-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .docs-table th {
+            background: var(--bg-darker);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .docs-table td {
+            color: var(--text-muted);
+        }
+
+        .docs-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .docs-table code {
+            background: var(--bg-darker);
+        }
+
+        /* Callouts */
+        .callout {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border-left: 4px solid;
+        }
+
+        .callout-info {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--secondary);
+        }
+
+        .callout-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #F59E0B;
+        }
+
+        .callout-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--primary);
+        }
+
+        .callout p {
+            margin: 0;
+            color: var(--text);
+        }
+
+        .callout strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+
+            .docs-content {
+                margin-left: 0;
+                padding: 32px 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .docs-content h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Scroll margin for anchor links */
+        [id] {
+            scroll-margin-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <defs>
+                        <linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#10B981"/>
+                            <stop offset="100%" style="stop-color:#059669"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="32" height="32" rx="6" fill="url(#navGrad)"/>
+                    <g fill="white">
+                        <rect x="3" y="15" width="6" height="2" rx="1" opacity="0.7"/>
+                        <path d="M11 10 L11 22 L13.5 22 L13.5 16 C13.5 13 15 12 17 12 L17 10 C14.5 10 13.5 11 13 12 L13 10 Z"/>
+                        <path d="M18 10 L22 16 L18 22 L21 22 L24 18 L27 22 L30 22 L26 16 L30 10 L27 10 L24 14 L21 10 Z"/>
+                    </g>
+                </svg>
+                rx-pro
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#comparison">Comparison</a></li>
+                <li><a href="index.html#benchmarks">Benchmarks</a></li>
+                <li><a href="documentation.html" class="active">Docs</a></li>
+                <li><a href="https://github.com/get-rx/rx-pro">GitHub</a></li>
+            </ul>
+            <div class="nav-cta">
+                <a href="https://github.com/get-rx/rx-pro" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    Star
+                </a>
+                <a href="index.html#install" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Getting Started</div>
+                <ul class="sidebar-links">
+                    <li><a href="#installation" class="active">Installation</a></li>
+                    <li><a href="#quick-start">Quick Start</a></li>
+                    <li><a href="#project-setup">Project Setup</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Core Concepts</div>
+                <ul class="sidebar-links">
+                    <li><a href="#dependencies">Dependencies</a></li>
+                    <li><a href="#lockfile">Lockfile</a></li>
+                    <li><a href="#virtual-environments">Virtual Environments</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Commands</div>
+                <ul class="sidebar-links">
+                    <li><a href="#cmd-init">rx init</a></li>
+                    <li><a href="#cmd-add">rx add</a></li>
+                    <li><a href="#cmd-remove">rx remove</a></li>
+                    <li><a href="#cmd-sync">rx sync</a></li>
+                    <li><a href="#cmd-update">rx update</a></li>
+                    <li><a href="#cmd-run">rx run</a></li>
+                    <li><a href="#cmd-build">rx build</a></li>
+                    <li><a href="#cmd-publish">rx publish</a></li>
+                    <li><a href="#cmd-audit">rx audit</a></li>
+                    <li><a href="#cmd-tool">rx tool</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Configuration</div>
+                <ul class="sidebar-links">
+                    <li><a href="#pyproject">pyproject.toml</a></li>
+                    <li><a href="#scripts">Scripts</a></li>
+                    <li><a href="#registries">Private Registries</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Advanced</div>
+                <ul class="sidebar-links">
+                    <li><a href="#workspaces">Workspaces</a></li>
+                    <li><a href="#plugins">WebAssembly Plugins</a></li>
+                    <li><a href="#docker">Docker Integration</a></li>
+                    <li><a href="#tasks">Task Runner</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="docs-content">
+            <h1>Documentation</h1>
+            <p class="lead">Everything you need to know about rx-pro, the blazing-fast Python package manager.</p>
+
+            <h2 id="installation">Installation</h2>
+            <p>rx-pro can be installed in several ways depending on your preference:</p>
+
+            <h3>Quick Install (Recommended)</h3>
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+                    curl -sSf https://raw.githubusercontent.com/get-rx/rx-pro/main/install.sh | bash
+                </div>
+            </div>
+
+            <h3>From PyPI</h3>
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+                    pip install rx-pro
+                </div>
+            </div>
+
+            <h3>From Cargo</h3>
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+                    cargo install pro-cli
+                </div>
+            </div>
+
+            <h3>Pre-built Binaries</h3>
+            <p>Download pre-built binaries from <a href="https://github.com/get-rx/rx-pro/releases">GitHub Releases</a>:</p>
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Download</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Linux (x86_64)</td>
+                        <td><code>rx-x86_64-unknown-linux-gnu.tar.gz</code></td>
+                    </tr>
+                    <tr>
+                        <td>Linux (ARM64)</td>
+                        <td><code>rx-aarch64-unknown-linux-gnu.tar.gz</code></td>
+                    </tr>
+                    <tr>
+                        <td>macOS (Intel)</td>
+                        <td><code>rx-x86_64-apple-darwin.tar.gz</code></td>
+                    </tr>
+                    <tr>
+                        <td>macOS (Apple Silicon)</td>
+                        <td><code>rx-aarch64-apple-darwin.tar.gz</code></td>
+                    </tr>
+                    <tr>
+                        <td>Windows (x86_64)</td>
+                        <td><code>rx-x86_64-pc-windows-msvc.zip</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="quick-start">Quick Start</h2>
+            <p>Get up and running with rx-pro in under a minute:</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+<span class="comment"># Create a new project</span>
+rx init my-project
+cd my-project
+
+<span class="comment"># Add dependencies</span>
+rx add requests numpy pandas
+rx add flask@2.3.0            <span class="comment"># Pin to specific version</span>
+
+<span class="comment"># Add dev dependencies</span>
+rx add --dev pytest black ruff
+
+<span class="comment"># Install everything</span>
+rx sync
+
+<span class="comment"># Run your code</span>
+rx run python main.py
+                </div>
+            </div>
+
+            <h2 id="project-setup">Project Setup</h2>
+            <p>rx-pro uses the standard <code>pyproject.toml</code> file for configuration. When you run <code>rx init</code>, a new project is created with the following structure:</p>
+
+            <div class="code-block">
+                <div class="code-header">Project Structure</div>
+                <div class="code-content">
+my-project/
+├── pyproject.toml    <span class="comment"># Project configuration</span>
+├── rx.lock           <span class="comment"># Lockfile (auto-generated)</span>
+├── .venv/            <span class="comment"># Virtual environment</span>
+├── src/
+│   └── my_project/
+│       └── __init__.py
+└── tests/
+    └── test_main.py
+                </div>
+            </div>
+
+            <h2 id="dependencies">Dependencies</h2>
+            <p>Dependencies are specified in <code>pyproject.toml</code> under the <code>[project.dependencies]</code> section:</p>
+
+            <div class="code-block">
+                <div class="code-header">pyproject.toml</div>
+                <div class="code-content">
+<span class="keyword">[project]</span>
+name = <span class="string">"my-project"</span>
+version = <span class="string">"1.0.0"</span>
+requires-python = <span class="string">">=3.8"</span>
+dependencies = [
+    <span class="string">"requests>=2.28"</span>,
+    <span class="string">"numpy>=1.24"</span>,
+    <span class="string">"pandas>=2.0"</span>,
+]
+
+<span class="keyword">[project.optional-dependencies]</span>
+dev = [
+    <span class="string">"pytest>=7.0"</span>,
+    <span class="string">"black>=23.0"</span>,
+    <span class="string">"ruff>=0.1"</span>,
+]
+                </div>
+            </div>
+
+            <h2 id="lockfile">Lockfile</h2>
+            <p>rx-pro generates a <code>rx.lock</code> file that pins exact versions of all dependencies for reproducible builds. This file should be committed to version control.</p>
+
+            <div class="callout callout-info">
+                <p><strong>Tip:</strong> The lockfile is cross-platform compatible. The same lockfile works on Linux, macOS, and Windows.</p>
+            </div>
+
+            <h2 id="virtual-environments">Virtual Environments</h2>
+            <p>rx-pro automatically manages virtual environments. By default, it creates a <code>.venv</code> directory in your project root. Use <code>rx run</code> to execute commands within the virtual environment.</p>
+
+            <h2 id="cmd-init">rx init</h2>
+            <p>Initialize a new Python project.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx init [project-name]
+rx init --lib           <span class="comment"># Create a library project</span>
+rx init --app           <span class="comment"># Create an application project</span>
+                </div>
+            </div>
+
+            <h2 id="cmd-add">rx add</h2>
+            <p>Add dependencies to your project.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx add requests                    <span class="comment"># Add latest version</span>
+rx add requests@2.31.0             <span class="comment"># Add specific version</span>
+rx add "requests>=2.28,<3.0"       <span class="comment"># Add with constraints</span>
+rx add --dev pytest                <span class="comment"># Add as dev dependency</span>
+rx add --group test pytest         <span class="comment"># Add to specific group</span>
+                </div>
+            </div>
+
+            <h2 id="cmd-remove">rx remove</h2>
+            <p>Remove dependencies from your project.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx remove requests
+rx remove --dev pytest
+                </div>
+            </div>
+
+            <h2 id="cmd-sync">rx sync</h2>
+            <p>Install all dependencies from the lockfile.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx sync                  <span class="comment"># Install all dependencies</span>
+rx sync --no-dev         <span class="comment"># Skip dev dependencies</span>
+rx sync --frozen         <span class="comment"># Fail if lockfile is outdated</span>
+                </div>
+            </div>
+
+            <h2 id="cmd-update">rx update</h2>
+            <p>Update dependencies to their latest compatible versions.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx update                      <span class="comment"># Update all dependencies</span>
+rx update requests             <span class="comment"># Update specific package</span>
+rx update requests@2.32.0      <span class="comment"># Update to specific version</span>
+                </div>
+            </div>
+
+            <h2 id="cmd-run">rx run</h2>
+            <p>Run a command in the virtual environment.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx run python main.py
+rx run pytest
+rx run python -c "import numpy; print(numpy.__version__)"
+                </div>
+            </div>
+
+            <h2 id="cmd-build">rx build</h2>
+            <p>Build distribution packages (wheel and sdist).</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx build                 <span class="comment"># Build wheel and sdist</span>
+rx build --wheel         <span class="comment"># Build only wheel</span>
+rx build --sdist         <span class="comment"># Build only sdist</span>
+                </div>
+            </div>
+
+            <h2 id="cmd-publish">rx publish</h2>
+            <p>Publish your package to PyPI or a private registry.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx publish                           <span class="comment"># Publish to PyPI</span>
+rx publish --repository testpypi     <span class="comment"># Publish to TestPyPI</span>
+                </div>
+            </div>
+
+            <h2 id="cmd-audit">rx audit</h2>
+            <p>Scan dependencies for security vulnerabilities.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx audit                 <span class="comment"># Scan for vulnerabilities</span>
+rx audit --fix           <span class="comment"># Auto-fix vulnerabilities</span>
+                </div>
+            </div>
+
+            <div class="callout callout-success">
+                <p><strong>Security:</strong> rx-pro checks against the OSV database and PyPI advisory database for known vulnerabilities.</p>
+            </div>
+
+            <h2 id="cmd-tool">rx tool</h2>
+            <p>Run Python tools in ephemeral environments without installing them in your project.</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx tool black .          <span class="comment"># Run black formatter</span>
+rx tool ruff check .     <span class="comment"># Run ruff linter</span>
+rx tool httpie GET https://api.github.com
+                </div>
+            </div>
+
+            <h2 id="pyproject">pyproject.toml Configuration</h2>
+            <p>Complete example of rx-pro configuration:</p>
+
+            <div class="code-block">
+                <div class="code-header">pyproject.toml</div>
+                <div class="code-content">
+<span class="keyword">[project]</span>
+name = <span class="string">"my-project"</span>
+version = <span class="string">"1.0.0"</span>
+description = <span class="string">"My awesome project"</span>
+requires-python = <span class="string">">=3.8"</span>
+dependencies = [
+    <span class="string">"requests>=2.28"</span>,
+    <span class="string">"numpy>=1.24"</span>,
+]
+
+<span class="keyword">[project.optional-dependencies]</span>
+dev = [<span class="string">"pytest>=7.0"</span>, <span class="string">"black>=23.0"</span>]
+
+<span class="keyword">[project.scripts]</span>
+myapp = <span class="string">"my_project:main"</span>
+
+<span class="keyword">[tool.rx]</span>
+python-version = <span class="string">"3.11"</span>
+
+<span class="keyword">[tool.rx.scripts]</span>
+test = <span class="string">"pytest -v tests/"</span>
+lint = <span class="string">"ruff check ."</span>
+format = <span class="string">"black ."</span>
+                </div>
+            </div>
+
+            <h2 id="scripts">Scripts</h2>
+            <p>Define custom scripts in <code>[tool.rx.scripts]</code>:</p>
+
+            <div class="code-block">
+                <div class="code-header">pyproject.toml</div>
+                <div class="code-content">
+<span class="keyword">[tool.rx.scripts]</span>
+test = <span class="string">"pytest -v tests/"</span>
+lint = <span class="string">"ruff check ."</span>
+format = <span class="string">"black ."</span>
+dev = <span class="string">"python -m uvicorn main:app --reload"</span>
+                </div>
+            </div>
+
+            <p>Run scripts with <code>rx run &lt;script&gt;</code>:</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx run test
+rx run lint
+                </div>
+            </div>
+
+            <h2 id="registries">Private Registries</h2>
+            <p>Configure private package registries:</p>
+
+            <div class="code-block">
+                <div class="code-header">pyproject.toml</div>
+                <div class="code-content">
+<span class="keyword">[[tool.rx.registries]]</span>
+name = <span class="string">"private"</span>
+url = <span class="string">"https://pypi.mycompany.com/simple/"</span>
+username = <span class="string">"${PYPI_USER}"</span>
+password = <span class="string">"${PYPI_PASS}"</span>
+                </div>
+            </div>
+
+            <h2 id="workspaces">Workspaces (Monorepo)</h2>
+            <p>Manage multiple packages in a single repository:</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+<span class="comment"># Initialize workspace</span>
+rx workspace init
+
+<span class="comment"># Add projects</span>
+rx workspace add packages/core
+rx workspace add packages/api
+rx workspace add packages/cli
+
+<span class="comment"># Unified operations</span>
+rx workspace sync          <span class="comment"># Install all dependencies</span>
+rx workspace lock          <span class="comment"># Single lockfile</span>
+rx run --affected test     <span class="comment"># Test only changed packages</span>
+                </div>
+            </div>
+
+            <h2 id="plugins">WebAssembly Plugins</h2>
+            <p>Extend rx-pro with sandboxed WebAssembly plugins:</p>
+
+            <div class="code-block">
+                <div class="code-header">pyproject.toml</div>
+                <div class="code-content">
+<span class="keyword">[tool.rx.plugins]</span>
+license-checker = <span class="string">"~/.rx/plugins/license-checker.wasm"</span>
+custom-resolver = { path = <span class="string">"./plugins/resolver.wasm"</span> }
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx plugin add license-checker https://example.com/license-checker.wasm
+rx plugin run pre-build
+                </div>
+            </div>
+
+            <h2 id="docker">Docker Integration</h2>
+            <p>Generate optimized Dockerfiles for your Python projects:</p>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx docker generate       <span class="comment"># Generate Dockerfile</span>
+rx docker build --tag myapp:latest
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">pyproject.toml</div>
+                <div class="code-content">
+<span class="keyword">[tool.rx.docker]</span>
+base_image = <span class="string">"python:3.11-slim"</span>
+apt_packages = [<span class="string">"curl"</span>, <span class="string">"git"</span>]
+expose = [8000]
+cmd = [<span class="string">"python"</span>, <span class="string">"-m"</span>, <span class="string">"myapp"</span>]
+multi_stage = true
+                </div>
+            </div>
+
+            <h2 id="tasks">Task Runner</h2>
+            <p>Define complex task workflows with dependencies:</p>
+
+            <div class="code-block">
+                <div class="code-header">pyproject.toml</div>
+                <div class="code-content">
+<span class="keyword">[tool.rx.tasks]</span>
+test = { cmd = <span class="string">"pytest -v"</span>, depends_on = [<span class="string">"lint"</span>] }
+lint = { cmd = <span class="string">"ruff check ."</span> }
+format = { cmd = <span class="string">"black ."</span>, parallel = true }
+ci = { depends_on = [<span class="string">"test"</span>, <span class="string">"format"</span>] }
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">bash</div>
+                <div class="code-content">
+rx task ci      <span class="comment"># Runs lint -> test and format in parallel</span>
+rx task test    <span class="comment"># Runs lint first, then test</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); text-align: center;">
+                <p style="color: var(--text-muted);">Need help? <a href="https://github.com/get-rx/rx-pro/issues">Open an issue</a> or <a href="https://github.com/get-rx/rx-pro/discussions">start a discussion</a>.</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Highlight active sidebar link based on scroll position
+        const sections = document.querySelectorAll('[id]');
+        const navLinks = document.querySelectorAll('.sidebar-links a');
+
+        function highlightNav() {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightNav);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

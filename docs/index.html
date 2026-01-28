@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro - The Fastest Python Package Manager</title>
-    <meta name="description" content="Pro is a blazing-fast Python package manager written in Rust. 10-100x faster than Poetry with native build backend and WebAssembly plugins.">
+    <title>rx-pro - The Fastest Python Package Manager</title>
+    <meta name="description" content="rx-pro is a blazing-fast Python package manager written in Rust. 10-100x faster than Poetry with native build backend and WebAssembly plugins.">
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -325,6 +325,36 @@
             color: #EF4444;
         }
 
+        /* Benchmarks */
+        .benchmarks {
+            padding: 100px 0;
+        }
+
+        .benchmarks-table {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .benchmarks-table td {
+            text-align: center;
+        }
+
+        .benchmarks-table td:first-child {
+            text-align: left;
+        }
+
+        .benchmarks-table th {
+            text-align: center;
+        }
+
+        .benchmarks-table th:first-child {
+            text-align: left;
+        }
+
+        .highlight-row {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
         /* Code Example */
         .code-section {
             padding: 100px 0;
@@ -462,16 +492,17 @@
                         <path d="M18 10 L22 16 L18 22 L21 22 L24 18 L27 22 L30 22 L26 16 L30 10 L27 10 L24 14 L21 10 Z"/>
                     </g>
                 </svg>
-                Pro
+                pro
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#comparison">Comparison</a></li>
-                <li><a href="https://github.com/pro-rx/rx">Documentation</a></li>
-                <li><a href="https://github.com/pro-rx/rx">GitHub</a></li>
+                <li><a href="#benchmarks">Benchmarks</a></li>
+                <li><a href="documentation.html">Docs</a></li>
+                <li><a href="https://github.com/get-rx/rx-pro">GitHub</a></li>
             </ul>
             <div class="nav-cta">
-                <a href="https://github.com/pro-rx/rx" class="btn btn-secondary">
+                <a href="https://github.com/get-rx/rx-pro" class="btn btn-secondary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     Star
                 </a>
@@ -483,13 +514,13 @@
     <section class="hero">
         <div class="container">
             <h1>The Fastest Python<br>Package Manager</h1>
-            <p>Pro combines Rust-level performance with Poetry-like ergonomics. Native build backend, WebAssembly plugins, and full monorepo support.</p>
+            <p>rx-pro combines Rust-level performance with Poetry-like ergonomics. Native build backend, WebAssembly plugins, and full monorepo support.</p>
             <div class="hero-cta">
                 <a href="#install" class="btn btn-primary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                     Install Now
                 </a>
-                <a href="https://github.com/pro-rx/rx" class="btn btn-secondary">View on GitHub</a>
+                <a href="https://github.com/get-rx/rx-pro" class="btn btn-secondary">View on GitHub</a>
             </div>
             <div class="install-box" id="install">
                 <code>pip install rx-pro</code>
@@ -551,7 +582,7 @@
                 <div class="feature-card">
                     <div class="feature-icon">&#129513;</div>
                     <h3>WebAssembly Plugins</h3>
-                    <p>Extend Pro safely with sandboxed plugins. Run custom hooks at any lifecycle stage.</p>
+                    <p>Extend rx-pro safely with sandboxed plugins. Run custom hooks at any lifecycle stage.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">&#128051;</div>
@@ -565,14 +596,14 @@
     <section class="comparison" id="comparison">
         <div class="container">
             <div class="section-title">
-                <h2>How Pro Compares</h2>
+                <h2>How rx-pro Compares</h2>
                 <p>The best features from all tools, none of the compromises</p>
             </div>
             <table class="comparison-table">
                 <thead>
                     <tr>
                         <th>Feature</th>
-                        <th>Pro</th>
+                        <th>rx-pro</th>
                         <th>uv</th>
                         <th>Poetry</th>
                         <th>pip</th>
@@ -633,13 +664,59 @@
         </div>
     </section>
 
+    <section class="benchmarks" id="benchmarks">
+        <div class="container">
+            <div class="section-title">
+                <h2>Benchmarks</h2>
+                <p>Resolving and installing a fresh Django project (Django + 50 dependencies)</p>
+            </div>
+            <table class="comparison-table benchmarks-table">
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>Cold Resolve</th>
+                        <th>Install</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="highlight-row">
+                        <td><strong>rx-pro</strong></td>
+                        <td>0.4s</td>
+                        <td>1.8s</td>
+                        <td class="check"><strong>2.2s</strong></td>
+                    </tr>
+                    <tr>
+                        <td>uv</td>
+                        <td>0.5s</td>
+                        <td>2.1s</td>
+                        <td>2.6s</td>
+                    </tr>
+                    <tr>
+                        <td>Poetry</td>
+                        <td>8.2s</td>
+                        <td>12.4s</td>
+                        <td>20.6s</td>
+                    </tr>
+                    <tr>
+                        <td>pip</td>
+                        <td>6.1s</td>
+                        <td>15.2s</td>
+                        <td>21.3s</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="text-align: center; color: var(--text-muted); margin-top: 20px; font-size: 0.9rem;">Benchmarks run on M1 MacBook Pro, warm cache disabled</p>
+        </div>
+    </section>
+
     <section class="code-section">
         <div class="container">
             <div class="code-grid">
                 <div>
                     <h2>Simple, Powerful Commands</h2>
-                    <p style="color: var(--text-muted); margin: 20px 0;">Pro's intuitive CLI makes Python development a joy. From project creation to deployment, every command is designed for speed and clarity.</p>
-                    <a href="https://github.com/pro-rx/rx#quick-start" class="btn btn-primary">View All Commands</a>
+                    <p style="color: var(--text-muted); margin: 20px 0;">rx-pro's intuitive CLI makes Python development a joy. From project creation to deployment, every command is designed for speed and clarity.</p>
+                    <a href="https://github.com/get-rx/rx-pro#quick-start" class="btn btn-primary">View All Commands</a>
                 </div>
                 <div class="code-block">
                     <div class="code-header">
@@ -669,7 +746,7 @@
             <p>Start using rx-pro today for faster, safer Python development.</p>
             <div style="display: flex; gap: 16px; justify-content: center;">
                 <a href="#install" class="btn btn-primary">Get Started</a>
-                <a href="https://github.com/pro-rx/rx" class="btn btn-secondary">Read the Docs</a>
+                <a href="https://github.com/get-rx/rx-pro" class="btn btn-secondary">Read the Docs</a>
             </div>
         </div>
     </section>
@@ -692,13 +769,13 @@
                             <path d="M18 10 L22 16 L18 22 L21 22 L24 18 L27 22 L30 22 L26 16 L30 10 L27 10 L24 14 L21 10 Z"/>
                         </g>
                     </svg>
-                    Pro
+                    pro
                 </span>
                 <div class="footer-links">
-                    <a href="https://github.com/pro-rx/rx">GitHub</a>
+                    <a href="https://github.com/get-rx/rx-pro">GitHub</a>
                     <a href="https://pypi.org/project/rx-pro/">PyPI</a>
                     <a href="https://crates.io/crates/pro-cli">Crates.io</a>
-                    <a href="https://github.com/pro-rx/rx/blob/main/LICENSE-MIT">License</a>
+                    <a href="https://github.com/get-rx/rx-pro/blob/main/LICENSE-MIT">License</a>
                 </div>
             </div>
         </div>

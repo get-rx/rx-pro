@@ -17,7 +17,7 @@ use crate::python::{Os, Platform};
 use crate::{Error, Result};
 
 /// GitHub repository for releases
-const GITHUB_REPO: &str = "pro-rx/rx";
+const GITHUB_REPO: &str = "get-rx/rx-pro";
 
 /// How rx was installed
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

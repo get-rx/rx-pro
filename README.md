@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
 [![Crates.io](https://img.shields.io/crates/v/pro-cli.svg)](https://crates.io/crates/pro-cli)
 [![PyPI](https://img.shields.io/pypi/v/rx-pro.svg)](https://pypi.org/project/rx-pro/)
-[![CI](https://github.com/pro-rx/rx/workflows/CI/badge.svg)](https://github.com/pro-rx/rx/actions)
+[![CI](https://github.com/get-rx/rx-pro/workflows/CI/badge.svg)](https://github.com/get-rx/rx-pro/actions)
 
 [Installation](#installation) • [Quick Start](#quick-start) • [Features](#features) • [Documentation](#documentation)
 
@@ -40,7 +40,7 @@ rx combines the speed of Rust with the ergonomics of Poetry to deliver the best 
 ### Quick Install (curl)
 
 ```bash
-curl -sSf https://raw.githubusercontent.com/pro-rx/rx/main/install.sh | bash
+curl -sSf https://raw.githubusercontent.com/get-rx/rx-pro/main/install.sh | bash
 ```
 
 ### From PyPI
@@ -58,14 +58,14 @@ cargo install pro-cli
 ### From Source
 
 ```bash
-git clone https://github.com/pro-rx/rx.git
+git clone https://github.com/get-rx/rx-pro.git
 cd pro
 cargo build --release
 ```
 
 ### Pre-built Binaries
 
-Download from [GitHub Releases](https://github.com/pro-rx/rx/releases):
+Download from [GitHub Releases](https://github.com/get-rx/rx-pro/releases):
 
 - **Linux (x86_64)**: `rx-x86_64-unknown-linux-gnu.tar.gz`
 - **Linux (ARM64)**: `rx-aarch64-unknown-linux-gnu.tar.gz`
@@ -338,7 +338,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ```bash
 # Clone and build
-git clone https://github.com/pro-rx/rx.git
+git clone https://github.com/get-rx/rx-pro.git
 cd pro
 cargo build
 
@@ -359,6 +359,6 @@ Dual-licensed under MIT and Apache 2.0. See [LICENSE-MIT](LICENSE-MIT) and [LICE
 
 **Built with 🦀 Rust and ❤️ by the rx team**
 
-[Website](https://rxpro.net/) • [GitHub](https://github.com/pro-rx/rx) • [PyPI](https://pypi.org/project/rx-pro/) • [Crates.io](https://crates.io/crates/pro-cli)
+[Website](https://rxpro.net/) • [GitHub](https://github.com/get-rx/rx-pro) • [PyPI](https://pypi.org/project/rx-pro/) • [Crates.io](https://crates.io/crates/pro-cli)
 
 </div>
