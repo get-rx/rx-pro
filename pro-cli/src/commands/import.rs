@@ -298,7 +298,9 @@ impl RequirementsImportCommand {
         };
 
         // Determine requirements file path
-        let req_file = self.file.unwrap_or_else(|| project_dir.join("requirements.txt"));
+        let req_file = self
+            .file
+            .unwrap_or_else(|| project_dir.join("requirements.txt"));
 
         if !req_file.exists() {
             bail!("Requirements file not found: {}", req_file.display());
@@ -309,7 +311,8 @@ impl RequirementsImportCommand {
 
         // Parse requirements
         let content = std::fs::read_to_string(&req_file)?;
-        let (deps, hashes) = parse_requirements_txt(&content, &req_file.parent().unwrap_or(&project_dir))?;
+        let (deps, hashes) =
+            parse_requirements_txt(&content, req_file.parent().unwrap_or(&project_dir))?;
 
         if deps.is_empty() {
             println!("No dependencies found in requirements file.");
@@ -317,7 +320,11 @@ impl RequirementsImportCommand {
         }
 
         // Display what we found
-        let dep_type = if self.dev { "Dev dependencies" } else { "Dependencies" };
+        let dep_type = if self.dev {
+            "Dev dependencies"
+        } else {
+            "Dependencies"
+        };
         println!("{} ({}):", dep_type, deps.len());
         for dep in &deps {
             println!("  - {}", dep);
@@ -325,7 +332,10 @@ impl RequirementsImportCommand {
 
         if !hashes.is_empty() {
             println!();
-            println!("Note: {} package(s) have pinned hashes that will be used when locking.", hashes.len());
+            println!(
+                "Note: {} package(s) have pinned hashes that will be used when locking.",
+                hashes.len()
+            );
         }
 
         if self.dry_run {
@@ -387,7 +397,10 @@ impl RequirementsImportCommand {
 }
 
 /// Parse requirements.txt content into a list of dependency strings
-fn parse_requirements_txt(content: &str, base_dir: &Path) -> Result<(Vec<String>, HashMap<String, Vec<String>>)> {
+fn parse_requirements_txt(
+    content: &str,
+    base_dir: &Path,
+) -> Result<(Vec<String>, HashMap<String, Vec<String>>)> {
     let mut deps = Vec::new();
     let mut hashes: HashMap<String, Vec<String>> = HashMap::new();
     let mut current_line = String::new();
@@ -426,7 +439,7 @@ fn process_requirement_line(
     line: &str,
     base_dir: &Path,
     deps: &mut Vec<String>,
-    hashes: &mut HashMap<String, Vec<String>>
+    hashes: &mut HashMap<String, Vec<String>>,
 ) -> Result<()> {
     let line = line.trim();
 
@@ -436,11 +449,15 @@ fn process_requirement_line(
     }
 
     // Handle -r (recursive include)
-    if let Some(path) = line.strip_prefix("-r ").or_else(|| line.strip_prefix("-r\t")) {
+    if let Some(path) = line
+        .strip_prefix("-r ")
+        .or_else(|| line.strip_prefix("-r\t"))
+    {
         let include_path = base_dir.join(path.trim());
         if include_path.exists() {
             let content = std::fs::read_to_string(&include_path)?;
-            let (included_deps, included_hashes) = parse_requirements_txt(&content, include_path.parent().unwrap_or(base_dir))?;
+            let (included_deps, included_hashes) =
+                parse_requirements_txt(&content, include_path.parent().unwrap_or(base_dir))?;
             deps.extend(included_deps);
             for (k, v) in included_hashes {
                 hashes.entry(k).or_default().extend(v);
@@ -487,7 +504,7 @@ fn process_requirement_line(
     }
 
     // Validate it's a proper requirement
-    if pro_core::pep::Requirement::parse(&req_part).is_ok() {
+    if pro_core::pep::Requirement::parse(req_part).is_ok() {
         deps.push(req_part.to_string());
 
         // Store hashes if present
@@ -495,7 +512,7 @@ fn process_requirement_line(
             let name = req_part
                 .split(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
                 .next()
-                .unwrap_or(&req_part)
+                .unwrap_or(req_part)
                 .to_lowercase();
             hashes.insert(name, hash_list);
         }
@@ -551,7 +568,10 @@ impl UvImportCommand {
 
         // Check for pyproject.toml first (to get project metadata)
         if !pyproject_path.exists() {
-            bail!("No pyproject.toml found in {}. UV projects require pyproject.toml.", project_dir.display());
+            bail!(
+                "No pyproject.toml found in {}. UV projects require pyproject.toml.",
+                project_dir.display()
+            );
         }
 
         println!("Importing from UV project: {}", project_dir.display());
@@ -586,14 +606,24 @@ impl UvImportCommand {
         let main_deps: Vec<String> = project
             .and_then(|p| p.get("dependencies"))
             .and_then(|v| v.as_array())
-            .map(|arr| arr.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|v| v.as_str().map(String::from))
+                    .collect()
+            })
             .unwrap_or_default();
 
         // Get optional/dev dependencies
         let mut dev_deps: Vec<String> = Vec::new();
-        if let Some(optional) = project.and_then(|p| p.get("optional-dependencies")).and_then(|v| v.as_table()) {
+        if let Some(optional) = project
+            .and_then(|p| p.get("optional-dependencies"))
+            .and_then(|v| v.as_table())
+        {
             if let Some(dev) = optional.get("dev").and_then(|v| v.as_array()) {
-                dev_deps = dev.iter().filter_map(|v| v.as_str().map(String::from)).collect();
+                dev_deps = dev
+                    .iter()
+                    .filter_map(|v| v.as_str().map(String::from))
+                    .collect();
             }
         }
 
@@ -629,7 +659,10 @@ impl UvImportCommand {
         let mut pyproject = PyProject::new(name, version, python_requires);
 
         // Copy description if present
-        if let Some(desc) = project.and_then(|p| p.get("description")).and_then(|v| v.as_str()) {
+        if let Some(desc) = project
+            .and_then(|p| p.get("description"))
+            .and_then(|v| v.as_str())
+        {
             if let Some(ref mut proj) = pyproject.project {
                 proj.description = Some(desc.to_string());
             }
@@ -644,7 +677,10 @@ impl UvImportCommand {
         }
 
         // Copy scripts if present
-        if let Some(scripts) = project.and_then(|p| p.get("scripts")).and_then(|v| v.as_table()) {
+        if let Some(scripts) = project
+            .and_then(|p| p.get("scripts"))
+            .and_then(|v| v.as_table())
+        {
             if let Some(ref mut proj) = pyproject.project {
                 for (name, value) in scripts {
                     if let Some(entry) = value.as_str() {
