@@ -76,7 +76,7 @@ jobs:
           path: rx-${{ matrix.target }}.${{ matrix.archive }}
 
   release:
-    name: Create Release
+    name: Create/Update Release
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -90,11 +90,37 @@ jobs:
         with:
           path: artifacts
 
-      - name: Create Release
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          if [ -f CHANGELOG.md ]; then
+            # Extract the section for this version from CHANGELOG.md
+            # Looks for ## [version] or ## version and extracts until next ## or EOF
+            NOTES=$(awk "/^## \\[?${VERSION}\\]?/{flag=1; next} /^## /{flag=0} flag" CHANGELOG.md)
+            if [ -n "$NOTES" ]; then
+              echo "Found changelog for v$VERSION"
+              # Use delimiter for multiline output
+              echo "notes<<EOF" >> $GITHUB_OUTPUT
+              echo "$NOTES" >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
+            else
+              echo "No changelog section found for v$VERSION"
+              echo "notes=" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No CHANGELOG.md found"
+            echo "notes=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create or Update Release
         uses: softprops/action-gh-release@v1
         with:
           files: artifacts/**/*
-          generate_release_notes: true
+          body: ${{ steps.changelog.outputs.notes }}
+          generate_release_notes: ${{ steps.changelog.outputs.notes == '' }}
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
 
