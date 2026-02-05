@@ -115,27 +115,43 @@ jobs:
             echo "notes=" >> $GITHUB_OUTPUT
           fi
 
-      - name: Delete existing release if present
+      - name: Create or Update Release
         run: |
-          if gh release view ${{ github.ref_name }}; then
-            echo "Deleting existing release..."
-            gh release delete ${{ github.ref_name }} --yes
-            echo "Waiting for deletion to propagate..."
-            sleep 10
+          TAG="${{ github.ref_name }}"
+          NOTES="${{ steps.changelog.outputs.notes }}"
+          PRERELEASE="${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}"
+
+          # Check if release exists
+          if gh release view "$TAG" --json isDraft --jq '.isDraft' 2>/dev/null; then
+            echo "Release exists, uploading assets..."
+            # Upload all artifacts to the existing release
+            find artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" -o -name "*.whl" \) | while read -r file; do
+              echo "Uploading: $file"
+              gh release upload "$TAG" "$file" --clobber
+            done
+            # Update release notes if provided
+            if [ -n "$NOTES" ]; then
+              gh release edit "$TAG" --notes "$NOTES"
+            fi
+            # Mark as not draft if it was a draft
+            gh release edit "$TAG" --draft=false
           else
-            echo "No existing release found"
+            echo "Creating new release..."
+            NOTES_ARG=""
+            if [ -n "$NOTES" ]; then
+              NOTES_ARG="--notes \"$NOTES\""
+            else
+              NOTES_ARG="--generate-notes"
+            fi
+            PRERELEASE_ARG=""
+            if [ "$PRERELEASE" = "true" ]; then
+              PRERELEASE_ARG="--prerelease"
+            fi
+            # Create release with assets
+            find artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" -o -name "*.whl" \) -exec gh release create "$TAG" {} + $NOTES_ARG $PRERELEASE_ARG
           fi
         env:
           GH_TOKEN: ${{ github.token }}
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: artifacts/**/*
-          body: ${{ steps.changelog.outputs.notes }}
-          generate_release_notes: ${{ steps.changelog.outputs.notes == '' }}
-          draft: false
-          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
 
   publish-crates:
     name: Publish to crates.io

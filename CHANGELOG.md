@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.25](https://github.com/get-rx/rx-pro/compare/v0.1.25...v0.1.25) (2026-02-05)
+## [0.1.26](https://github.com/get-rx/rx-pro/compare/v0.1.26...v0.1.26) (2026-02-05)
 
 ### Bug Fixes
 
