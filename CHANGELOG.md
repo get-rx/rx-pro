@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.22](https://github.com/get-rx/rx-pro/compare/v0.1.21...v0.1.22) (2026-02-05)
+
+### Bug Fixes
+
+* ensure all builds complete before creating release
+* fix maturin Docker build by removing workspace version inheritance
+
 ## [0.1.21](https://github.com/get-rx/rx-pro/compare/v0.1.20...v0.1.21) (2026-02-05)
 
 ### Bug Fixes
