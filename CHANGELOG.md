@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.19](https://github.com/get-rx/rx-pro/compare/v0.1.18...v0.1.19) (2026-02-05)
+
+
+### Bug Fixes
+
+* resolve release workflow issues ([87d348c](https://github.com/get-rx/rx-pro/commit/87d348cf85664fea85921d8959e7ca2203e30220))
+
 ## [0.1.18](https://github.com/get-rx/rx-pro/compare/v0.1.17...v0.1.18) (2026-02-04)
 
 
