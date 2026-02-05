@@ -1,6 +1,6 @@
 [package]
 name = "pro"
-version.workspace = true
+version = "0.1.19"
 edition = "2021"
 authors = ["Shawn Therrien <shawntherrien@gmail.com>"]
 license = "MIT OR Apache-2.0"
