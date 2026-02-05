@@ -183,16 +183,15 @@ jobs:
         env:
           PYO3_USE_ABI3_FORWARD_COMPATIBILITY: '1'
         with:
-          args: --release --out dist
+          args: --release --out dist --manifest-path pro-python/Cargo.toml
           sccache: 'true'
           manylinux: auto
-          working-directory: pro-python
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.platform }}
-          path: pro-python/dist
+          path: dist
 
   publish-pypi:
     name: Publish to PyPI
