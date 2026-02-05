@@ -16,6 +16,11 @@
         },
         {
           "type": "toml",
+          "path": "pro-python/Cargo.toml",
+          "jsonpath": "$.package.version"
+        },
+        {
+          "type": "toml",
           "path": "pro-python/pyproject.toml",
           "jsonpath": "$.project.version"
         }
