@@ -115,7 +115,13 @@ jobs:
             echo "notes=" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create or Update Release
+      - name: Delete existing release if present
+        run: |
+          gh release delete ${{ github.ref_name }} --yes || true
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: artifacts/**/*
