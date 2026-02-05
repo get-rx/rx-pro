@@ -4,7 +4,7 @@ members = ["pro-cli", "pro-core", "pro-plugin"]
 exclude = ["pro-python"]
 
 [workspace.package]
-version = "0.1.23"
+version = "0.1.24"
 edition = "2021"
 authors = ["Pro Contributors"]
 license = "MIT OR Apache-2.0"

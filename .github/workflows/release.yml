@@ -117,7 +117,14 @@ jobs:
 
       - name: Delete existing release if present
         run: |
-          gh release delete ${{ github.ref_name }} --yes || true
+          if gh release view ${{ github.ref_name }}; then
+            echo "Deleting existing release..."
+            gh release delete ${{ github.ref_name }} --yes
+            echo "Waiting for deletion to propagate..."
+            sleep 10
+          else
+            echo "No existing release found"
+          fi
         env:
           GH_TOKEN: ${{ github.token }}
 

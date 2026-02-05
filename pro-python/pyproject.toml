@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "rx-pro"
-version = "0.1.23"
+version = "0.1.24"
 description = "A blazing-fast Python package manager written in Rust"
 readme = "README.md"
 license = { text = "MIT OR Apache-2.0" }
