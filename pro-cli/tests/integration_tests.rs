@@ -359,3 +359,194 @@ fn test_subcommand_help() {
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(stdout.contains("Initialize") || stdout.contains("init"));
 }
+
+// =============================================================================
+// UV Import Integration Tests
+// =============================================================================
+
+/// Helper to create a minimal UV pyproject.toml with [dependency-groups]
+fn write_uv_pyproject_with_dep_groups(dir: &Path) {
+    fs::write(
+        dir.join("pyproject.toml"),
+        r#"[project]
+name = "test-uv-project"
+version = "1.0.0"
+requires-python = ">=3.10"
+dependencies = ["requests>=2.31"]
+
+[dependency-groups]
+dev = ["pytest>=7.0", "ruff"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+"#,
+    )
+    .unwrap();
+}
+
+/// Helper to create a minimal UV pyproject.toml with [tool.uv.dev-dependencies]
+fn write_uv_pyproject_with_tool_uv(dir: &Path) {
+    fs::write(
+        dir.join("pyproject.toml"),
+        r#"[project]
+name = "test-uv-project"
+version = "1.0.0"
+requires-python = ">=3.10"
+dependencies = ["requests>=2.31"]
+
+[tool.uv]
+dev-dependencies = ["pytest>=7.0", "mypy"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+"#,
+    )
+    .unwrap();
+}
+
+/// Helper to create a minimal uv.lock file
+fn write_uv_lock(dir: &Path) {
+    fs::write(
+        dir.join("uv.lock"),
+        r#"version = 1
+
+[[distribution]]
+name = "requests"
+version = "2.31.0"
+
+[[distribution]]
+name = "urllib3"
+version = "2.0.7"
+"#,
+    )
+    .unwrap();
+}
+
+#[test]
+fn test_import_uv_basic() {
+    let temp = TempDir::new().unwrap();
+    write_uv_pyproject_with_dep_groups(temp.path());
+
+    let output = run_rx(
+        &["import", "uv", "--project", temp.path().to_str().unwrap()],
+        temp.path(),
+    );
+    assert_success(&output, "rx import uv");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("requests"), "Should list main deps");
+    assert!(
+        stdout.contains("pytest"),
+        "Should list dev deps from dependency-groups"
+    );
+    assert!(
+        stdout.contains("ruff"),
+        "Should list dev deps from dependency-groups"
+    );
+
+    // Verify the output pyproject.toml has the deps
+    let content = fs::read_to_string(temp.path().join("pyproject.toml")).unwrap();
+    assert!(
+        content.contains("requests"),
+        "pyproject.toml should contain requests"
+    );
+    assert!(
+        content.contains("pytest"),
+        "pyproject.toml should contain pytest"
+    );
+}
+
+#[test]
+fn test_import_uv_with_lockfile() {
+    let temp = TempDir::new().unwrap();
+    write_uv_pyproject_with_dep_groups(temp.path());
+    write_uv_lock(temp.path());
+
+    let output = run_rx(
+        &["import", "uv", "--project", temp.path().to_str().unwrap()],
+        temp.path(),
+    );
+    assert_success(&output, "rx import uv with lockfile");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("uv.lock"), "Should mention uv.lock");
+
+    // Verify rx.lock was created
+    let rx_lock_path = temp.path().join("rx.lock");
+    assert!(rx_lock_path.exists(), "rx.lock should be created");
+
+    let lock_content = fs::read_to_string(&rx_lock_path).unwrap();
+    assert!(
+        lock_content.contains("requests"),
+        "rx.lock should contain requests"
+    );
+    assert!(
+        lock_content.contains("2.31.0"),
+        "rx.lock should contain version"
+    );
+}
+
+#[test]
+fn test_import_uv_dry_run() {
+    let temp = TempDir::new().unwrap();
+    write_uv_pyproject_with_dep_groups(temp.path());
+    write_uv_lock(temp.path());
+
+    // Save original pyproject.toml
+    let original = fs::read_to_string(temp.path().join("pyproject.toml")).unwrap();
+
+    let output = run_rx(
+        &[
+            "import",
+            "uv",
+            "--project",
+            temp.path().to_str().unwrap(),
+            "--dry-run",
+        ],
+        temp.path(),
+    );
+    assert_success(&output, "rx import uv --dry-run");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("Dry run"), "Should indicate dry run");
+
+    // Verify no changes were made
+    let after = fs::read_to_string(temp.path().join("pyproject.toml")).unwrap();
+    assert_eq!(original, after, "pyproject.toml should be unchanged");
+    assert!(
+        !temp.path().join("rx.lock").exists(),
+        "rx.lock should not be created"
+    );
+}
+
+#[test]
+fn test_import_uv_tool_uv_dev_deps() {
+    let temp = TempDir::new().unwrap();
+    write_uv_pyproject_with_tool_uv(temp.path());
+
+    let output = run_rx(
+        &["import", "uv", "--project", temp.path().to_str().unwrap()],
+        temp.path(),
+    );
+    assert_success(&output, "rx import uv with tool.uv");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("pytest"),
+        "Should list dev deps from tool.uv"
+    );
+    assert!(stdout.contains("mypy"), "Should list dev deps from tool.uv");
+
+    // Verify the output pyproject.toml has the dev deps
+    let content = fs::read_to_string(temp.path().join("pyproject.toml")).unwrap();
+    assert!(
+        content.contains("pytest"),
+        "pyproject.toml should contain pytest"
+    );
+    assert!(
+        content.contains("mypy"),
+        "pyproject.toml should contain mypy"
+    );
+}

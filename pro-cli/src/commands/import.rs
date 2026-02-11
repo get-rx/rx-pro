@@ -613,19 +613,8 @@ impl UvImportCommand {
             })
             .unwrap_or_default();
 
-        // Get optional/dev dependencies
-        let mut dev_deps: Vec<String> = Vec::new();
-        if let Some(optional) = project
-            .and_then(|p| p.get("optional-dependencies"))
-            .and_then(|v| v.as_table())
-        {
-            if let Some(dev) = optional.get("dev").and_then(|v| v.as_array()) {
-                dev_deps = dev
-                    .iter()
-                    .filter_map(|v| v.as_str().map(String::from))
-                    .collect();
-            }
-        }
+        // Get dev dependencies (supports multiple sources with priority)
+        let dev_deps = extract_uv_dev_deps(&doc);
 
         println!("Dependencies ({}):", main_deps.len());
         for dep in &main_deps {
@@ -854,6 +843,64 @@ fn import_uv_lock(path: &PathBuf) -> Result<Lockfile> {
     }
 
     Ok(lockfile)
+}
+
+/// Extract dev dependencies from a UV/PEP 621 pyproject.toml.
+///
+/// Checks sources in priority order (first non-empty wins):
+/// 1. `[dependency-groups].dev` (PEP 735, uv 0.4+)
+/// 2. `[tool.uv.dev-dependencies]` (legacy uv)
+/// 3. `[project.optional-dependencies].dev` (standard PEP 621)
+fn extract_uv_dev_deps(doc: &toml::Value) -> Vec<String> {
+    // Priority 1: [dependency-groups].dev (PEP 735)
+    if let Some(dev) = doc
+        .get("dependency-groups")
+        .and_then(|v| v.get("dev"))
+        .and_then(|v| v.as_array())
+    {
+        // filter_map skips non-string entries (e.g. PEP 735 include-group directives)
+        let deps: Vec<String> = dev
+            .iter()
+            .filter_map(|v| v.as_str().map(String::from))
+            .collect();
+        if !deps.is_empty() {
+            return deps;
+        }
+    }
+
+    // Priority 2: [tool.uv.dev-dependencies]
+    if let Some(dev) = doc
+        .get("tool")
+        .and_then(|t| t.get("uv"))
+        .and_then(|u| u.get("dev-dependencies"))
+        .and_then(|v| v.as_array())
+    {
+        let deps: Vec<String> = dev
+            .iter()
+            .filter_map(|v| v.as_str().map(String::from))
+            .collect();
+        if !deps.is_empty() {
+            return deps;
+        }
+    }
+
+    // Priority 3: [project.optional-dependencies].dev
+    if let Some(dev) = doc
+        .get("project")
+        .and_then(|p| p.get("optional-dependencies"))
+        .and_then(|v| v.get("dev"))
+        .and_then(|v| v.as_array())
+    {
+        let deps: Vec<String> = dev
+            .iter()
+            .filter_map(|v| v.as_str().map(String::from))
+            .collect();
+        if !deps.is_empty() {
+            return deps;
+        }
+    }
+
+    Vec::new()
 }
 
 // =============================================================================
@@ -1129,5 +1176,230 @@ numpy>=1.20
 
         assert_eq!(req, "requests>=2.28.0");
         assert!(hashes.is_empty());
+    }
+
+    // UV lock import tests
+
+    #[test]
+    fn test_import_uv_lock_distribution_format() {
+        let dir = tempfile::tempdir().unwrap();
+        let lock_path = dir.path().join("uv.lock");
+        std::fs::write(
+            &lock_path,
+            r#"
+version = 1
+
+[[distribution]]
+name = "requests"
+version = "2.31.0"
+
+[[distribution]]
+name = "urllib3"
+version = "2.0.4"
+"#,
+        )
+        .unwrap();
+
+        let path = PathBuf::from(&lock_path);
+        let lockfile = import_uv_lock(&path).unwrap();
+
+        assert_eq!(lockfile.packages.len(), 2);
+        assert_eq!(lockfile.packages["requests"].version, "2.31.0");
+        assert_eq!(lockfile.packages["urllib3"].version, "2.0.4");
+    }
+
+    #[test]
+    fn test_import_uv_lock_package_format() {
+        let dir = tempfile::tempdir().unwrap();
+        let lock_path = dir.path().join("uv.lock");
+        std::fs::write(
+            &lock_path,
+            r#"
+version = 1
+
+[[package]]
+name = "click"
+version = "8.1.7"
+"#,
+        )
+        .unwrap();
+
+        let path = PathBuf::from(&lock_path);
+        let lockfile = import_uv_lock(&path).unwrap();
+
+        assert_eq!(lockfile.packages.len(), 1);
+        assert_eq!(lockfile.packages["click"].version, "8.1.7");
+    }
+
+    #[test]
+    fn test_import_uv_lock_with_wheels_and_hashes() {
+        let dir = tempfile::tempdir().unwrap();
+        let lock_path = dir.path().join("uv.lock");
+        std::fs::write(
+            &lock_path,
+            r#"
+version = 1
+
+[[distribution]]
+name = "requests"
+version = "2.31.0"
+
+[[distribution.wheels]]
+url = "https://files.pythonhosted.org/requests-2.31.0-py3-none-any.whl"
+hash = "sha256:abc123"
+"#,
+        )
+        .unwrap();
+
+        let path = PathBuf::from(&lock_path);
+        let lockfile = import_uv_lock(&path).unwrap();
+
+        let pkg = &lockfile.packages["requests"];
+        assert_eq!(
+            pkg.url.as_deref(),
+            Some("https://files.pythonhosted.org/requests-2.31.0-py3-none-any.whl")
+        );
+        assert_eq!(pkg.hash.as_deref(), Some("sha256:abc123"));
+    }
+
+    // extract_uv_dev_deps tests
+
+    #[test]
+    fn test_extract_uv_dev_deps_dependency_groups() {
+        let doc: toml::Value = toml::from_str(
+            r#"
+[dependency-groups]
+dev = ["pytest>=7.0", "ruff"]
+"#,
+        )
+        .unwrap();
+
+        let deps = extract_uv_dev_deps(&doc);
+        assert_eq!(deps, vec!["pytest>=7.0", "ruff"]);
+    }
+
+    #[test]
+    fn test_extract_uv_dev_deps_dependency_groups_priority() {
+        let doc: toml::Value = toml::from_str(
+            r#"
+[dependency-groups]
+dev = ["pytest>=7.0"]
+
+[project.optional-dependencies]
+dev = ["old-pytest"]
+"#,
+        )
+        .unwrap();
+
+        let deps = extract_uv_dev_deps(&doc);
+        assert_eq!(deps, vec!["pytest>=7.0"]);
+    }
+
+    #[test]
+    fn test_extract_uv_dev_deps_tool_uv() {
+        let doc: toml::Value = toml::from_str(
+            r#"
+[tool.uv]
+dev-dependencies = ["pytest>=7.0", "mypy"]
+"#,
+        )
+        .unwrap();
+
+        let deps = extract_uv_dev_deps(&doc);
+        assert_eq!(deps, vec!["pytest>=7.0", "mypy"]);
+    }
+
+    #[test]
+    fn test_extract_uv_dev_deps_full_priority_chain() {
+        let doc: toml::Value = toml::from_str(
+            r#"
+[dependency-groups]
+dev = ["from-dep-groups"]
+
+[tool.uv]
+dev-dependencies = ["from-tool-uv"]
+
+[project.optional-dependencies]
+dev = ["from-optional"]
+"#,
+        )
+        .unwrap();
+
+        let deps = extract_uv_dev_deps(&doc);
+        assert_eq!(deps, vec!["from-dep-groups"]);
+    }
+
+    #[test]
+    fn test_extract_uv_dev_deps_tool_uv_over_optional() {
+        let doc: toml::Value = toml::from_str(
+            r#"
+[tool.uv]
+dev-dependencies = ["from-tool-uv"]
+
+[project.optional-dependencies]
+dev = ["from-optional"]
+"#,
+        )
+        .unwrap();
+
+        let deps = extract_uv_dev_deps(&doc);
+        assert_eq!(deps, vec!["from-tool-uv"]);
+    }
+
+    #[test]
+    fn test_extract_uv_dev_deps_no_dev_deps() {
+        let doc: toml::Value = toml::from_str(
+            r#"
+[project]
+name = "myproject"
+"#,
+        )
+        .unwrap();
+
+        let deps = extract_uv_dev_deps(&doc);
+        assert!(deps.is_empty());
+    }
+
+    #[test]
+    fn test_extract_uv_dev_deps_empty_dependency_groups_falls_through() {
+        let doc: toml::Value = toml::from_str(
+            r#"
+[dependency-groups]
+dev = []
+
+[tool.uv]
+dev-dependencies = ["pytest"]
+"#,
+        )
+        .unwrap();
+
+        let deps = extract_uv_dev_deps(&doc);
+        assert_eq!(deps, vec!["pytest"]);
+    }
+
+    #[test]
+    fn test_extract_uv_dev_deps_optional_dependencies_fallback() {
+        let doc: toml::Value = toml::from_str(
+            r#"
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "coverage"]
+"#,
+        )
+        .unwrap();
+
+        let deps = extract_uv_dev_deps(&doc);
+        assert_eq!(deps, vec!["pytest>=7.0", "coverage"]);
+    }
+
+    #[test]
+    fn test_import_uv_lock_empty() {
+        let dir = tempfile::tempdir().unwrap();
+        let lock_path = dir.path().join("uv.lock");
+        std::fs::write(&lock_path, "version = 1\n").unwrap();
+
+        let path = PathBuf::from(&lock_path);
+        let lockfile = import_uv_lock(&path).unwrap();
+
+        assert!(lockfile.packages.is_empty());
     }
 }
